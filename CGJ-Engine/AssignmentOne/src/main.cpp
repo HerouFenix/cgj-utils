@@ -23,11 +23,13 @@ int main() {
     std::cout << "Vector1's Magnitude: " << vec1.magnitude() << "\n";
     std::cout << "Vector2's Magnitude: " << vec2.magnitude() << "\n";
 
+    /*
     Vector3 vec1Norm = vec1.normalized();
     Vector3 vec2Norm = vec2.normalized();
 
     std::cout << "Vector1  Normalized" << vec1Norm << "\n";
     std::cout << "Vector2 Normalized: " << vec2Norm << "\n";
+    */
 
     return 0;
 }
