@@ -20,7 +20,6 @@ class Vector3 {
 		 * @param _x The x coordinate to be assigned to the new Vector3
 		 * @param _y The y coordinate to be assigned to the new Vector3
 		 * @param _z The z coordinate to be assigned to the new Vector3
-
 		 ***********************************************/
 		Vector3(float _x, float _y, float _z);
 
@@ -133,7 +132,7 @@ class Vector3 {
 		 *
 		 * @return norm The normalized equivalent of our vector
 		 ***********************************************/
-		float normalized();
+		Vector3 normalized();
 
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors
