@@ -320,7 +320,9 @@ void run(GLFWwindow* win)
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		display_callback(win, elapsed_time);
-		glfwSwapBuffers(win);
+
+		glfwSwapBuffers(win); 
+
 		glfwPollEvents();
 
 		//checkOpenGLError("ERROR: MAIN/RUN");
@@ -338,7 +340,6 @@ int main(int argc, char* argv[])
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor, 
 		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
-	 
 	run(win);
 	exit(EXIT_SUCCESS);
 }

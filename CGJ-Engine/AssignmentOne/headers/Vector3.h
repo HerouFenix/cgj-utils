@@ -83,14 +83,14 @@ class Vector3 {
 		 *
 		 * @param vec The Vector3 we want to sum to our Vector3
 		 ***********************************************/
-		Vector3 operator+=(const Vector3& vec);
+		Vector3& operator+=(const Vector3& vec);
 
 		/********************************************/ /**
 		 * Overloading of the -= operator. Assigns new coordinates to our vector
 		 *
 		 * @param vec The Vector3 we want to sub with our Vector3
 		 ***********************************************/
-		Vector3 operator-=(const Vector3& vec);
+		Vector3& operator-=(const Vector3& vec);
 
 		/********************************************/ /**
 		 * Overloading of the * operator. Gets the multiplication of our vector by a scalar
@@ -99,6 +99,14 @@ class Vector3 {
 		 * @return vecMul The resulting multiplication
 		 ***********************************************/
 		Vector3 operator*(float scalar);
+
+		/********************************************/ /**
+		 * Overloading of the *= operator. Assigns new coordinates to our vector
+		 *
+		 * @param scal The scalar we want to use to multiply
+		 * @return vecMul The resulting multiplication
+		 ***********************************************/
+		Vector3& operator*=(float scalar);
 
 		/********************************************/ /**
 		 * Overloading of the / operator. Gets the division of our vector by a scalar
@@ -113,7 +121,14 @@ class Vector3 {
 		 *
 		 * @param scal The scalar we want to use to divide our vector by
 		 ***********************************************/
-		Vector3 operator/=(const Vector3& vec);
+		Vector3& operator/=(float scalar);
+
+		/********************************************/ /**
+		 * Overloading of the = operator. Assigns new coordinates to our vector
+		 *
+		 * @param vec The vector with the coordenates to be copied
+		 ***********************************************/
+		Vector3& operator=(const Vector3& vec);
 
 		/********************************************/ /**
 		 * Overloading of the << operator. Prints our vector's coordinates
@@ -140,7 +155,7 @@ class Vector3 {
 		 * @param vec The vector we want to do the Dot product with
 		 * @return dot The resulting Dot product of the vectors
 		 ***********************************************/
-		float dotProd();
+		float dotProd(const Vector3& vec);
 
 		/********************************************/ /**
 		 * Returns the Cross product of two vectors
@@ -148,5 +163,5 @@ class Vector3 {
 		 * @param vec The vector we want to do the Cross product with
 		 * @return dot The resulting Cross product of the vectors
 		 ***********************************************/
-		Vector3 crossProd();
+		Vector3 crossProd(const Vector3& vec);
 };

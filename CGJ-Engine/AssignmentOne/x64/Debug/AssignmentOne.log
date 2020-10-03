@@ -1,4 +1,5 @@
-﻿  Vector3.cpp
-  main.cpp
+﻿  main.cpp
+  Vector3.cpp
   Generating Code...
-  AssignmentOne.vcxproj -> D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\x64\Debug\AssignmentOne.exe
+  LINK : D:\IST - Drive\MEIC\CGJ\Repo\CGJ-Engine\x64\Debug\AssignmentOne.exe not found or not built by the last incremental link; performing full link
+  AssignmentOne.vcxproj -> D:\IST - Drive\MEIC\CGJ\Repo\CGJ-Engine\x64\Debug\AssignmentOne.exe

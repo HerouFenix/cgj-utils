@@ -23,13 +23,34 @@ int main() {
     std::cout << "Vector1's Magnitude: " << vec1.magnitude() << "\n";
     std::cout << "Vector2's Magnitude: " << vec2.magnitude() << "\n";
 
-    /*
-    Vector3 vec1Norm = vec1.normalized();
-    Vector3 vec2Norm = vec2.normalized();
+    std::cout << "Vector1 + Vector2 = " << vec1+vec2 << "\n";
 
-    std::cout << "Vector1  Normalized" << vec1Norm << "\n";
-    std::cout << "Vector2 Normalized: " << vec2Norm << "\n";
-    */
+    Vector3 test = vec1 += vec2;
+    std::cout << "Vector1 += Vector2 = " << test << "\n";
+
+    std::cout << "Vector1 - Vector2 = " << vec1 - vec2 << "\n";
+
+    test = vec1 -= vec2;
+    std::cout << "Vector1 -= Vector2 = " << test << "\n";
+
+    std::cout << "Vector1 * 2.0f = " << vec1 * 2.0f << "\n";
+
+    test = vec1 *= 2.0f;
+    std::cout << "Vector1 *= 2.0f = " << test << "\n";
+
+    std::cout << "Vector1 / 2.0f = " << vec1 / 2.0f << "\n";
+
+    test = vec1 /= 2.0f;
+    std::cout << "Vector1 /= 2.0f = " << test << "\n";
+
+    test = vec1 = vec2;
+    std::cout << "Vector1 = Vector2 = " << test << "\n";
+
+    std::cout << "Vector1 dot product with Vector2 = " << vec1.dotProd(vec2) << "\n";
+
+    std::cout << "Vector1 cross product with Vector2 = " << vec1.crossProd(vec2) << "\n";
+
+    std::cout << "Vector1  Normalized" << vec1.normalized() << "\n";
 
     return 0;
 }
