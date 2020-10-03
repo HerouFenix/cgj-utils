@@ -51,6 +51,9 @@ void Vector3::setZ(float _z) {
 
 
 //Vector3 Operations
+float Vector3::magnitude() {
+    return sqrt((x * x) + (y * y) + (z * z));
+}
 
 //Vector3 Assignments
 
