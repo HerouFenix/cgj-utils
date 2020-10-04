@@ -219,3 +219,14 @@ Vector3 Vector3::invert()
 	*this = -*this;
 	return *this;
 }
+
+//Distance
+float Vector3::dist(const Vector3& vec) {
+	return (*this - vec).magnitude();
+}
+
+//Angle
+float Vector3::angle(Vector3& vec) {
+	float cosAngle = dotProd(vec) / (magnitude() * vec.magnitude());
+	return acos(cosAngle);
+}

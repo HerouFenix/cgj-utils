@@ -1,7 +1,10 @@
 #include <iostream>
 #include "../headers/Vector3.h"
+#include "../headers/Vector2.h"
 
 int main() {
+	std::cout << "=====================VECTOR 3=====================\n";
+
 	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
 
 	Vector3 vec1(1, 2, 3);
@@ -94,6 +97,10 @@ int main() {
 
 	std::cout << "Vector1 Normalized: " << vec1.normalized() << "\n";
 
+	std::cout << "Vector1 angle with Vector2: " << vec1.angle(vec2) << "\n";
+
+	std::cout << "Vector1 distance to Vector2: " << vec1.dist(vec2) << "\n";
+
 	std::cout << "Vector1 Inverted: " << vec1.invert() << "\n";
 
 	std::cout << "Vector2 Quadrance: " << vec2.quadrance() << "\n";
@@ -103,6 +110,118 @@ int main() {
 	std::cout << "Vector2 Normalize: " << vec2.normalize() << "\n";
 
 	std::cout << "Vector2 Magnitude after Normalized: " << vec2.magnitude() << "\n";
+
+	std::cout << "=====================VECTOR 3=====================\n\n\n";
+
+	std::cout << "=====================VECTOR 2=====================\n";
+	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
+
+	Vector2 vec4(1, 2);
+	std::cout << "Vector 4: " << vec4 << "\n";
+	std::cout << "  x: " << vec4.getX() << "\n";
+	std::cout << "  y: " << vec4.getY() << "\n";
+
+	Vector2 vec5;
+	std::cout << "Vector 5: " << vec5 << "\n";
+	vec5.setX(-3);
+	vec5.setY(2);
+
+	std::cout << "Vector 5 after set:\n";
+	std::cout << "  x: " << vec5.getX() << "\n";
+	std::cout << "  y: " << vec5.getY() << "\n";
+
+
+	std::cout << "\n=======MAGNITUDE=======\n";
+	std::cout << "Vector4's Magnitude: " << vec4.magnitude() << "\n";
+	std::cout << "Vector5's Magnitude: " << vec5.magnitude() << "\n";
+
+
+	std::cout << "\n=======VECTOR-VECTOR OPERATORS=======\n";
+	std::cout << "Vector4 + Vector5 = " << vec4 + vec5 << "\n";
+
+	std::cout << "Vector4 - Vector5 = " << vec4 - vec5 << "\n";
+
+
+	std::cout << "\n=======VECTOR-SCALAR OPERATORS=======\n";
+	std::cout << "Vector4  = " << vec4 << " ; Vector5 = " << vec5 << "\n";
+	std::cout << "Vector4 * 2.0f = " << vec4 * 2.0f << "\n";
+
+	std::cout << "Vector4 / 2.0f = " << vec4 / 2.0f << "\n";
+
+	std::cout << "-1.0f * Vector5 = " << -1.0f * vec5 << "\n";
+
+	std::cout << "Vector2 / -5 = " << vec5 / -2 << "\n";
+
+	std::cout << "-Vector5 = " << -vec5 << "\n";
+
+
+	std::cout << "\n=======ASSIGNMENTS=======\n";
+	Vector2 vec6(1, 1);
+	std::cout << "Vector 6: " << vec6 << "\n";
+	vec6 += vec4;
+	std::cout << "Vector6 += Vector4 = " << vec6 << "\n";
+
+	std::cout << "Vector 6: " << vec6 << "\n";
+
+	vec6 -= vec4;
+	std::cout << "Vector6 -= Vector4 = " << vec6 << "\n";
+
+	std::cout << "Vector 6: " << vec6 << "\n";
+
+	vec6 *= 2.0f;
+	std::cout << "Vector6 *= 2.0f = " << vec6 << "\n";
+
+	std::cout << "Vector 6: " << vec6 << "\n";
+
+	vec6 /= 2.0f;
+	std::cout << "Vector6 /= 2.0f = " << vec6 << "\n";
+
+	vec6 = vec4;
+	std::cout << "Vector6 = Vector4 = " << vec6 << "\n";
+
+
+	std::cout << "\n=======COMPARISSONS=======\n";
+	std::cout << "Vector4 == Vector5: " << (vec4 == vec5) << "\n";
+	std::cout << "Vector4 != Vector5: " << (vec4 != vec5) << "\n";
+
+	vec6 = vec4.clone();
+	std::cout << "Vector4  = " << vec4 << " ; Vector6 = " << vec6 << "\n";
+	std::cout << "Vector4 == Vector6: " << (vec4 == vec6) << "\n";
+	std::cout << "Vector4 != Vector6: " << (vec4 != vec6) << "\n";
+
+	std::cout << "Vector4 magnitude compared to Vector5: " << vec4.compareMag(vec5) << "\n";
+	std::cout << "Vector5 magnitude compared to Vector4: " << vec5.compareMag(vec4) << "\n";
+	std::cout << "Vector4 magnitude compared to Vector6: " << vec4.compareMag(vec6) << "\n";
+
+	std::cout << "Vector4 magnitude compared to 0: " << vec4.compareMag(0.0f) << "\n";
+	std::cout << "Vector4 magnitude compared to 100: " << vec4.compareMag(100) << "\n";
+	std::cout << "Vector4 magnitude compared to Vector4's magnitude: " << vec4.compareMag(vec4.magnitude()) << "\n";
+
+	std::cout << "\n=======VECTOR METHODS=======\n";
+	std::cout << "Vector4 Dot product with Vector5 = " << vec4.dotProd(vec5) << "\n";
+
+	vec6 = vec4.perpendicular();
+	std::cout << "Vector perpendicular to Vector4 = " << vec6 << "\n";
+
+	std::cout << "Vector4 Normalized: " << vec4.normalized() << "\n";
+
+	std::cout << "Vector4 angle with perpendicular vector: " << vec4.angle(vec6) << "\n";
+
+	std::cout << "Vector4 distance to Vector5: " << vec4.dist(vec5) << "\n";
+
+	std::cout << "Vector4 distance to perpendicular vector: " << vec4.dist(vec6) << "\n";
+
+	std::cout << "Vector4 Inverted: " << vec4.invert() << "\n";
+
+	std::cout << "Vector5 Quadrance: " << vec5.quadrance() << "\n";
+
+	std::cout << "Vector5 Magnitude: " << vec5.magnitude() << "\n";
+
+	std::cout << "Vector5 Normalize: " << vec5.normalize() << "\n";
+
+	std::cout << "Vector5 Magnitude after Normalized: " << vec5.magnitude() << "\n";
+
+	std::cout << "=====================VECTOR 2=====================\n";
 
 	return 0;
 }

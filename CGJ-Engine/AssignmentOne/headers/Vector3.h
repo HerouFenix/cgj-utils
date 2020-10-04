@@ -277,6 +277,22 @@ class Vector3 {
 		 *
 		 ***********************************************/
 		Vector3 invert();
+
+		/********************************************/ /**
+		 * Distance between two vectors.
+		 *
+		 * @param vec The vector we want to check the distance with
+		 * @return dist The distance between the vectors
+		 ***********************************************/
+		float dist(const Vector3& vec);
+
+
+		/********************************************/ /**
+		 * Returns the smallest angle between two vectors
+		 *
+		 * @return ang The shortest angle between this vector and the given one in radians
+		 ***********************************************/
+		float angle(Vector3& vec);
 };
 
 Vector3 operator*(float val, Vector3& vec);
