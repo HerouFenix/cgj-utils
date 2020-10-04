@@ -15,15 +15,18 @@ Vector3::Vector3(float _x, float _y, float _z) {
 }
 
 //Vector3 Print
-
 std::ostream& operator<<(std::ostream& os, const Vector3& vec)
 {
 	os << '(' << vec.x << ',' << vec.y << ',' << vec.z << ')';
 	return os;
 }
 
-//Vector3 Getters
+//Clone
+Vector3 Vector3::clone() {
+	return Vector3(x, y, z);
+}
 
+//Vector3 Getters
 float Vector3::getX() {
 	return x;
 }
@@ -37,7 +40,6 @@ float Vector3::getZ() {
 }
 
 //Vector3 Setters
-
 void Vector3::setX(float _x) {
 	x = _x;
 }
@@ -52,31 +54,53 @@ void Vector3::setZ(float _z) {
 
 
 //Vector3 Operations
-float Vector3::magnitude() {
-	return sqrt((x * x) + (y * y) + (z * z));
-}
-
-//Vector3 Assignments
-
-//Vector3 Methods
-
-	//addition
 Vector3 Vector3::operator+(const Vector3& operand)
 {
 	return Vector3(x + operand.x, y + operand.y, z + operand.z);
 }
+
+Vector3 Vector3::operator-(const Vector3& operand)
+{
+	return Vector3(x - operand.x, y - operand.y, z - operand.z);
+}
+
+Vector3 operator-(Vector3& operand)
+{
+	return Vector3(-operand.getX(), -operand.getY(), -operand.getZ());
+}
+
+Vector3 Vector3::operator*(float operand)
+{
+	return Vector3(x * operand, y * operand, z * operand);
+}
+
+Vector3 operator*(float val, Vector3& vec) {
+	return vec * val;
+}
+
+
+Vector3 Vector3::operator/(float operand)
+{
+	assert(operand != 0);
+	return Vector3(x / operand, y / operand, z / operand);
+}
+
+
+//Vector3 Assignments
+Vector3& Vector3::operator=(const Vector3& operand)
+{
+	x = operand.x;
+	y = operand.y;
+	z = operand.z;
+	return *this;
+}
+
 Vector3& Vector3::operator+=(const Vector3& operand)
 {
 	x += operand.x;
 	y += operand.y;
 	z += operand.z;
 	return *this;
-}
-
-//subtraction
-Vector3 Vector3::operator-(const Vector3& operand)
-{
-	return Vector3(x - operand.x, y - operand.y, z - operand.z);
 }
 
 Vector3& Vector3::operator-=(const Vector3& operand)
@@ -87,24 +111,12 @@ Vector3& Vector3::operator-=(const Vector3& operand)
 	return *this;
 }
 
-//multiplication by scalar
-Vector3 Vector3::operator*(float operand)
-{
-	return Vector3(x * operand, y * operand, z * operand);
-}
 Vector3& Vector3::operator*=(float operand)
 {
 	x *= operand;
 	y *= operand;
 	z *= operand;
 	return *this;
-}
-
-//Division by scalar
-Vector3 Vector3::operator/(float operand)
-{
-	assert(operand != 0);
-	return Vector3(x / operand, y / operand, z / operand);
 }
 
 Vector3& Vector3::operator/=(float operand)
@@ -115,13 +127,71 @@ Vector3& Vector3::operator/=(float operand)
 	return *this;
 }
 
-//Vector comparison
-Vector3& Vector3::operator=(const Vector3& operand)
+//Vector3 Comparators
+bool Vector3::operator==(const Vector3& vec) {
+	if (x == vec.x && y == vec.y && z == vec.z) {
+		return true;
+	}
+	return false;
+}
+
+bool Vector3::operator!=(const Vector3& vec) {
+	if (x == vec.x && y == vec.y && z == vec.z) {
+		return false;
+	}
+	return true;
+}
+
+int Vector3::compareMag(Vector3& vec) {
+	float thisMagn = magnitude();
+	float otherMagn = vec.magnitude();
+
+	if (thisMagn > otherMagn) {
+		return 1;
+	}
+	else if (thisMagn < otherMagn) {
+		return -1;
+	}
+	else {
+		return 0;
+	}
+}
+
+int Vector3::compareMag(float val) {
+	float thisMagn = magnitude();
+
+	if (thisMagn > val) {
+		return 1;
+	}
+	else if (thisMagn < val) {
+		return -1;
+	}
+	else {
+		return 0;
+	}
+}
+
+//Vector3 Methods
+//Magnitude
+float Vector3::magnitude() {
+	return sqrt((x * x) + (y * y) + (z * z));
+}
+
+//Normalize
+Vector3 Vector3::normalize()
 {
-	x = operand.x;
-	y = operand.y;
-	z = operand.z;
+	float magn = magnitude();
+	assert(magn != 0);
+	*this /= magn;
 	return *this;
+}
+
+Vector3 Vector3::normalized()
+{
+	float magn = magnitude();
+	assert(magn != 0);
+
+	return *this / magn;
 }
 
 //Dot product
@@ -137,12 +207,15 @@ Vector3 Vector3::crossProd(const Vector3& operand)
 		z * operand.x - x * operand.z, x * operand.y - y * operand.x);
 }
 
-//Normalize
-Vector3 Vector3::normalized()
+//Quadrance
+float Vector3::quadrance()
 {
-	assert(magnitude() != 0);
-	*this /= magnitude();
-	return *this;
+	return x*x + y*y + z*z;
 }
 
-
+//Invert
+Vector3 Vector3::invert()
+{
+	*this = -*this;
+	return *this;
+}

@@ -24,6 +24,12 @@ class Vector3 {
 		Vector3(float _x, float _y, float _z);
 
 		/********************************************/ /**
+		 * Used to create a clone of the vector (that is still a different object)
+		 *
+		 ***********************************************/
+		Vector3 clone();
+
+		/********************************************/ /**
 		 * Function used to get the Vector3's x coordinate
 		 *
 		 * @return x The Vector3's current x coordinate
@@ -131,6 +137,93 @@ class Vector3 {
 		Vector3& operator=(const Vector3& vec);
 
 		/********************************************/ /**
+		 * Overloading of the == operator. Verifies if 2 vectors have the same coordinates
+		 *
+		 * @param eq True if they have the same coordinates, false otherwise
+		 ***********************************************/
+		bool operator==(const Vector3& vec);
+
+		/********************************************/ /**
+		 * Overloading of the != operator. Verifies if 2 vectors have different coordinates
+		 *
+		 * @param eq True if they have the different coordinates, false otherwise
+		 ***********************************************/
+		bool operator!=(const Vector3& vec);
+
+		//
+		//	/********************************************/ /**
+		//	 * Overloading of the > operator. Compares the magnitude of two vectors
+		//	 *
+		//	 * @param eq True if the vector has a bigger magnitude than the other
+		//	 ***********************************************/
+		//	bool operator>(Vector3& vec);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the < operator. Compares the magnitude of two vectors
+		//	 *
+		//	 * @param eq True if the vector has a smaller magnitude than the other
+		//	 ***********************************************/
+		//	bool operator<(Vector3& vec);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the > operator. Compares the magnitude of two vectors
+		//	 *
+		//	 * @param eq True if the vector has a bigger or equal magnitude than the other
+		//	 ***********************************************/
+		//	bool operator>=(Vector3& vec);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the > operator. Compares the magnitude of two vectors
+		//	 *
+		//	 * @param eq True if the vector has a smaller or equal magnitude than the other
+		//	 ***********************************************/
+		//	bool operator<=(Vector3& vec);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the > operator. Compares the magnitude of a vector to a value
+		//	 *
+		//	 * @param eq True if the vector has a bigger magnitude than the value
+		//	 ***********************************************/
+		//	bool operator>(float val);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the < operator. Compares the magnitude of a vector to a value
+		//	 *
+		//	 * @param eq True if the vector has a smaller magnitude than the value
+		//	 ***********************************************/
+		//	bool operator<(float val);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the > operator. Compares the magnitude of a vector to a value
+		//	 *
+		//	 * @param eq True if the vector has a bigger or equal magnitude than the value
+		//	 ***********************************************/
+		//	bool operator>=(float val);
+		//	
+		//	/********************************************/ /**
+		//	 * Overloading of the > operator. Compares the magnitude of a vector to a value
+		//	 *
+		//	 * @param eq True if the vector has a smaller or equal magnitude than the value
+		//	 ***********************************************/
+		//	bool operator<=(float val);
+		//	
+
+		/********************************************/ /**
+		 * Compares the magnitude of two vectors
+		 *
+		 * @return comp 1 if the vector is bigger than the given one, 0 if they're equal, -1 if smaller
+		 ***********************************************/
+		int compareMag(Vector3& vec);
+
+		/********************************************/ /**
+		 * Compares the magnitude of a vector and a value
+		 *
+		 * @return comp 1 if the vector is bigger than the given value, 0 if they're equal, -1 if smaller
+		 ***********************************************/
+		int compareMag(float val);
+
+
+		/********************************************/ /**
 		 * Overloading of the << operator. Prints our vector's coordinates
 		 ***********************************************/
 		friend std::ostream& operator<<(std::ostream& output, const Vector3& vec);
@@ -143,11 +236,18 @@ class Vector3 {
 		float magnitude();
 
 		/********************************************/ /**
-		 * Returns the Vector normalized
+		 * Returns the Vector normalized. Doesn't change the vector,
+		 * just returns its normalized equivalent
 		 *
 		 * @return norm The normalized equivalent of our vector
 		 ***********************************************/
 		Vector3 normalized();
+
+		/********************************************/ /**
+		 * Normalizes the vector.
+		 *
+		 ***********************************************/
+		Vector3 normalize();
 
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors
@@ -164,4 +264,21 @@ class Vector3 {
 		 * @return dot The resulting Cross product of the vectors
 		 ***********************************************/
 		Vector3 crossProd(const Vector3& vec);
+
+		/********************************************/ /**
+		 * Returns the Quadrance of a vector
+		 *
+		 * @return quad The quadrance of the vector
+		 ***********************************************/
+		float quadrance();
+
+		/********************************************/ /**
+		 * Inverts the direction of the vector. Actually modifies it.
+		 *
+		 ***********************************************/
+		Vector3 invert();
 };
+
+Vector3 operator*(float val, Vector3& vec);
+
+Vector3 operator-(Vector3& vec);
