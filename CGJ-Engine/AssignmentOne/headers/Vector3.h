@@ -1,3 +1,6 @@
+#ifndef VECTOR_3
+#define VECTOR3
+
 // Vector3 CLASS HEADER
 
 /// Class used to represent and perform operations with 3-Dimensional vectors
@@ -15,7 +18,7 @@ class Vector3 {
 		Vector3();
 
 		/********************************************/ /**
-		 * Function used to load a Binary image
+		 * Function used to create a Vector3
 		 *
 		 * @param _x The x coordinate to be assigned to the new Vector3
 		 * @param _y The y coordinate to be assigned to the new Vector3
@@ -150,64 +153,6 @@ class Vector3 {
 		 ***********************************************/
 		bool operator!=(const Vector3& vec);
 
-		//
-		//	/********************************************/ /**
-		//	 * Overloading of the > operator. Compares the magnitude of two vectors
-		//	 *
-		//	 * @param eq True if the vector has a bigger magnitude than the other
-		//	 ***********************************************/
-		//	bool operator>(Vector3& vec);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the < operator. Compares the magnitude of two vectors
-		//	 *
-		//	 * @param eq True if the vector has a smaller magnitude than the other
-		//	 ***********************************************/
-		//	bool operator<(Vector3& vec);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the > operator. Compares the magnitude of two vectors
-		//	 *
-		//	 * @param eq True if the vector has a bigger or equal magnitude than the other
-		//	 ***********************************************/
-		//	bool operator>=(Vector3& vec);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the > operator. Compares the magnitude of two vectors
-		//	 *
-		//	 * @param eq True if the vector has a smaller or equal magnitude than the other
-		//	 ***********************************************/
-		//	bool operator<=(Vector3& vec);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the > operator. Compares the magnitude of a vector to a value
-		//	 *
-		//	 * @param eq True if the vector has a bigger magnitude than the value
-		//	 ***********************************************/
-		//	bool operator>(float val);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the < operator. Compares the magnitude of a vector to a value
-		//	 *
-		//	 * @param eq True if the vector has a smaller magnitude than the value
-		//	 ***********************************************/
-		//	bool operator<(float val);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the > operator. Compares the magnitude of a vector to a value
-		//	 *
-		//	 * @param eq True if the vector has a bigger or equal magnitude than the value
-		//	 ***********************************************/
-		//	bool operator>=(float val);
-		//	
-		//	/********************************************/ /**
-		//	 * Overloading of the > operator. Compares the magnitude of a vector to a value
-		//	 *
-		//	 * @param eq True if the vector has a smaller or equal magnitude than the value
-		//	 ***********************************************/
-		//	bool operator<=(float val);
-		//	
-
 		/********************************************/ /**
 		 * Compares the magnitude of two vectors
 		 *
@@ -298,3 +243,5 @@ class Vector3 {
 Vector3 operator*(float val, Vector3& vec);
 
 Vector3 operator-(Vector3& vec);
+
+#endif
