@@ -1,4 +1,7 @@
 #include "../headers/Vector2.h"
+#include "../headers/Vector3.h"
+#include "../headers/Vector4.h"
+
 #include <cassert>
 
 // Vector 2 Constructors
@@ -10,6 +13,16 @@ Vector2::Vector2() {
 Vector2::Vector2(float _x, float _y) {
 	x = _x;
 	y = _y;
+}
+
+Vector2::Vector2(Vector3& vec) {
+	x = vec.getX();
+	y = vec.getY();
+}
+
+Vector2::Vector2(Vector4& vec) {
+	x = vec.getX();
+	y = vec.getY();
 }
 
 //Vector3 Print

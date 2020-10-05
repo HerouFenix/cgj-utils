@@ -1,11 +1,14 @@
 #ifndef VECTOR_4
-#define VECTOR4
+#define VECTOR_4
 
 // Vector4 CLASS HEADER
 
 /// Class used to represent and perform operations with 4-Dimensional vectors
 
 #include<iostream>
+
+class Vector2;
+class Vector3;
 
 class Vector4 {
 	private:
@@ -26,6 +29,20 @@ class Vector4 {
 		 * @param _w The w coordinate to be assigned to the new Vector4
 		 ***********************************************/
 		Vector4(float _x, float _y, float _z, float _w);
+
+		/********************************************/ /**
+		* Function used to create a Vector4 from a Vector3
+		*
+		* @param vec The Vector3 we want to get the coordinates from
+		***********************************************/
+		Vector4(Vector3& vec);
+
+		/********************************************/ /**
+		* Function used to create a Vector4 from a Vector2
+		*
+		* @param vec The Vector2 we want to get the coordinates from
+		***********************************************/
+		Vector4(Vector2& vec);
 
 		/********************************************/ /**
 		 * Used to create a clone of the vector (that is still a different object)

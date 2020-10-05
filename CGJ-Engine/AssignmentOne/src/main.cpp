@@ -4,6 +4,148 @@
 #include "../headers/Vector4.h"
 
 int main() {
+	std::cout << "=====================VECTOR 3=====================\n";
+
+	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
+
+	Vector3 vec1(1, 2, 3);
+	std::cout << "Vector 1: " << vec1 << "\n";
+	std::cout << "  x: " << vec1.getX() << "\n";
+	std::cout << "  y: " << vec1.getY() << "\n";
+	std::cout << "  z: " << vec1.getZ() << "\n";
+
+	Vector3 vec2;
+	std::cout << "Vector 2: " << vec2 << "\n";
+	vec2.setX(-3);
+	vec2.setY(2);
+	vec2.setZ(5);
+
+	std::cout << "Vector 2 after set:\n";
+	std::cout << "  x: " << vec2.getX() << "\n";
+	std::cout << "  y: " << vec2.getY() << "\n";
+	std::cout << "  z: " << vec2.getZ() << "\n";
+
+
+	std::cout << "\n=======MAGNITUDE=======\n";
+	std::cout << "Vector1's Magnitude: " << vec1.magnitude() << "\n";
+	std::cout << "Vector2's Magnitude: " << vec2.magnitude() << "\n";
+
+
+	std::cout << "\n=======VECTOR-VECTOR OPERATORS=======\n";
+	std::cout << "Vector1 + Vector2 = " << vec1 + vec2 << "\n";
+
+	std::cout << "Vector1 - Vector2 = " << vec1 - vec2 << "\n";
+
+
+	std::cout << "\n=======VECTOR-SCALAR OPERATORS=======\n";
+	std::cout << "Vector1  = " << vec1 << " ; Vector2 = " << vec2 << "\n";
+	std::cout << "Vector1 * 2.0f = " << vec1 * 2.0f << "\n";
+
+	std::cout << "Vector1 / 2.0f = " << vec1 / 2.0f << "\n";
+
+	std::cout << "-1.0f * Vector2 = " << -1.0f * vec2 << "\n";
+
+	std::cout << "Vector2 / -2 = " << vec2 / -2 << "\n";
+
+	std::cout << "-Vector2 = " << -vec2 << "\n";
+
+
+	std::cout << "\n=======ASSIGNMENTS=======\n";
+	Vector3 vec3(1, 1, 1);
+	std::cout << "Vector 3: " << vec3 << "\n";
+	vec3 += vec1;
+	std::cout << "Vector3 += Vector1 = " << vec3 << "\n";
+
+	std::cout << "Vector 3: " << vec3 << "\n";
+
+	vec3 -= vec1;
+	std::cout << "Vector3 -= Vector1 = " << vec3 << "\n";
+
+	std::cout << "Vector 3: " << vec3 << "\n";
+
+	vec3 *= 2.0f;
+	std::cout << "Vector3 *= 2.0f = " << vec3 << "\n";
+
+	std::cout << "Vector 3: " << vec3 << "\n";
+
+	vec3 /= 2.0f;
+	std::cout << "Vector3 /= 2.0f = " << vec3 << "\n";
+
+	vec3 = vec1;
+	std::cout << "Vector3 = Vector1 = " << vec3 << "\n";
+
+
+	std::cout << "\n=======COMPARISSONS=======\n";
+	std::cout << "Vector1 == Vector2: " << (vec1 == vec2) << "\n";
+	std::cout << "Vector1 != Vector2: " << (vec1 != vec2) << "\n";
+
+	vec3 = vec1.clone();
+	std::cout << "Vector1 == Vector3: " << (vec1 == vec3) << "\n";
+	std::cout << "Vector1 != Vector3: " << (vec1 != vec3) << "\n";
+
+	std::cout << "Vector1 magnitude compared to Vector2: " << vec1.compareMag(vec2) << "\n";
+	std::cout << "Vector2 magnitude compared to Vector1: " << vec2.compareMag(vec1) << "\n";
+	std::cout << "Vector1 magnitude compared to Vector3: " << vec1.compareMag(vec3) << "\n";
+
+	std::cout << "Vector1 magnitude compared to 0: " << vec1.compareMag(0.0f) << "\n";
+	std::cout << "Vector1 magnitude compared to 100: " << vec1.compareMag(100) << "\n";
+	std::cout << "Vector1 magnitude compared to Vector1's magnitude: " << vec1.compareMag(vec1.magnitude()) << "\n";
+
+	std::cout << "\n=======VECTOR METHODS=======\n";
+	std::cout << "Vector1 Dot product with Vector2 = " << vec1.dotProd(vec2) << "\n";
+
+	std::cout << "Vector1 Cross product with Vector2 = " << vec1.crossProd(vec2) << "\n";
+
+	std::cout << "Vector1 Normalized: " << vec1.normalized() << "\n";
+
+	std::cout << "Vector1 angle with Vector2: " << vec1.angle(vec2) << "\n";
+
+	std::cout << "Vector1 distance to Vector2: " << vec1.dist(vec2) << "\n";
+
+	std::cout << "Vector1 Inverted: " << vec1.invert() << "\n";
+
+	std::cout << "Vector2 Quadrance: " << vec2.quadrance() << "\n";
+
+	std::cout << "Vector2 Magnitude: " << vec2.magnitude() << "\n";
+
+	std::cout << "Vector2 Normalize: " << vec2.normalize() << "\n";
+
+	std::cout << "Vector2 Magnitude after Normalized: " << vec2.magnitude() << "\n";
+
+	std::cout << "\n=======CONVERSIONS=======\n";
+	//3D to 2D
+	Vector2 vec2D_A(5, 6);
+	Vector3 vec3D_A = vec2D_A;
+
+	std::cout << "Vector2D_A  = " << vec2D_A << " ; Vector3D_A = " << vec3D_A << "\n";
+
+	vec2D_A.setX(10);
+	vec2D_A.setY(10);
+
+	vec3D_A = vec2D_A;
+	std::cout << "Vector2D_A  = " << vec2D_A << " ; Vector3D_A = " << vec3D_A << "\n";
+
+	std::cout << "Vector3D_A  + Vector2D_A = " << vec3D_A + vec2D_A << "\n";
+
+	//3D to 4D
+	Vector4 vec4D_A(5, 6,7,8);
+	Vector3 vec3D_A2 = vec4D_A;
+
+	std::cout << "Vector4D_A  = " << vec4D_A << " ; Vector3D_A2 = " << vec3D_A2 << "\n";
+
+	vec4D_A.setX(10);
+	vec4D_A.setY(10);
+	vec4D_A.setZ(11);
+	vec4D_A.setW(12);
+
+	vec3D_A2 = vec4D_A;
+	std::cout << "Vector4D_A  = " << vec4D_A << " ; Vector3D_A2 = " << vec3D_A2 << "\n";
+
+	std::cout << "Vector3D_A2  + Vector4D_A = " << vec3D_A2 + vec4D_A << "\n";
+
+	std::cout << "=====================VECTOR 3=====================\n\n\n";
+
+
 
 	std::cout << "=====================VECTOR 4=====================\n";
 
@@ -113,117 +255,39 @@ int main() {
 
 	std::cout << "Vector8 Magnitude after Normalized: " << vec8.magnitude() << "\n";
 
+	std::cout << "\n=======CONVERSIONS=======\n";
+	//4D to 2D
+	Vector2 vec2D_B(5, 6);
+	Vector4 vec4D_B = vec2D_B;
+
+	std::cout << "Vector2D_B  = " << vec2D_B << " ; Vector4D_B = " << vec4D_B << "\n";
+
+	vec2D_A.setX(10);
+	vec2D_A.setY(10);
+
+	vec4D_B = vec2D_B;
+	std::cout << "Vector2D_B  = " << vec2D_B << " ; Vector4D_B = " << vec4D_B << "\n";
+
+	std::cout << "Vector4D_B  + Vector2D_B = " << vec4D_B + vec2D_B << "\n";
+
+	//4D to 3D
+	Vector3 vec3D_B(5, 6, 7);
+	Vector4 vec4D_B2 = vec3D_B;
+
+	std::cout << "Vector3D_B  = " << vec3D_B << " ; Vector4D_B2 = " << vec4D_B2 << "\n";
+
+	vec3D_B.setX(10);
+	vec3D_B.setY(10);
+	vec3D_B.setZ(11);
+
+	vec4D_B2 = vec3D_B;
+	std::cout << "Vector3D_B  = " << vec3D_B << " ; Vector4D_B2 = " << vec4D_B2 << "\n";
+
+	std::cout << "Vector4D_B2  + Vector3D_B = " << vec4D_B2 + vec3D_B << "\n";
+
 	std::cout << "=====================VECTOR 4=====================\n\n\n";
 
-	std::cout << "=====================VECTOR 3=====================\n";
 
-	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
-
-	Vector3 vec1(1, 2, 3);
-	std::cout << "Vector 1: " << vec1 << "\n";
-	std::cout << "  x: " << vec1.getX() << "\n";
-	std::cout << "  y: " << vec1.getY() << "\n";
-	std::cout << "  z: " << vec1.getZ() << "\n";
-
-	Vector3 vec2;
-	std::cout << "Vector 2: " << vec2 << "\n";
-	vec2.setX(-3);
-	vec2.setY(2);
-	vec2.setZ(5);
-
-	std::cout << "Vector 2 after set:\n";
-	std::cout << "  x: " << vec2.getX() << "\n";
-	std::cout << "  y: " << vec2.getY() << "\n";
-	std::cout << "  z: " << vec2.getZ() << "\n";
-
-
-	std::cout << "\n=======MAGNITUDE=======\n";
-	std::cout << "Vector1's Magnitude: " << vec1.magnitude() << "\n";
-	std::cout << "Vector2's Magnitude: " << vec2.magnitude() << "\n";
-
-
-	std::cout << "\n=======VECTOR-VECTOR OPERATORS=======\n";
-	std::cout << "Vector1 + Vector2 = " << vec1 + vec2 << "\n";
-
-	std::cout << "Vector1 - Vector2 = " << vec1 - vec2 << "\n";
-
-
-	std::cout << "\n=======VECTOR-SCALAR OPERATORS=======\n";
-	std::cout << "Vector1  = " << vec1 << " ; Vector2 = " << vec2 << "\n";
-	std::cout << "Vector1 * 2.0f = " << vec1 * 2.0f << "\n";
-
-	std::cout << "Vector1 / 2.0f = " << vec1 / 2.0f << "\n";
-
-	std::cout << "-1.0f * Vector2 = " << -1.0f * vec2 << "\n";
-
-	std::cout << "Vector2 / -2 = " << vec2 / -2 << "\n";
-
-	std::cout << "-Vector2 = " << -vec2 << "\n";
-
-
-	std::cout << "\n=======ASSIGNMENTS=======\n";
-	Vector3 vec3(1, 1, 1);
-	std::cout << "Vector 3: " << vec3 << "\n";
-	vec3 += vec1;
-	std::cout << "Vector3 += Vector1 = " << vec3 << "\n";
-
-	std::cout << "Vector 3: " << vec3 << "\n";
-
-	vec3 -= vec1;
-	std::cout << "Vector3 -= Vector1 = " << vec3 << "\n";
-
-	std::cout << "Vector 3: " << vec3 << "\n";
-
-	vec3 *= 2.0f;
-	std::cout << "Vector3 *= 2.0f = " << vec3 << "\n";
-
-	std::cout << "Vector 3: " << vec3 << "\n";
-
-	vec3 /= 2.0f;
-	std::cout << "Vector3 /= 2.0f = " << vec3 << "\n";
-
-	vec3 = vec1;
-	std::cout << "Vector3 = Vector1 = " << vec3 << "\n";
-
-
-	std::cout << "\n=======COMPARISSONS=======\n";
-	std::cout << "Vector1 == Vector2: " << (vec1 == vec2) << "\n";
-	std::cout << "Vector1 != Vector2: " << (vec1 != vec2) << "\n";
-
-	vec3 = vec1.clone();
-	std::cout << "Vector1 == Vector3: " << (vec1 == vec3) << "\n";
-	std::cout << "Vector1 != Vector3: " << (vec1 != vec3) << "\n";
-
-	std::cout << "Vector1 magnitude compared to Vector2: " << vec1.compareMag(vec2) << "\n";
-	std::cout << "Vector2 magnitude compared to Vector1: " << vec2.compareMag(vec1) << "\n";
-	std::cout << "Vector1 magnitude compared to Vector3: " << vec1.compareMag(vec3) << "\n";
-
-	std::cout << "Vector1 magnitude compared to 0: " << vec1.compareMag(0.0f) << "\n";
-	std::cout << "Vector1 magnitude compared to 100: " << vec1.compareMag(100) << "\n";
-	std::cout << "Vector1 magnitude compared to Vector1's magnitude: " << vec1.compareMag(vec1.magnitude()) << "\n";
-
-	std::cout << "\n=======VECTOR METHODS=======\n";
-	std::cout << "Vector1 Dot product with Vector2 = " << vec1.dotProd(vec2) << "\n";
-
-	std::cout << "Vector1 Cross product with Vector2 = " << vec1.crossProd(vec2) << "\n";
-
-	std::cout << "Vector1 Normalized: " << vec1.normalized() << "\n";
-
-	std::cout << "Vector1 angle with Vector2: " << vec1.angle(vec2) << "\n";
-
-	std::cout << "Vector1 distance to Vector2: " << vec1.dist(vec2) << "\n";
-
-	std::cout << "Vector1 Inverted: " << vec1.invert() << "\n";
-
-	std::cout << "Vector2 Quadrance: " << vec2.quadrance() << "\n";
-
-	std::cout << "Vector2 Magnitude: " << vec2.magnitude() << "\n";
-
-	std::cout << "Vector2 Normalize: " << vec2.normalize() << "\n";
-
-	std::cout << "Vector2 Magnitude after Normalized: " << vec2.magnitude() << "\n";
-
-	std::cout << "=====================VECTOR 3=====================\n\n\n";
 
 	std::cout << "=====================VECTOR 2=====================\n";
 	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
@@ -333,11 +397,41 @@ int main() {
 
 	std::cout << "Vector5 Magnitude after Normalized: " << vec5.magnitude() << "\n";
 
-	std::cout << "=====================VECTOR 2=====================\n";
+	std::cout << "\n=======CONVERSIONS=======\n";
+	//2D to 3D
+	Vector3 vec3D_C(7,8,9);
+	Vector2 vec2D_C = vec3D_C;
 
-	std::cout << "=====================CONVERSIONS=====================\n";
+	std::cout << "Vector3D_C  = " << vec3D_C << " ; Vector2D_C = " << vec2D_C << "\n";
 
-	std::cout << "=====================CONVERSIONS=====================\n\n\n";
+	vec3D_C.setX(10);
+	vec3D_C.setY(10);
+	vec3D_C.setZ(10);
+
+	vec2D_C = vec3D_C;
+	std::cout << "Vector3D_C  = " << vec3D_C << " ; Vector2D_C = " << vec2D_C << "\n";
+
+	std::cout << "Vector2D_C  + Vector3D_C = " << vec2D_C + vec3D_C << "\n";
+
+	//2D to 4D
+	Vector4 vec4D_C(4,3,2,1);
+	Vector2 vec2D_C2 = vec3D_C;
+
+	std::cout << "Vector4D_C  = " << vec3D_C << " ; Vector2D_C2 = " << vec2D_C << "\n";
+
+	vec4D_C.setX(10);
+	vec4D_C.setY(9);
+	vec4D_C.setZ(8);
+	vec4D_C.setW(7);
+
+	vec2D_C2 = vec4D_C;
+	std::cout << "Vector4D_C  = " << vec4D_C << " ; Vector2D_C2 = " << vec2D_C2 << "\n";
+
+	std::cout << "Vector2D_C2  + Vector4D_C = " << vec2D_C2 + vec4D_C << "\n";
+
+
+
+	std::cout << "=====================VECTOR 2=====================\n\n\n";
 
 	return 0;
 }

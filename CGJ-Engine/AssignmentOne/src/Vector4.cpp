@@ -1,4 +1,7 @@
+#include "../headers/Vector2.h"
+#include "../headers/Vector3.h"
 #include "../headers/Vector4.h"
+
 #include <cassert>
 
 // Vector 4 Constructors
@@ -14,6 +17,20 @@ Vector4::Vector4(float _x, float _y, float _z, float _w) {
 	y = _y;
 	z = _z;
 	w = _w;
+}
+
+Vector4::Vector4(Vector2& vec) {
+	x = vec.getX();
+	y = vec.getY();
+	z = 0;
+	w = 0;
+}
+
+Vector4::Vector4(Vector3& vec) {
+	x = vec.getX();
+	y = vec.getY();
+	z = vec.getZ();
+	w = 0;
 }
 
 //Vector4 Print

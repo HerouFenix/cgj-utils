@@ -1,5 +1,5 @@
 #ifndef VECTOR_2
-#define VECTOR2
+#define VECTOR_2
 
 // Vector2 CLASS HEADER
 
@@ -8,6 +8,7 @@
 #include<iostream>
 
 class Vector3;
+class Vector4;
 
 class Vector2 {
 private:
@@ -26,6 +27,20 @@ public:
 	 * @param _y The y coordinate to be assigned to the new Vector2
 	 ***********************************************/
 	Vector2(float _x, float _y);
+
+	/********************************************/ /**
+	* Function used to create a Vector2 from a Vector3
+	*
+	* @param vec The Vector2 we want to get the coordinates from
+	***********************************************/
+	Vector2(Vector3& vec);
+
+	/********************************************/ /**
+	* Function used to create a Vector2 from a Vector4
+	*
+	* @param vec The Vector2 we want to get the coordinates from
+	***********************************************/
+	Vector2(Vector4& vec);
 
 	/********************************************/ /**
 	 * Used to create a clone of the vector (that is still a different object)

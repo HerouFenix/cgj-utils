@@ -1,5 +1,5 @@
 #ifndef VECTOR_3
-#define VECTOR3
+#define VECTOR_3
 
 // Vector3 CLASS HEADER
 
@@ -8,6 +8,7 @@
 #include<iostream>
 
 class Vector2;
+class Vector4;
 
 class Vector3 {
 	private:
@@ -28,7 +29,19 @@ class Vector3 {
 		 ***********************************************/
 		Vector3(float _x, float _y, float _z);
 
+		/********************************************/ /**
+		 * Function used to create a Vector3 from a Vector2
+		 *
+		 * @param vec The Vector2 we want to get the coordinates from
+		 ***********************************************/
 		Vector3(Vector2& vec);
+
+		/********************************************/ /**
+		 * Function used to create a Vector3 from a Vector4
+		 *
+		 * @param vec The Vector2 we want to get the coordinates from
+		 ***********************************************/
+		Vector3(Vector4& vec);
 
 		/********************************************/ /**
 		 * Used to create a clone of the vector (that is still a different object)
