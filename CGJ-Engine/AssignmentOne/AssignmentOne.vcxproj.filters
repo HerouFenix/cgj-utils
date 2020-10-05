@@ -4,9 +4,11 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Vector3.cpp" />
     <ClCompile Include="src\Vector2.cpp" />
+    <ClCompile Include="src\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Vector3.h" />
     <ClInclude Include="headers\Vector2.h" />
+    <ClInclude Include="headers\Vector4.h" />
   </ItemGroup>
 </Project>

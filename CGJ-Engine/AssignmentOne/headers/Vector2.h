@@ -3,7 +3,7 @@
 
 // Vector2 CLASS HEADER
 
-/// Class used to represent and perform operations with 3-Dimensional vectors
+/// Class used to represent and perform operations with 4-Dimensional vectors
 
 #include<iostream>
 
@@ -190,14 +190,6 @@ public:
 	 * @return dot The resulting Dot product of the vectors
 	 ***********************************************/
 	float dotProd(const Vector2& vec);
-
-	/********************************************/ /**
-	 * Returns the Cross product of two vectors
-	 *
-	 * @param vec The vector we want to do the Cross product with
-	 * @return dot The resulting Cross product of the vectors
-	 ***********************************************/
-	Vector2 crossProd(const Vector2& vec);
 
 	/********************************************/ /**
 	 * Returns the Quadrance of a vector

@@ -1,8 +1,120 @@
 #include <iostream>
 #include "../headers/Vector3.h"
 #include "../headers/Vector2.h"
+#include "../headers/Vector4.h"
 
 int main() {
+
+	std::cout << "=====================VECTOR 4=====================\n";
+
+	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
+
+	Vector4 vec7(1, 2, 3, 4);
+	std::cout << "Vector 7: " << vec7 << "\n";
+	std::cout << "  x: " << vec7.getX() << "\n";
+	std::cout << "  y: " << vec7.getY() << "\n";
+	std::cout << "  z: " << vec7.getZ() << "\n";
+	std::cout << "  w: " << vec7.getW() << "\n";
+
+	Vector4 vec8;
+	std::cout << "Vector 8: " << vec8 << "\n";
+	vec8.setX(-3);
+	vec8.setY(2);
+	vec8.setZ(5);
+	vec8.setW(8);
+
+	std::cout << "Vector 8 after set:\n";
+	std::cout << "  x: " << vec8.getX() << "\n";
+	std::cout << "  y: " << vec8.getY() << "\n";
+	std::cout << "  z: " << vec8.getZ() << "\n";
+	std::cout << "  w: " << vec8.getW() << "\n";
+
+	std::cout << "\n=======MAGNITUDE=======\n";
+	std::cout << "Vector7's Magnitude: " << vec7.magnitude() << "\n";
+	std::cout << "Vector8's Magnitude: " << vec8.magnitude() << "\n";
+
+
+	std::cout << "\n=======VECTOR-VECTOR OPERATORS=======\n";
+	std::cout << "Vector7 + Vector8 = " << vec7 + vec8 << "\n";
+
+	std::cout << "Vector7 - Vector8 = " << vec7 - vec8 << "\n";
+
+
+	std::cout << "\n=======VECTOR-SCALAR OPERATORS=======\n";
+	std::cout << "Vector7  = " << vec7 << " ; Vector8 = " << vec8 << "\n";
+	std::cout << "Vector7 * 2.0f = " << vec7 * 2.0f << "\n";
+
+	std::cout << "Vector7 / 2.0f = " << vec7 / 2.0f << "\n";
+
+	std::cout << "-1.0f * Vector8 = " << -1.0f * vec8 << "\n";
+
+	std::cout << "Vector8 / -2 = " << vec8 / -2 << "\n";
+
+	std::cout << "-Vector8 = " << -vec8 << "\n";
+
+
+	std::cout << "\n=======ASSIGNMENTS=======\n";
+	Vector4 vec9(1, 1, 1, 1);
+	std::cout << "Vector 9: " << vec9 << "\n";
+	vec9 += vec7;
+	std::cout << "Vector9 += Vector7 = " << vec9 << "\n";
+
+	std::cout << "Vector 9: " << vec9 << "\n";
+
+	vec9 -= vec7;
+	std::cout << "Vector9 -= Vector7 = " << vec9 << "\n";
+
+	std::cout << "Vector 9: " << vec9 << "\n";
+
+	vec9 *= 2.0f;
+	std::cout << "Vector9 *= 2.0f = " << vec9 << "\n";
+
+	std::cout << "Vector 93: " << vec9 << "\n";
+
+	vec9 /= 2.0f;
+	std::cout << "Vector9 /= 2.0f = " << vec9 << "\n";
+
+	vec9 = vec7;
+	std::cout << "Vector9 = Vector7 = " << vec9 << "\n";
+
+
+	std::cout << "\n=======COMPARISSONS=======\n";
+	std::cout << "Vector7 == Vector8: " << (vec7 == vec8) << "\n";
+	std::cout << "Vector7 != Vector8: " << (vec7 != vec8) << "\n";
+
+	vec9 = vec7.clone();
+	std::cout << "Vector7 == Vector9: " << (vec7 == vec9) << "\n";
+	std::cout << "Vector7 != Vector9: " << (vec7 != vec9) << "\n";
+
+	std::cout << "Vector7 magnitude compared to Vector8: " << vec7.compareMag(vec8) << "\n";
+	std::cout << "Vector8 magnitude compared to Vector7: " << vec8.compareMag(vec7) << "\n";
+	std::cout << "Vector7 magnitude compared to Vector9: " << vec7.compareMag(vec9) << "\n";
+
+	std::cout << "Vector7 magnitude compared to 0: " << vec7.compareMag(0.0f) << "\n";
+	std::cout << "Vector7 magnitude compared to 100: " << vec7.compareMag(100) << "\n";
+	std::cout << "Vector7 magnitude compared to Vector7's magnitude: " << vec7.compareMag(vec7.magnitude()) << "\n";
+
+	std::cout << "\n=======VECTOR METHODS=======\n";
+	std::cout << "Vector7 Dot product with Vector8 = " << vec7.dotProd(vec8) << "\n";
+
+	std::cout << "Vector7 Normalized: " << vec7.normalized() << "\n";
+
+	std::cout << "Vector7 angle with Vector8: " << vec7.angle(vec8) << "\n";
+
+	std::cout << "Vector7 distance to Vector8: " << vec7.dist(vec8) << "\n";
+
+	std::cout << "Vector7 Inverted: " << vec7.invert() << "\n";
+
+	std::cout << "Vector8 Quadrance: " << vec8.quadrance() << "\n";
+
+	std::cout << "Vector8 Magnitude: " << vec8.magnitude() << "\n";
+
+	std::cout << "Vector8 Normalize: " << vec8.normalize() << "\n";
+
+	std::cout << "Vector8 Magnitude after Normalized: " << vec8.magnitude() << "\n";
+
+	std::cout << "=====================VECTOR 4=====================\n\n\n";
+
 	std::cout << "=====================VECTOR 3=====================\n";
 
 	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
