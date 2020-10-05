@@ -7,6 +7,8 @@
 
 #include<iostream>
 
+class Vector3;
+
 class Vector2 {
 private:
 	float x, y;
@@ -236,7 +238,5 @@ public:
 Vector2 operator*(float val, Vector2& vec);
 
 Vector2 operator-(Vector2& vec);
-
-//NOTE: 2D VECTORS CANNOT COMPUTE CROSS PRODUCT
 
 #endif

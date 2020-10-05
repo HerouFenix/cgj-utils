@@ -7,6 +7,8 @@
 
 #include<iostream>
 
+class Vector2;
+
 class Vector3 {
 	private:
 		float x, y, z;
@@ -25,6 +27,8 @@ class Vector3 {
 		 * @param _z The z coordinate to be assigned to the new Vector3
 		 ***********************************************/
 		Vector3(float _x, float _y, float _z);
+
+		Vector3(Vector2& vec);
 
 		/********************************************/ /**
 		 * Used to create a clone of the vector (that is still a different object)
