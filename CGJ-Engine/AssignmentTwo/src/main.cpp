@@ -41,7 +41,7 @@ int main() {
 	std::cout << "Matrix3: " << mat3 << "\n";
 
 	std::cout << "Matrix3 * 2 = " << mat3 * 2 << "\n";
-	std::cout << "2.0f * Matrix3 = " << 2.0f * mat3 << "\n";
+	std::cout << "1/2.0f * Matrix3 = " << 1/2.0f * mat3 << "\n";
 
 	std::cout << "Matrix3 / 4 = " << mat3 / 4 << "\n";
 	std::cout << "4.0f / Matrix3 = " << 4.0f / mat3 << "\n";
@@ -101,8 +101,43 @@ int main() {
 	std::cout << "Vector1 /= Matrix4: " << vec1;
 
 	std::cout << "\n=======COMPARISSONS=======\n";
+	std::cout << "Matrix1: " << mat1;
+	std::cout << "Matrix2: " << mat2;
+
+	mat3 = mat2;
+	std::cout << "Matrix3: " << mat3;
+
+	std::cout << "Matrix1 == Matrix2 : " << (mat1 == mat2) << "\n";
+	std::cout << "Matrix1 != Matrix2 : " << (mat1 != mat2) << "\n";
+
+	std::cout << "Matrix3 == Matrix2 : " << (mat3 == mat2) << "\n";
+	std::cout << "Matrix2 != Matrix3 : " << (mat2 != mat3) << "\n";
 
 	std::cout << "\n=======MATRIX METHODS=======\n";
+	std::cout << "Matrix1: " << mat1;
+	mat2 = Matrix3(new float[3][3]{ {1,2,3},{0,1,4},{5,6,0} });
+	std::cout << "Matrix2: " << mat2 << "\n";
+
+	std::cout << "Transposed Matrix1: " << mat1.transposed();
+	std::cout << "Transposed Matrix2: " << mat2.transposed();
+
+	std::cout << "Col Major Matrix2: " << mat2.convertMajorOrder();
+	std::cout << "Row Major Matrix2: " << mat2.convertMajorOrder();
+
+	std::cout << "Determinant Matrix1: " << mat1.determinant() << "\n";
+	std::cout << "Determinant Matrix2: " << mat2.determinant() << "\n";
+
+	std::cout << "Adjoint Matrix1: " << mat1.adjoint() << "\n";
+	std::cout << "Adjoint Matrix2: " << mat2.adjoint() << "\n";
+
+	std::cout << "Inverse Matrix2: " << mat2.inverse() << "\n";
+
+	std::cout << "Identity Matrix: " << Matrix3::identity();
+
+	vec1.set(1, 2, 3);
+	std::cout << "Dual Matrix (Vector (1,2,3)): " << Matrix3::dual(vec1);
+
+
 
 	std::cout << "\n=======CONVERSIONS=======\n";
 

@@ -270,5 +270,111 @@ Matrix3& Matrix3::operator=(float val) {
 }
 
 //Matrix3 Comparators
+bool Matrix3::operator==(const Matrix3& mat) {
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			if (matrix[row][col] != mat.matrix[row][col]) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+bool Matrix3::operator!=(const Matrix3& mat) {
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			if (matrix[row][col] == mat.matrix[row][col]) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
 
 //Matrix3 Methods
+Matrix3 Matrix3::transposed() {
+	Matrix3 trans;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			trans.matrix[col][row] = matrix[row][col];
+		}
+	}
+
+	return trans;
+}
+
+/*TODO : VERIFICAR QUE ISTO ESTA BEM*/
+Matrix3 Matrix3::convertMajorOrder() {
+	Matrix3 trans = this->transposed();
+
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matrix[row][col] = trans.matrix[row][col];
+		}
+	}
+
+	return *this;
+}
+
+/* TODO : ASK SE SERIA MELHOR FAZER ISTO COM FORS / MAIS GERAL*/
+float Matrix3::determinant() {
+	float det = matrix[0][0]*(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]);
+
+	det -= matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[2][0] * matrix[1][2]);
+
+	det += matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+
+	return det;
+}
+
+/*AQUI FICAVA MELHOR COM MATRIX2 / Theres probably a way to make this not O(n^4)*/
+Matrix3 Matrix3::adjoint() {
+	Matrix3 trans = transposed();
+	Matrix3 adj;
+
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			float temp[4] = { 0,0,0,0 };
+			int index = 0;
+
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 3; j++) {
+					if (i == row || j == col) continue;
+					temp[index++] = trans.matrix[i][j];
+				}
+			}
+
+			adj.matrix[row][col] = temp[0] * temp[3] - temp[1] * temp[2];
+
+			if ((row + col) % 2 != 0) adj.matrix[row][col] = -adj.matrix[row][col];
+		}
+	}
+
+	return adj;
+}
+
+Matrix3 Matrix3::inverse() {
+	float det = determinant();
+	assert(det != 0);
+
+	Matrix3 inv;
+	Matrix3 adj = adjoint();
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			inv.matrix[row][col] = 1 / det * adj.matrix[row][col];
+		}
+	}
+
+	return  inv;
+}
+
+Matrix3 Matrix3::identity() {
+	return Matrix3(new float[3][3]{ {1,0,0},{0,1,0},{0,0,1} });
+}
+
+Matrix3 Matrix3::dual(Vector3& vec) {
+	return Matrix3(new float[3][3]{ {0,-vec.getZ(),vec.getY()},{vec.getZ(),0,-vec.getX()},{-vec.getY(),vec.getX(),0} });
+}

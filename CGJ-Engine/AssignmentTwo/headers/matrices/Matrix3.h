@@ -190,6 +190,69 @@ class Matrix3 {
 		 ***********************************************/
 		Matrix3& operator=(float val);
 
+		/********************************************/ /**
+		 * Overloading of the == operator. Verifies if 2 matrices have the same coordinates
+		 *
+		 * @return eq True if they have the same cells, false otherwise
+		 ***********************************************/
+		bool operator==(const Matrix3& mat);
+
+		/********************************************/ /**
+		 * Overloading of the != operator. Verifies if 2 matrices have different coordinates
+		 *
+		 * @return eq True if they have the different coordinates, false otherwise
+		 ***********************************************/
+		bool operator!=(const Matrix3& mat);
+
+		/********************************************/ /**
+		 * Returns the matrix transposed
+		 *
+		 * @return mat The transposed equivalent of the matrix
+		 ***********************************************/
+		Matrix3 transposed();
+
+		/********************************************/ /**
+		 * Converts a row major to column major and column major to row major (respectively)
+		 *
+		 * @return The converted matrix
+		 ***********************************************/
+		Matrix3 convertMajorOrder();
+
+		/********************************************/ /**
+		 * Returns the matrix's determinant
+		 *
+		 * @return det The determinant of the matrix
+		 ***********************************************/
+		float determinant();
+
+		/********************************************/ /**
+		 * Returns the adjoint matrix
+		 *
+		 * @return adj The adjoint of the matrix
+		 ***********************************************/
+		Matrix3 adjoint();
+
+		/********************************************/ /**
+		 * Returns the inverse matrix or throws an error if the matrix can't be inversed
+		 *
+		 * @return mat The inversed matrix
+		 ***********************************************/
+		Matrix3 inverse();
+
+		/********************************************/ /**
+		 * Returns the identity matrix
+		 *
+		 * @return mat The 3x3 identity matrix
+		 ***********************************************/
+		static Matrix3 identity();
+
+		/********************************************/ /**
+		 * Returns the dual matrix according to the given vector
+		 *
+		 * @param vec The vector to build the dual matrix with
+		 * @return mat The 3x3 dual matrix
+		 ***********************************************/
+		static Matrix3 dual(Vector3& vec);
 };
 
 
