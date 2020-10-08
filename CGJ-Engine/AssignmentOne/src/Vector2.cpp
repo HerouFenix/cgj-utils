@@ -56,6 +56,10 @@ void Vector2::setY(float _y) {
 	y = _y;
 }
 
+void Vector2::set(float _x, float _y) {
+	x = _x;
+	y = _y;
+}
 
 //Vector2 Operations
 Vector2 Vector2::operator+(const Vector2& operand)

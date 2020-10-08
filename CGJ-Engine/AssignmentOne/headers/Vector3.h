@@ -89,6 +89,14 @@ class Vector3 {
 		void setZ(float _z);
 
 		/********************************************/ /**
+		 * Function used to set the Vector3's coordinate
+		 * @param _x The new x coordinate we want to assign to our vector
+		 * @param _y The new y coordinate we want to assign to our vector
+		 * @param _z The new z coordinate we want to assign to our vector
+		 ***********************************************/
+		void set(float _x, float _y, float _z);
+
+		/********************************************/ /**
 		 * Overloading of the + operator when summing two Vector3
 		 *
 		 * @param vec The Vector3 we want to sum with our Vector3

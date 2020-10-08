@@ -79,6 +79,13 @@ void Vector4::setW(float _w) {
 	w = _w;
 }
 
+void Vector4::set(float _x, float _y, float _z, float _w) {
+	x = _x;
+	y = _y;
+	z = _z;
+	w = _w;
+}
+
 //Vector4 Operations
 Vector4 Vector4::operator+(const Vector4& operand)
 {

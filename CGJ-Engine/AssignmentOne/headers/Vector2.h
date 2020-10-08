@@ -74,6 +74,12 @@ public:
 	 ***********************************************/
 	void setY(float _y);
 
+	/********************************************/ /**
+	 * Function used to set the Vector2's x and y coordinates
+	 * @param _x The new x coordinate we want to assign to our vector
+	 * @param _y The new x coordinate we want to assign to our vector
+	 ***********************************************/
+	void set(float _x, float _y);
 
 	/********************************************/ /**
 	 * Overloading of the + operator when summing two Vector2

@@ -25,7 +25,6 @@ int main() {
 	std::cout << "  y: " << vec2.getY() << "\n";
 	std::cout << "  z: " << vec2.getZ() << "\n";
 
-
 	std::cout << "\n=======MAGNITUDE=======\n";
 	std::cout << "Vector1's Magnitude: " << vec1.magnitude() << "\n";
 	std::cout << "Vector2's Magnitude: " << vec2.magnitude() << "\n";

@@ -103,6 +103,15 @@ class Vector4 {
 		void setW(float _w);
 
 		/********************************************/ /**
+		 * Function used to set the Vector4's coordinates
+		 * @param _x The new x coordinate we want to assign to our vector
+		 * @param _y The new y coordinate we want to assign to our vector
+		 * @param _z The new z coordinate we want to assign to our vector
+		 * @param _w The new w coordinate we want to assign to our vector
+		 ***********************************************/
+		void set(float _x, float _y, float _z, float _w);
+
+		/********************************************/ /**
 		 * Overloading of the + operator when summing two Vector4
 		 *
 		 * @param vec The Vector4 we want to sum with our Vector4

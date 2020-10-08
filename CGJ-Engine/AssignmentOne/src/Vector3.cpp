@@ -67,6 +67,11 @@ void Vector3::setZ(float _z) {
 	z = _z;
 }
 
+void Vector3::set(float _x, float _y, float _z) {
+	x = _x;
+	y = _y;
+	z = _z;
+}
 
 //Vector3 Operations
 Vector3 Vector3::operator+(const Vector3& operand)
