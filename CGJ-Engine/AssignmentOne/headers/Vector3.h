@@ -97,12 +97,20 @@ class Vector3 {
 		Vector3 operator+(const Vector3& vec);
 
 		/********************************************/ /**
-		 * Overloading of the - operator when subtracting two Vector3
-		 *
-		 * @param vec The Vector3 we want to subtract with our Vector3
-		 * @return vecSub The subtraction of the two vectors
-		 ***********************************************/
-		Vector3 operator-(const Vector3& vec);
+		* Overloading of the + operator when summing a Vector3 and a scalar
+		*
+		* @param val The scalar we want to sum
+		* @return vecSum The sum of the two vectors
+		***********************************************/
+		Vector3 operator+(float val);
+
+		/********************************************/ /**
+		* Overloading of the + operator. Gets the addition of a scalar by our vector
+		*
+		* @param val The scalar we want to use to sub
+		* @return vecSub The resulting subtraction
+		***********************************************/
+		friend Vector3 operator+(float val, Vector3& vec);
 
 		/********************************************/ /**
 		 * Overloading of the += operator. Assigns new coordinates to our vector
@@ -112,11 +120,57 @@ class Vector3 {
 		Vector3& operator+=(const Vector3& vec);
 
 		/********************************************/ /**
+		* Overloading of the += operator. Assigns new coordinates to our vector
+		*
+		* @param val The value we want to sum to our Vector3
+		***********************************************/
+		Vector3& operator+=(float val);
+
+		/********************************************/ /**
+		 * Overloading of the - operator when subtracting two Vector3
+		 *
+		 * @param vec The Vector3 we want to subtract with our Vector3
+		 * @return vecSub The subtraction of the two vectors
+		 ***********************************************/
+		Vector3 operator-(const Vector3& vec);
+
+		/********************************************/ /**
+		* Overloading of the - operator when summing a Vector3 and a scalar
+		*
+		* @param val The scalar we want to sub
+		* @return vecSum The sub of a vector and a scalar
+		***********************************************/
+		Vector3 operator-(float val);
+
+		/********************************************/ /**
+		* Overloading of the - operator. Gets the subtraction of a scalar by our vector
+		*
+		* @param val The scalar we want to use to sub
+		* @return vecSub The resulting subtraction
+		***********************************************/
+		friend Vector3 operator-(float val, Vector3& vec);
+
+		/********************************************/ /**
+		 * Overloading of the - operator. Overloads the -Vector3
+		 *
+		 * @param vec The Vector3 we want to subtract with our Vector3
+		 * @return vecNeg The -Vector3
+		 ***********************************************/
+		friend Vector3 operator-(Vector3& vec);
+
+		/********************************************/ /**
 		 * Overloading of the -= operator. Assigns new coordinates to our vector
 		 *
 		 * @param vec The Vector3 we want to sub with our Vector3
 		 ***********************************************/
 		Vector3& operator-=(const Vector3& vec);
+
+		/********************************************/ /**
+		* Overloading of the -= operator. Assigns new coordinates to our vector
+		*
+		* @param val The value we want to sub to our Vector3
+		***********************************************/
+		Vector3& operator-=(float val);
 
 		/********************************************/ /**
 		 * Overloading of the * operator. Gets the multiplication of our vector by a scalar
@@ -125,6 +179,14 @@ class Vector3 {
 		 * @return vecMul The resulting multiplication
 		 ***********************************************/
 		Vector3 operator*(float scalar);
+
+		/********************************************/ /**
+		 * Overloading of the * operator. Gets the multiplication of a scalar by our vector
+		 *
+		 * @param val The scalar we want to use to multiply
+		 * @return vecMul The resulting multiplication
+		 ***********************************************/
+		friend Vector3 operator*(float val, Vector3& vec);
 
 		/********************************************/ /**
 		 * Overloading of the *= operator. Assigns new coordinates to our vector
@@ -257,8 +319,6 @@ class Vector3 {
 		float angle(Vector3& vec);
 };
 
-Vector3 operator*(float val, Vector3& vec);
 
-Vector3 operator-(Vector3& vec);
 
 #endif

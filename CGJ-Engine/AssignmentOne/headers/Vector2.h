@@ -84,12 +84,20 @@ public:
 	Vector2 operator+(const Vector2& vec);
 
 	/********************************************/ /**
-	 * Overloading of the - operator when subtracting two Vector2
-	 *
-	 * @param vec The Vector2 we want to subtract with our Vector2
-	 * @return vecSub The subtraction of the two vectors
-	 ***********************************************/
-	Vector2 operator-(const Vector2& vec);
+	* Overloading of the + operator when summing a Vector2 and a scalar
+	*
+	* @param val The scalar we want to sum
+	* @return vecSum The sum of the two vectors
+	***********************************************/
+	Vector2 operator+(float val);
+
+	/********************************************/ /**
+	* Overloading of the + operator. Gets the addition of a scalar by our vector
+	*
+	* @param val The scalar we want to use to sub
+	* @return vecSub The resulting subtraction
+	***********************************************/
+	friend Vector2 operator+(float val, Vector2& vec);
 
 	/********************************************/ /**
 	 * Overloading of the += operator. Assigns new coordinates to our vector
@@ -99,11 +107,57 @@ public:
 	Vector2& operator+=(const Vector2& vec);
 
 	/********************************************/ /**
+	* Overloading of the += operator. Assigns new coordinates to our vector
+	*
+	* @param val The value we want to sum to our Vector2
+	***********************************************/
+	Vector2& operator+=(float val);
+
+	/********************************************/ /**
+	 * Overloading of the - operator when subtracting two Vector2
+	 *
+	 * @param vec The Vector2 we want to subtract with our Vector2
+	 * @return vecSub The subtraction of the two vectors
+	 ***********************************************/
+	Vector2 operator-(const Vector2& vec);
+
+	/********************************************/ /**
+	* Overloading of the - operator when summing a Vector2 and a scalar
+	*
+	* @param val The scalar we want to sub
+	* @return vecSum The sub of a vector and a scalar
+	***********************************************/
+	Vector2 operator-(float val);
+
+	/********************************************/ /**
+	* Overloading of the - operator. Gets the subtraction of a scalar by our vector
+	*
+	* @param val The scalar we want to use to sub
+	* @return vecSub The resulting subtraction
+	***********************************************/
+	friend Vector2 operator-(float val, Vector2& vec);
+
+	/********************************************/ /**
+	* Overloading of the - operator. Overloads the -Vector2
+	*
+	* @param vec The Vector2 we want to subtract with our Vector2
+	* @return vecNeg The -Vector2
+	***********************************************/
+	friend Vector2 operator-(Vector2& vec);
+
+	/********************************************/ /**
 	 * Overloading of the -= operator. Assigns new coordinates to our vector
 	 *
 	 * @param vec The Vector2 we want to sub with our Vector2
 	 ***********************************************/
 	Vector2& operator-=(const Vector2& vec);
+
+	/********************************************/ /**
+	* Overloading of the -= operator. Assigns new coordinates to our vector
+	*
+	* @param val The value we want to sub to our Vector2
+	***********************************************/
+	Vector2& operator-=(float val);
 
 	/********************************************/ /**
 	 * Overloading of the * operator. Gets the multiplication of our vector by a scalar
@@ -112,6 +166,14 @@ public:
 	 * @return vecMul The resulting multiplication
 	 ***********************************************/
 	Vector2 operator*(float scalar);
+
+	/********************************************/ /**
+	* Overloading of the * operator. Gets the multiplication of a scalar by our vector
+	*
+	* @param val The scalar we want to use to multiply
+	* @return vecMul The resulting multiplication
+	***********************************************/
+	friend Vector2 operator*(float val, Vector2& vec);
 
 	/********************************************/ /**
 	 * Overloading of the *= operator. Assigns new coordinates to our vector
@@ -242,8 +304,6 @@ public:
 	float angle(Vector2& vec);
 };
 
-Vector2 operator*(float val, Vector2& vec);
 
-Vector2 operator-(Vector2& vec);
 
 #endif

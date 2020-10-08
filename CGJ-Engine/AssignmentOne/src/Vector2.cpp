@@ -63,14 +63,32 @@ Vector2 Vector2::operator+(const Vector2& operand)
 	return Vector2(x + operand.x, y + operand.y);
 }
 
+Vector2 Vector2::operator+(float val)
+{
+	return Vector2(x + val, y + val);
+}
+
+Vector2 operator+(float val, Vector2& vec) {
+	return Vector2(vec.x + val, vec.y + val);
+}
+
 Vector2 Vector2::operator-(const Vector2& operand)
 {
 	return Vector2(x - operand.x, y - operand.y);
 }
 
+Vector2 Vector2::operator-(float val)
+{
+	return Vector2(x - val, y - val);
+}
+
+Vector2 operator-(float val, Vector2& vec) {
+	return Vector2(val - vec.x, val - vec.y);
+}
+
 Vector2 operator-(Vector2& operand)
 {
-	return Vector2(-operand.getX(), -operand.getY());
+	return Vector2(-operand.x, -operand.y);
 }
 
 Vector2 Vector2::operator*(float operand)
@@ -105,10 +123,24 @@ Vector2& Vector2::operator+=(const Vector2& operand)
 	return *this;
 }
 
+Vector2& Vector2::operator+=(float val)
+{
+	x += val;
+	y += val;
+	return *this;
+}
+
 Vector2& Vector2::operator-=(const Vector2& operand)
 {
 	x -= operand.x;
 	y -= operand.y;
+	return *this;
+}
+
+Vector2& Vector2::operator-=(float val)
+{
+	x -= val;
+	y -= val;
 	return *this;
 }
 

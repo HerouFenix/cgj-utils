@@ -111,12 +111,20 @@ class Vector4 {
 		Vector4 operator+(const Vector4& vec);
 
 		/********************************************/ /**
-		 * Overloading of the - operator when subtracting two Vector4
+		 * Overloading of the + operator when summing a Vector4 and a scalar
 		 *
-		 * @param vec The Vector4 we want to subtract with our Vector4
-		 * @return vecSub The subtraction of the two vectors
+		 * @param val The scalar we want to sum
+		 * @return vecSum The sum of the two vectors
 		 ***********************************************/
-		Vector4 operator-(const Vector4& vec);
+		Vector4 operator+(float val);
+
+		/********************************************/ /**
+		* Overloading of the + operator. Gets the addition of a scalar by our vector
+		*
+		* @param val The scalar we want to use to sub
+		* @return vecSub The resulting subtraction
+		***********************************************/
+		friend Vector4 operator+(float val, Vector4& vec);
 
 		/********************************************/ /**
 		 * Overloading of the += operator. Assigns new coordinates to our vector
@@ -126,11 +134,57 @@ class Vector4 {
 		Vector4& operator+=(const Vector4& vec);
 
 		/********************************************/ /**
+		 * Overloading of the += operator. Assigns new coordinates to our vector
+		 *
+		 * @param val The value we want to sum to our Vector4
+		 ***********************************************/
+		Vector4& operator+=(float val);
+
+		/********************************************/ /**
+		 * Overloading of the - operator when subtracting two Vector4
+		 *
+		 * @param vec The Vector4 we want to subtract with our Vector4
+		 * @return vecSub The subtraction of the two vectors
+		 ***********************************************/
+		Vector4 operator-(const Vector4& vec);
+
+		/********************************************/ /**
+		 * Overloading of the - operator when summing a Vector4 and a scalar
+		 *
+		 * @param val The scalar we want to sub
+		 * @return vecSum The sub of a vector and a scalar
+		 ***********************************************/
+		Vector4 operator-(float val);
+
+		/********************************************/ /**
+		* Overloading of the - operator. Gets the subtraction of a scalar by our vector
+		*
+		* @param val The scalar we want to use to sub
+		* @return vecSub The resulting subtraction
+		***********************************************/
+		friend Vector4 operator-(float val, Vector4& vec);
+
+		/********************************************/ /**
+		* Overloading of the - operator. Overloads the -Vector4
+		*
+		* @param vec The Vector4 we want to subtract with our Vector4
+		* @return vecNeg The -Vector4
+		***********************************************/
+		friend Vector4 operator-(Vector4& vec);
+
+		/********************************************/ /**
 		 * Overloading of the -= operator. Assigns new coordinates to our vector
 		 *
 		 * @param vec The Vector4 we want to sub with our Vector4
 		 ***********************************************/
 		Vector4& operator-=(const Vector4& vec);
+
+		/********************************************/ /**
+		 * Overloading of the -= operator. Assigns new coordinates to our vector
+		 *
+		 * @param val The value we want to sub to our Vector4
+		 ***********************************************/
+		Vector4& operator-=(float val);
 
 		/********************************************/ /**
 		 * Overloading of the * operator. Gets the multiplication of our vector by a scalar
@@ -139,6 +193,14 @@ class Vector4 {
 		 * @return vecMul The resulting multiplication
 		 ***********************************************/
 		Vector4 operator*(float scalar);
+
+		/********************************************/ /**
+		* Overloading of the * operator. Gets the multiplication of a scalar by our vector
+		*
+		* @param val The scalar we want to use to multiply
+		* @return vecMul The resulting multiplication
+		***********************************************/
+		friend Vector4 operator*(float val, Vector4& vec);
 
 		/********************************************/ /**
 		 * Overloading of the *= operator. Assigns new coordinates to our vector
@@ -263,8 +325,6 @@ class Vector4 {
 		float angle(Vector4& vec);
 };
 
-Vector4 operator*(float val, Vector4& vec);
 
-Vector4 operator-(Vector4& vec);
 
 #endif

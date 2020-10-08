@@ -85,14 +85,32 @@ Vector4 Vector4::operator+(const Vector4& operand)
 	return Vector4(x + operand.x, y + operand.y, z + operand.z, w + operand.w);
 }
 
+Vector4 Vector4::operator+(float val)
+{
+	return Vector4(x + val, y + val, z + val, w + val);
+}
+
+Vector4 operator+(float val, Vector4& vec) {
+	return Vector4(vec.x + val, vec.y + val, vec.z + val, vec.w + val);
+}
+
 Vector4 Vector4::operator-(const Vector4& operand)
 {
 	return Vector4(x - operand.x, y - operand.y, z - operand.z, w - operand.w);
 }
 
+Vector4 Vector4::operator-(float val)
+{
+	return Vector4(x - val, y - val, z - val, w - val);
+}
+
+Vector4 operator-(float val, Vector4& vec) {
+	return Vector4(val - vec.x, val - vec.y, val - vec.z, val - vec.w);
+}
+
 Vector4 operator-(Vector4& operand)
 {
-	return Vector4(-operand.getX(), -operand.getY(), -operand.getZ(), -operand.getW());
+	return Vector4(-operand.x, -operand.y, -operand.z, -operand.w);
 }
 
 Vector4 Vector4::operator*(float operand)
@@ -131,12 +149,30 @@ Vector4& Vector4::operator+=(const Vector4& operand)
 	return *this;
 }
 
+Vector4& Vector4::operator+=(float val)
+{
+	x += val;
+	y += val;
+	z += val;
+	w += val;
+	return *this;
+}
+
 Vector4& Vector4::operator-=(const Vector4& operand)
 {
 	x -= operand.x;
 	y -= operand.y;
 	z -= operand.z;
 	w -= operand.w;
+	return *this;
+}
+
+Vector4& Vector4::operator-=(float val)
+{
+	x -= val;
+	y -= val;
+	z -= val;
+	w -= val;
 	return *this;
 }
 
@@ -234,7 +270,7 @@ float Vector4::dotProd(const Vector4& operand)
 //Quadrance
 float Vector4::quadrance()
 {
-	return x*x + y*y + z*z + w * w;
+	return x * x + y * y + z * z + w * w;
 }
 
 //Invert

@@ -74,14 +74,33 @@ Vector3 Vector3::operator+(const Vector3& operand)
 	return Vector3(x + operand.x, y + operand.y, z + operand.z);
 }
 
+Vector3 Vector3::operator+(float val)
+{
+	return Vector3(x + val, y + val, z + val);
+}
+
+Vector3 operator+(float val, Vector3& vec) {
+	return Vector3(vec.x + val, vec.y + val, vec.z + val);
+}
+
 Vector3 Vector3::operator-(const Vector3& operand)
 {
 	return Vector3(x - operand.x, y - operand.y, z - operand.z);
 }
 
+
+Vector3 Vector3::operator-(float val)
+{
+	return Vector3(x - val, y - val, z - val);
+}
+
+Vector3 operator-(float val, Vector3& vec) {
+	return Vector3(val - vec.x, val - vec.y, val - vec.z);
+}
+
 Vector3 operator-(Vector3& operand)
 {
-	return Vector3(-operand.getX(), -operand.getY(), -operand.getZ());
+	return Vector3(-operand.x, -operand.y, -operand.z);
 }
 
 Vector3 Vector3::operator*(float operand)
@@ -118,11 +137,27 @@ Vector3& Vector3::operator+=(const Vector3& operand)
 	return *this;
 }
 
+Vector3& Vector3::operator+=(float val)
+{
+	x += val;
+	y += val;
+	z += val;
+	return *this;
+}
+
 Vector3& Vector3::operator-=(const Vector3& operand)
 {
 	x -= operand.x;
 	y -= operand.y;
 	z -= operand.z;
+	return *this;
+}
+
+Vector3& Vector3::operator-=(float val)
+{
+	x -= val;
+	y -= val;
+	z -= val;
 	return *this;
 }
 

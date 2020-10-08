@@ -41,9 +41,17 @@ int main() {
 	std::cout << "Vector1  = " << vec1 << " ; Vector2 = " << vec2 << "\n";
 	std::cout << "Vector1 * 2.0f = " << vec1 * 2.0f << "\n";
 
+	std::cout << "Vector1 + 2.0f = " << vec1 + 2.0f << "\n";
+
+	std::cout << "2 + Vector1 = " << 2 + vec1 << "\n";
+
+	std::cout << "Vector1 - 2.0f = " << vec1 - 2.0f << "\n";
+
+	std::cout << "2 - Vector1 = " << 2 - vec1 << "\n";
+
 	std::cout << "Vector1 / 2.0f = " << vec1 / 2.0f << "\n";
 
-	std::cout << "-1.0f * Vector2 = " << -1.0f * vec2 << "\n";
+	std::cout << "-2.0f * Vector2 = " << -2.0f * vec2 << "\n";
 
 	std::cout << "Vector2 / -2 = " << vec2 / -2 << "\n";
 
@@ -58,8 +66,18 @@ int main() {
 
 	std::cout << "Vector 3: " << vec3 << "\n";
 
+	vec3 += 1;
+	std::cout << "Vector3 += 1 = " << vec3 << "\n";
+
+	std::cout << "Vector 3: " << vec3 << "\n";
+
 	vec3 -= vec1;
 	std::cout << "Vector3 -= Vector1 = " << vec3 << "\n";
+
+	std::cout << "Vector 3: " << vec3 << "\n";
+
+	vec3 -= 1;
+	std::cout << "Vector3 -= 1 = " << vec3 << "\n";
 
 	std::cout << "Vector 3: " << vec3 << "\n";
 
@@ -186,9 +204,17 @@ int main() {
 	std::cout << "Vector7  = " << vec7 << " ; Vector8 = " << vec8 << "\n";
 	std::cout << "Vector7 * 2.0f = " << vec7 * 2.0f << "\n";
 
+	std::cout << "Vector7 + 2.0f = " << vec7 + 2.0f << "\n";
+
+	std::cout << "2 + Vector7 = " << 2 + vec7 << "\n";
+
+	std::cout << "Vector7 - 2.0f = " << vec7 - 2.0f << "\n";
+
+	std::cout << "2 - Vector7 = " << 2 - vec7 << "\n";
+
 	std::cout << "Vector7 / 2.0f = " << vec7 / 2.0f << "\n";
 
-	std::cout << "-1.0f * Vector8 = " << -1.0f * vec8 << "\n";
+	std::cout << "-2.0f * Vector8 = " << -2.0f * vec8 << "\n";
 
 	std::cout << "Vector8 / -2 = " << vec8 / -2 << "\n";
 
@@ -203,8 +229,18 @@ int main() {
 
 	std::cout << "Vector 9: " << vec9 << "\n";
 
+	vec9 += 1;
+	std::cout << "Vector9 += 1 = " << vec9 << "\n";
+
+	std::cout << "Vector 9: " << vec9 << "\n";
+
 	vec9 -= vec7;
 	std::cout << "Vector9 -= Vector7 = " << vec9 << "\n";
+
+	std::cout << "Vector 9: " << vec9 << "\n";
+
+	vec9 -= 1;
+	std::cout << "Vector9 -= 1 = " << vec9 << "\n";
 
 	std::cout << "Vector 9: " << vec9 << "\n";
 
@@ -322,9 +358,17 @@ int main() {
 	std::cout << "Vector4  = " << vec4 << " ; Vector5 = " << vec5 << "\n";
 	std::cout << "Vector4 * 2.0f = " << vec4 * 2.0f << "\n";
 
+	std::cout << "Vector4 + 2.0f = " << vec4 + 2.0f << "\n";
+
+	std::cout << "2 + Vector4 = " << 2 + vec4 << "\n";
+
+	std::cout << "Vector4 - 2.0f = " << vec4 - 2.0f << "\n";
+
+	std::cout << "2 - Vector4 = " << 2 - vec4 << "\n";
+
 	std::cout << "Vector4 / 2.0f = " << vec4 / 2.0f << "\n";
 
-	std::cout << "-1.0f * Vector5 = " << -1.0f * vec5 << "\n";
+	std::cout << "-2.0f * Vector5 = " << -2.0f * vec5 << "\n";
 
 	std::cout << "Vector2 / -5 = " << vec5 / -2 << "\n";
 
@@ -339,8 +383,18 @@ int main() {
 
 	std::cout << "Vector 6: " << vec6 << "\n";
 
+	vec6 += 1;
+	std::cout << "Vector6 += 1 = " << vec6 << "\n";
+
+	std::cout << "Vector 6: " << vec6 << "\n";
+
 	vec6 -= vec4;
 	std::cout << "Vector6 -= Vector4 = " << vec6 << "\n";
+
+	std::cout << "Vector 6: " << vec6 << "\n";
+
+	vec6 -= 1;
+	std::cout << "Vector6 -= 1 = " << vec6 << "\n";
 
 	std::cout << "Vector 6: " << vec6 << "\n";
 
