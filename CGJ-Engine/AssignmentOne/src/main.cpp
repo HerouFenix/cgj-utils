@@ -350,6 +350,8 @@ int main() {
 
 	std::cout << "\n=======VECTOR-VECTOR OPERATORS=======\n";
 	std::cout << "Vector4 + Vector5 = " << vec4 + vec5 << "\n";
+	std::cout << "Vector4 + Vector1 = " << vec4 + vec1 << "\n";
+	std::cout << "Vector1 + Vector4 = " << vec1 + vec4 << "\n";
 
 	std::cout << "Vector4 - Vector5 = " << vec4 - vec5 << "\n";
 
