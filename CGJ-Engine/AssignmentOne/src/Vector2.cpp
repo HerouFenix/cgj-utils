@@ -111,6 +111,10 @@ Vector2 Vector2::operator/(float operand)
 	return Vector2(x / operand, y / operand);
 }
 
+Vector2 operator/(float val, Vector2& vec) {
+	assert(vec.getX() != 0 && vec.getY() != 0);
+	return  Vector2(val/ vec.getX(), val/vec.getY());
+}
 
 //Vector3 Assignments
 Vector2& Vector2::operator=(const Vector2& operand)

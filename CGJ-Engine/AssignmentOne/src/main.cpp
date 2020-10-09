@@ -488,6 +488,9 @@ int main() {
 
 	std::cout << "=====================VECTOR 2=====================\n\n\n";
 
+
+	std::cout << "=====================ADDITIONAL CHALLENGE=====================\n\n\n";
+
 	for (int i = 0; i < 10; i++) {
 		Vector3 vec10;
 		Vector3 vec20;
@@ -504,7 +507,6 @@ int main() {
 		std::cout << res1 << "=" << res2 << " / " << (res1 == res2) << "\n\n";
 	}
 
-	/*
 	for (int i = 0; i < 10; i++) {
 		Vector3 vec1;
 		Vector3 vec2;
@@ -520,7 +522,6 @@ int main() {
 		// bool res = ((vec1.crossProd(vec2.crossProd(vec3))) == (vec1.dotProd(vec3) * vec2 - vec1.dotProd(vec2) * vec3));
 		std::cout << res1 << "=" << res2 << " / " << (res1==res2) << "\n\n";
 	}
-	*/
 
 	return 0;
 

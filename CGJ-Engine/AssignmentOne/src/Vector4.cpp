@@ -136,6 +136,11 @@ Vector4 Vector4::operator/(float operand)
 	return Vector4(x / operand, y / operand, z / operand, w / operand);
 }
 
+Vector4 operator/(float val, Vector4& vec) {
+	assert(vec.getX() != 0 && vec.getY() != 0 && vec.getZ() != 0 && vec.getW() != 0);
+	return  Vector4(val / vec.getX(), val / vec.getY(), val / vec.getZ(), val/vec.getW());
+}
+
 
 //Vector4 Assignments
 Vector4& Vector4::operator=(const Vector4& operand)

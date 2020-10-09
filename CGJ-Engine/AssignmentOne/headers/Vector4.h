@@ -228,6 +228,14 @@ class Vector4 {
 		Vector4 operator/(float scalar);
 
 		/********************************************/ /**
+		* Overloading of the / operator. Gets the division of a scalar by our vector
+		*
+		* @param val The scalar we want to use to divide
+		* @return vecDiv The resulting division
+		***********************************************/
+		friend Vector4 operator/(float val, Vector4& vec);
+
+		/********************************************/ /**
 		 * Overloading of the /= operator. Assigns new coordinates to our vector
 		 *
 		 * @param scal The scalar we want to use to divide our vector by

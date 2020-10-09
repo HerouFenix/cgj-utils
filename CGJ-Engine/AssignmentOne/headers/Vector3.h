@@ -213,6 +213,14 @@ class Vector3 {
 		Vector3 operator/(float scalar);
 
 		/********************************************/ /**
+		* Overloading of the / operator. Gets the division of a scalar by our vector
+		*
+		* @param val The scalar we want to use to divide
+		* @return vecDiv The resulting division
+		***********************************************/
+		friend Vector3 operator/(float val, Vector3& vec);
+
+		/********************************************/ /**
 		 * Overloading of the /= operator. Assigns new coordinates to our vector
 		 *
 		 * @param scal The scalar we want to use to divide our vector by

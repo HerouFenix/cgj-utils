@@ -124,6 +124,11 @@ Vector3 Vector3::operator/(float operand)
 	return Vector3(x / operand, y / operand, z / operand);
 }
 
+Vector3 operator/(float val, Vector3& vec) {
+	assert(vec.getX() != 0 && vec.getY() != 0 && vec.getZ() != 0);
+	return  Vector3(val / vec.getX(), val / vec.getY(), val / vec.getZ());
+}
+
 
 //Vector3 Assignments
 Vector3& Vector3::operator=(const Vector3& operand)
