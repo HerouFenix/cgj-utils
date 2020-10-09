@@ -1,7 +1,4 @@
-﻿  Vector2.cpp
-  Vector3.cpp
-  Vector4.cpp
-  main.cpp
+﻿  main.cpp
 D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(498,80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(498,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(498,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -20,5 +17,8 @@ D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(515,25): wa
 D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(516,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(516,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\AssignmentOne\src\main.cpp(516,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Vector2.cpp
+  Vector3.cpp
+  Vector4.cpp
   Generating Code...
   AssignmentOne.vcxproj -> D:\Work\1o Sem\CGJ\Assignments\CGJ-Engine\x64\Debug\AssignmentOne.exe
