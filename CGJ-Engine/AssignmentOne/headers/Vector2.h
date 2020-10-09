@@ -264,7 +264,7 @@ public:
 	 * Normalizes the vector.
 	 *
 	 ***********************************************/
-	Vector2 normalize();
+	Vector2& normalize();
 
 	/********************************************/ /**
 	 * Returns the Dot product of two vectors

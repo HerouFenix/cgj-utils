@@ -294,7 +294,7 @@ class Vector4 {
 		 * Normalizes the vector.
 		 *
 		 ***********************************************/
-		Vector4 normalize();
+		Vector4& normalize();
 
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors

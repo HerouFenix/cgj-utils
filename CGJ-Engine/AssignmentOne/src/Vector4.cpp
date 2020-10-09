@@ -252,7 +252,7 @@ float Vector4::magnitude() {
 }
 
 //Normalize
-Vector4 Vector4::normalize()
+Vector4& Vector4::normalize()
 {
 	float magn = magnitude();
 	assert(magn != 0);

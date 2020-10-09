@@ -4,6 +4,7 @@
 #include "../headers/Vector4.h"
 
 int main() {
+
 	std::cout << "=====================VECTOR 3=====================\n";
 
 	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
@@ -485,8 +486,49 @@ int main() {
 	std::cout << "Vector2D_C2  + Vector4D_C = " << vec2D_C2 + vec4D_C << "\n";
 
 
-
 	std::cout << "=====================VECTOR 2=====================\n\n\n";
 
+	for (int i = 0; i < 10; i++) {
+		Vector3 vec10;
+		Vector3 vec20;
+		Vector3 vec30;
+		vec10.set(rand() % 100 > 50 ? 1 : 0, rand() % 100 > 50 ? 1 : 0, rand() % 100 > 50 ? 1 : 0);
+		vec20.set(rand() % 100 > 50 ? 1 : 0, rand() % 100 > 50 ? 1 : 0, rand() % 100 > 50 ? 1 : 0);
+		vec30.set(rand() % 100 > 50 ? 1 : 0, rand() % 100 > 50 ? 1 : 0, rand() % 100 > 50 ? 1 : 0);
+		std::cout << "Vector #1: " << vec10 << "\n";
+		std::cout << "Vector #2: " << vec20 << "\n";
+		std::cout << "Vector #3: " << vec30 << "\n";
+		Vector3 res1 = vec10.crossProd(vec20.crossProd(vec30));
+		Vector3 res2 = vec10.dotProd(vec30) * vec20 - vec10.dotProd(vec20) * vec30;
+		// bool res = ((vec1.crossProd(vec2.crossProd(vec3))) == (vec1.dotProd(vec3) * vec2 - vec1.dotProd(vec2) * vec3));
+		std::cout << res1 << "=" << res2 << " / " << (res1 == res2) << "\n\n";
+	}
+
+	/*
+	for (int i = 0; i < 10; i++) {
+		Vector3 vec1;
+		Vector3 vec2;
+		Vector3 vec3;
+		vec1.set(rand() % 100 + 1, rand() % 100 + 1, rand() % 100 + 1);
+		vec2.set(rand() % 100 + 1, rand() % 100 + 1, rand() % 100 + 1);
+		vec3.set(rand() % 100 + 1, rand() % 100 + 1, rand() % 100 + 1);
+		std::cout << "Vector #1: " << vec1 << "\n";
+		std::cout << "Vector #2: " << vec2 << "\n";
+		std::cout << "Vector #3: " << vec3 << "\n";
+		Vector3 res1 = vec1.crossProd(vec2.crossProd(vec3));
+		Vector3 res2 = vec1.dotProd(vec3) * vec2 - vec1.dotProd(vec2) * vec3;
+		// bool res = ((vec1.crossProd(vec2.crossProd(vec3))) == (vec1.dotProd(vec3) * vec2 - vec1.dotProd(vec2) * vec3));
+		std::cout << res1 << "=" << res2 << " / " << (res1==res2) << "\n\n";
+	}
+	*/
+
 	return 0;
+
+
+
+
+
+
+
+
 }

@@ -279,7 +279,7 @@ class Vector3 {
 		 * Normalizes the vector.
 		 *
 		 ***********************************************/
-		Vector3 normalize();
+		Vector3& normalize();
 
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors
