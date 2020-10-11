@@ -4,6 +4,7 @@
 #include "../headers/vectors/Vector4.h"
 
 #include "../headers/matrices/Matrix3.h"
+#include "../headers/matrices/Matrix2.h"
 
 
 int main() {
@@ -142,5 +143,137 @@ int main() {
 	std::cout << "\n=======CONVERSIONS=======\n";
 
 	std::cout << "=====================MATRIX 3x3=====================\n\n\n";
+
+	std::cout << "=====================MATRIX 2x2=====================\n";
+
+	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
+
+	Matrix2 mat8;
+	std::cout << "Matrix 8: " << mat8 << "\n";
+
+	Matrix2 mat5(new float[2][2]{ {1,2},{3,4}});
+	std::cout << "Matrix 5: " << mat5 << "\n";
+
+	std::cout << "Matrix 5 [1][1]: " << mat5.get(1, 1) << "\n";
+
+	mat5.set(1, 1, 10);
+	std::cout << "Matrix 5 [1][1] after Set: " << mat5.get(1, 1) << "\n\n";
+
+	Matrix2 mat6(1);
+	std::cout << "Matrix 6: " << mat6 << "\n";
+
+	std::cout << "\n=======MATRIX-MATRIX OPERATORS=======\n";
+	std::cout << "Matrix 8: " << mat8 << "\n";
+	std::cout << "Matrix 5: " << mat5 << "\n";
+	std::cout << "Matrix 6: " << mat6 << "\n";
+
+	std::cout << "Matrix 8 + Matrix 5 = " << mat8 + mat5 << "\n";
+	std::cout << "Matrix 5 - Matrix 8 = " << mat5 - mat8 << "\n";
+
+	std::cout << "Matrix 6 * Matrix 5 = " << mat6 * mat5 << "\n";
+	std::cout << "Matrix 5 * Matrix 6 = " << mat5 * mat6 << "\n";
+
+
+	std::cout << "\n=======MATRIX-SCALAR OPERATORS=======\n";
+	std::cout << "Matrix 6: " << mat6 << "\n";
+
+	std::cout << "Matrix 6 * 2 = " << mat6 * 2 << "\n";
+	std::cout << "1/2.0f * Matrix 6 = " << 1 / 2.0f * mat6 << "\n";
+
+	std::cout << "Matrix 6 / 4 = " << mat6 / 4 << "\n";
+	std::cout << "4.0f / Matrix 6 = " << 4.0f / mat6 << "\n";
+
+	std::cout << "\n=======MATRIX-VECTOR OPERATORS=======\n";
+	std::cout << "Matrix 6: " << mat6;
+
+	Vector2 vec2(1, 2);
+	std::cout << "Vector1: " << vec1 << "\n";
+
+	std::cout << "Matrix 6 * Vector 2 = " << mat6 * vec2 << "\n";
+	std::cout << "Vector 2 * Matrix 6 = " << vec2 * mat6 << "\n\n";
+
+	std::cout << "Matrix 5: " << mat5;
+	std::cout << "Vector 2: " << vec2 << "\n";
+
+	std::cout << "Matrix 5 * Vector 2 = " << mat5 * vec2 << "\n";
+	std::cout << "Vector 2 * Matrix 5 = " << vec2 * mat5 << "\n";
+
+	std::cout << "\n=======ASSIGNMENTS=======\n";
+	std::cout << "Matrix 6: " << mat6;
+
+	vec2.set(1, 2);
+	std::cout << "Vector 2: " << vec2 << "\n";
+
+	Matrix2 mat7;
+	std::cout << "Matrix 7: " << mat7;
+
+	mat7 = mat6;
+	std::cout << "Matrix 7 = Matrix 6: " << mat7;
+
+	mat7 += mat6;
+	std::cout << "Matrix 7 += Matrix 6: " << mat7;
+
+	mat7 -= mat6;
+	std::cout << "Matrix 7 -= Matrix 6: " << mat7;
+
+	mat7 += 1;
+	std::cout << "Matrix 7 += 1: " << mat7;
+
+	mat7 -= 1;
+	std::cout << "Matrix 7 -= 1: " << mat7;
+
+	mat7 = 1;
+	std::cout << "Matrix 7 = 1: " << mat7;
+
+	mat7 *= mat6;
+	std::cout << "Matrix 7 *= Matrix 6: " << mat7;
+
+	mat7 *= 2;
+	std::cout << "Matrix 7 *= 2: " << mat7;
+
+	mat7 /= 2;
+	std::cout << "Matrix 7 /= 2: " << mat7;
+
+	vec2 *= mat7;
+	std::cout << "Vector 2 /= Matrix 7: " << vec2;
+
+	std::cout << "\n=======COMPARISSONS=======\n";
+	std::cout << "Matrix 8: " << mat8;
+	std::cout << "Matrix 5: " << mat5;
+
+	mat6 = mat5;
+	std::cout << "Matrix 6: " << mat6;
+
+	std::cout << "Matrix 8 == Matrix 5 : " << (mat8 == mat5) << "\n";
+	std::cout << "Matrix 8 != Matrix 5 : " << (mat8 != mat5) << "\n";
+
+	std::cout << "Matrix 6 == Matrix 5 : " << (mat6 == mat5) << "\n";
+	std::cout << "Matrix 5 != Matrix 6 : " << (mat5 != mat6) << "\n";
+
+	std::cout << "\n=======MATRIX METHODS=======\n";
+	std::cout << "Matrix 8: " << mat8;
+	mat5 = Matrix2(new float[2][2]{ {1,2},{0,1} });
+	std::cout << "Matrix 5: " << mat5 << "\n";
+
+	std::cout << "Transposed Matrix 8: " << mat8.transposed();
+	std::cout << "Transposed Matrix 5: " << mat5.transposed();
+
+	std::cout << "Col Major Matrix 5: " << mat5.convertMajorOrder();
+	std::cout << "Row Major Matrix 5: " << mat5.convertMajorOrder();
+
+	std::cout << "Determinant Matrix 8: " << mat8.determinant() << "\n";
+	std::cout << "Determinant Matrix 5: " << mat5.determinant() << "\n";
+
+	std::cout << "Adjoint Matrix 8: " << mat8.adjoint() << "\n";
+	std::cout << "Adjoint Matrix 5: " << mat5.adjoint() << "\n";
+
+	std::cout << "Inverse Matrix 5: " << mat5.inverse() << "\n";
+
+	std::cout << "Identity Matrix: " << Matrix2::identity();
+
+	std::cout << "\n=======CONVERSIONS=======\n";
+
+	std::cout << "=====================MATRIX 3x3=====================\n\n\n";
+
 	return 0;
 }

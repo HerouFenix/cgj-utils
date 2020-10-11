@@ -1,6 +1,6 @@
-#include "../../../headers/vectors/Vector2.h"
-#include "../../../headers/vectors/Vector3.h"
-#include "../../../headers/vectors/Vector4.h"
+#include "../../headers/vectors/Vector2.h"
+#include "../../headers/vectors/Vector3.h"
+#include "../../headers/vectors/Vector4.h"
 
 #include <cassert>
 

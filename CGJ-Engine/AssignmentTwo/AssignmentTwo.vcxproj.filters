@@ -1,16 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="headers\vectors\Vector4.h" />
-    <ClInclude Include="headers\vectors\Vector2.h" />
-    <ClInclude Include="headers\vectors\Vector3.h" />
-    <ClInclude Include="headers\matrices\Matrix3.h" />
+    <ClInclude Include="headers\matrices\Matrix3.h">
+      <Filter>headers\matrices</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector4.h">
+      <Filter>headers\vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector3.h">
+      <Filter>headers\vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector2.h">
+      <Filter>headers\vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\matrices\Matrix2.h" />
+    <ClInclude Include="headers\matrices\Matrix4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\utils\vectors\Vector4.cpp" />
-    <ClCompile Include="src\utils\vectors\Vector2.cpp" />
-    <ClCompile Include="src\utils\vectors\Vector3.cpp" />
-    <ClCompile Include="src\utils\matrices\Matrix3.cpp" />
+    <ClCompile Include="src\utils\vectors\Vector4.cpp">
+      <Filter>src\vectors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector3.cpp">
+      <Filter>src\vectors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector2.cpp">
+      <Filter>src\vectors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix3.cpp">
+      <Filter>src\matrices</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix2.cpp" />
+    <ClCompile Include="src\utils\matrices\Matrix4.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="headers">
+      <UniqueIdentifier>{e684f2f5-6765-4c85-935a-564344037647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\matrices">
+      <UniqueIdentifier>{951ba0f5-e3be-4f8e-aa88-9efca5f352ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\vectors">
+      <UniqueIdentifier>{a590c360-4216-454f-9d57-7f67d9f8a7ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{c6bed0fe-5507-4f62-94b0-f15d5f51358f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vectors">
+      <UniqueIdentifier>{8797f6cb-ceab-41bb-9557-ce4d4b5d4dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\matrices">
+      <UniqueIdentifier>{3e1593a6-a3be-4668-b320-111d9c14cf22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

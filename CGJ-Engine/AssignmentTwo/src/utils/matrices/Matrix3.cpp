@@ -3,6 +3,7 @@
 #include "../../../headers/vectors/Vector3.h"
 
 #include <cassert>
+#include "../../../headers/matrices/Matrix2.h"
 
 // Matrix 3 Constructors
 Matrix3::Matrix3() {
@@ -198,7 +199,7 @@ Matrix3& Matrix3::operator-=(const Matrix3& mat) {
 }
 
 Matrix3& Matrix3::operator*=(const Matrix3& mat) {
-	/*TODO : THIS FUNCTION CAN PROBABLY BE OPTIMIZED. MB JUST CHANGE THE OBJECT *this = *this * mat??*/
+	/*TODO : THIS FUNCTION CAN PROBABLY BE OPTIMIZED. MB JUST CHANGE THE OBJECT *this = *this * mat??*/    // seems better
 	float tempMatrix[3][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
 
 	for (int row = 0; row < 3; row++) {
@@ -217,6 +218,11 @@ Matrix3& Matrix3::operator*=(const Matrix3& mat) {
 	}
 
 	return *this;
+
+	/*
+	return *this = *this * mat;
+	*/
+
 }
 
 Matrix3& Matrix3::operator*=(float val) {
@@ -282,14 +288,30 @@ bool Matrix3::operator==(const Matrix3& mat) {
 	return true;
 }
 
+
 bool Matrix3::operator!=(const Matrix3& mat) {
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
-			if (matrix[row][col] == mat.matrix[row][col]) {
+			if (matrix[row][col] == mat.matrix[row][col]) { // One equality is enough?
 				return false;
 			}
 		}
 	}
+
+	/* MINHA SUGESTÃO
+	int count = 0;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			if (matrix[row][col] == mat.matrix[row][col]) { // One equality is enough?
+				count++;
+			}
+		}
+	}
+	if (count == 9){
+		return false;
+	}
+	*/
+
 
 	return true;
 }
@@ -307,7 +329,7 @@ Matrix3 Matrix3::transposed() {
 }
 
 /*TODO : VERIFICAR QUE ISTO ESTA BEM*/
-Matrix3 Matrix3::convertMajorOrder() {
+Matrix3 Matrix3::convertMajorOrder() {  // são necessários os ciclos? Não é basicamente transpô-la e igualar a essa matrix resultante?
 	Matrix3 trans = this->transposed();
 
 	for (int row = 0; row < 3; row++) {
@@ -316,11 +338,15 @@ Matrix3 Matrix3::convertMajorOrder() {
 		}
 	}
 
+	/*
+	*this = transposed();
+	*/
+
 	return *this;
 }
 
-/* TODO : ASK SE SERIA MELHOR FAZER ISTO COM FORS / MAIS GERAL*/
-float Matrix3::determinant() {
+/* TODO : ASK SE SERIA MELHOR FAZER ISTO COM FORS / MAIS GERAL*/ // mas o acesso único será mais eficiente não?
+float Matrix3::determinant() { 
 	float det = matrix[0][0]*(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]);
 
 	det -= matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[2][0] * matrix[1][2]);
@@ -331,7 +357,7 @@ float Matrix3::determinant() {
 }
 
 /*AQUI FICAVA MELHOR COM MATRIX2 / Theres probably a way to make this not O(n^4)*/
-Matrix3 Matrix3::adjoint() {
+Matrix3 Matrix3::adjoint() { // não será mais fácil pela matriz de coeficientes?
 	Matrix3 trans = transposed();
 	Matrix3 adj;
 
@@ -353,10 +379,25 @@ Matrix3 Matrix3::adjoint() {
 		}
 	}
 
+	/*   PELA METRIZ DE COEFICIENTES:
+	float det1 = Matrix2(new float[2][2]{ {matrix[1][1], matrix[1][2]}, {matrix[2][1], matrix[2][2]} }).determinant();
+	float det2 = - Matrix2(new float[2][2]{ {matrix[1][0], matrix[2][1]}, {matrix[2][0], matrix[2][2]} }).determinant();
+	float det3 = Matrix2(new float[2][2]{ {matrix[1][0], matrix[1][1]}, {matrix[2][0], matrix[2][1]} }).determinant();
+	float det4 = - Matrix2(new float[2][2]{ {matrix[0][1], matrix[0][2]}, {matrix[2][1], matrix[2][2]} }).determinant();
+	float det5 = Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][2]}, {matrix[2][0], matrix[2][2]} }).determinant();
+	float det6 = - Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][1]}, {matrix[2][0], matrix[2][1]} }).determinant();
+	float det7 = Matrix2(new float[2][2]{ {matrix[0][1], matrix[0][2]}, {matrix[1][1], matrix[1][2]} }).determinant();
+	float det8 = - Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][2]}, {matrix[1][0], matrix[1][2]} }).determinant();
+	float det9 = Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][1]}, {matrix[1][0], matrix[1][1]} }).determinant();
+
+	return Matrix3(new float[3][3]{ {det1,det2,det3}, {det4,det5,det6}, {det7,det8,det9} }).transposed();
+
+	*/
+
 	return adj;
 }
 
-Matrix3 Matrix3::inverse() {
+Matrix3 Matrix3::inverse() { // não basta dividir a matriz adjunta pelo determinante?
 	float det = determinant();
 	assert(det != 0);
 
@@ -369,6 +410,12 @@ Matrix3 Matrix3::inverse() {
 	}
 
 	return  inv;
+
+	/*
+	return adjoint() / determinant();
+	*/
+
+
 }
 
 Matrix3 Matrix3::identity() {
