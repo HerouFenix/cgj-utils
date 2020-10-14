@@ -81,7 +81,6 @@ public:
 	 ***********************************************/
 	void set(float _x, float _y);
 
-
 	/********************************************/ /**
 	 * Overloading of the + operator when summing two Vector2
 	 *
@@ -199,6 +198,14 @@ public:
 	Vector2 operator/(float scalar);
 
 	/********************************************/ /**
+	* Overloading of the / operator. Gets the division of a scalar by our vector
+	*
+	* @param val The scalar we want to use to divide
+	* @return vecDiv The resulting division
+	***********************************************/
+	friend Vector2 operator/(float val, Vector2& vec);
+
+	/********************************************/ /**
 	 * Overloading of the /= operator. Assigns new coordinates to our vector
 	 *
 	 * @param scal The scalar we want to use to divide our vector by
@@ -265,7 +272,7 @@ public:
 	 * Normalizes the vector.
 	 *
 	 ***********************************************/
-	Vector2 normalize();
+	Vector2& normalize();
 
 	/********************************************/ /**
 	 * Returns the Dot product of two vectors

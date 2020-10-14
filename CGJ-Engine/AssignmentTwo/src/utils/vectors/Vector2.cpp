@@ -5,6 +5,7 @@
 #include <cassert>
 
 // Vector 2 Constructors
+// Vector 2 Constructors
 Vector2::Vector2() {
 	x = 0;
 	y = 0;
@@ -111,6 +112,10 @@ Vector2 Vector2::operator/(float operand)
 	return Vector2(x / operand, y / operand);
 }
 
+Vector2 operator/(float val, Vector2& vec) {
+	assert(vec.getX() != 0 && vec.getY() != 0);
+	return  Vector2(val / vec.getX(), val / vec.getY());
+}
 
 //Vector3 Assignments
 Vector2& Vector2::operator=(const Vector2& operand)
@@ -213,7 +218,7 @@ float Vector2::magnitude() {
 }
 
 //Normalize
-Vector2 Vector2::normalize()
+Vector2& Vector2::normalize()
 {
 	float magn = magnitude();
 	assert(magn != 0);
@@ -239,7 +244,7 @@ float Vector2::dotProd(const Vector2& operand)
 Vector2 Vector2::perpendicular()
 {
 	Vector2 vec(y, -x);
-	
+
 	return vec.normalized();
 }
 

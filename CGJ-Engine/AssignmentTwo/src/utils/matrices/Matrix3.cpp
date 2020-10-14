@@ -199,29 +199,7 @@ Matrix3& Matrix3::operator-=(const Matrix3& mat) {
 }
 
 Matrix3& Matrix3::operator*=(const Matrix3& mat) {
-	/*TODO : THIS FUNCTION CAN PROBABLY BE OPTIMIZED. MB JUST CHANGE THE OBJECT *this = *this * mat??*/    // seems better
-	float tempMatrix[3][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
-
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			for (int i = 0; i < 3; ++i)
-			{
-				tempMatrix[row][col] += matrix[row][i] * mat.matrix[i][col];
-			}
-		}
-	}
-
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			matrix[row][col] = tempMatrix[row][col];
-		}
-	}
-
-	return *this;
-
-	/*
 	return *this = *this * mat;
-	*/
 
 }
 
@@ -292,13 +270,13 @@ bool Matrix3::operator==(const Matrix3& mat) {
 bool Matrix3::operator!=(const Matrix3& mat) {
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
-			if (matrix[row][col] == mat.matrix[row][col]) { // One equality is enough?
+			if (matrix[row][col] == mat.matrix[row][col]) { 
 				return false;
 			}
 		}
 	}
 
-	/* MINHA SUGESTÃO
+	/* 
 	int count = 0;
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
@@ -328,24 +306,13 @@ Matrix3 Matrix3::transposed() {
 	return trans;
 }
 
-/*TODO : VERIFICAR QUE ISTO ESTA BEM*/
-Matrix3 Matrix3::convertMajorOrder() {  // são necessários os ciclos? Não é basicamente transpô-la e igualar a essa matrix resultante?
-	Matrix3 trans = this->transposed();
+Matrix3 Matrix3::convertMajorOrder() {  
 
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			matrix[row][col] = trans.matrix[row][col];
-		}
-	}
-
-	/*
 	*this = transposed();
-	*/
 
 	return *this;
 }
 
-/* TODO : ASK SE SERIA MELHOR FAZER ISTO COM FORS / MAIS GERAL*/ // mas o acesso único será mais eficiente não?
 float Matrix3::determinant() { 
 	float det = matrix[0][0]*(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]);
 
@@ -356,8 +323,7 @@ float Matrix3::determinant() {
 	return det;
 }
 
-/*AQUI FICAVA MELHOR COM MATRIX2 / Theres probably a way to make this not O(n^4)*/
-Matrix3 Matrix3::adjoint() { // não será mais fácil pela matriz de coeficientes?
+Matrix3 Matrix3::adjoint() { 
 	Matrix3 trans = transposed();
 	Matrix3 adj;
 
@@ -373,49 +339,20 @@ Matrix3 Matrix3::adjoint() { // não será mais fácil pela matriz de coeficientes?
 				}
 			}
 
-			adj.matrix[row][col] = temp[0] * temp[3] - temp[1] * temp[2];
+			adj.matrix[row][col] = Matrix2(new float[2][2]{ {temp[0],temp[1]}, {temp[2],temp[3]} }).determinant();
 
 			if ((row + col) % 2 != 0) adj.matrix[row][col] = -adj.matrix[row][col];
 		}
 	}
 
-	/*   PELA METRIZ DE COEFICIENTES:
-	float det1 = Matrix2(new float[2][2]{ {matrix[1][1], matrix[1][2]}, {matrix[2][1], matrix[2][2]} }).determinant();
-	float det2 = - Matrix2(new float[2][2]{ {matrix[1][0], matrix[2][1]}, {matrix[2][0], matrix[2][2]} }).determinant();
-	float det3 = Matrix2(new float[2][2]{ {matrix[1][0], matrix[1][1]}, {matrix[2][0], matrix[2][1]} }).determinant();
-	float det4 = - Matrix2(new float[2][2]{ {matrix[0][1], matrix[0][2]}, {matrix[2][1], matrix[2][2]} }).determinant();
-	float det5 = Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][2]}, {matrix[2][0], matrix[2][2]} }).determinant();
-	float det6 = - Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][1]}, {matrix[2][0], matrix[2][1]} }).determinant();
-	float det7 = Matrix2(new float[2][2]{ {matrix[0][1], matrix[0][2]}, {matrix[1][1], matrix[1][2]} }).determinant();
-	float det8 = - Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][2]}, {matrix[1][0], matrix[1][2]} }).determinant();
-	float det9 = Matrix2(new float[2][2]{ {matrix[0][0], matrix[0][1]}, {matrix[1][0], matrix[1][1]} }).determinant();
-
-	return Matrix3(new float[3][3]{ {det1,det2,det3}, {det4,det5,det6}, {det7,det8,det9} }).transposed();
-
-	*/
-
 	return adj;
 }
 
-Matrix3 Matrix3::inverse() { // não basta dividir a matriz adjunta pelo determinante?
+Matrix3 Matrix3::inverse() {
 	float det = determinant();
 	assert(det != 0);
 
-	Matrix3 inv;
-	Matrix3 adj = adjoint();
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			inv.matrix[row][col] = 1 / det * adj.matrix[row][col];
-		}
-	}
-
-	return  inv;
-
-	/*
 	return adjoint() / determinant();
-	*/
-
-
 }
 
 Matrix3 Matrix3::identity() {

@@ -15,9 +15,9 @@ class Vector4 {
 		float x, y, z, w;
 	public:
 		// FUNCTION DECLARATIONS
-		/********************************************/ /**
-		 * Creates a new Vector4 object with all coordinates set to 0
-		 ***********************************************/
+	/********************************************/ /**
+	 * Creates a new Vector4 object with all coordinates set to 0
+	 ***********************************************/
 		Vector4();
 
 		/********************************************/ /**
@@ -109,7 +109,7 @@ class Vector4 {
 		 * @param _z The new z coordinate we want to assign to our vector
 		 * @param _w The new w coordinate we want to assign to our vector
 		 ***********************************************/
-		void set(float _x, float _y, float _z,float _w);
+		void set(float _x, float _y, float _z, float _w);
 
 		/********************************************/ /**
 		 * Overloading of the + operator when summing two Vector4
@@ -228,6 +228,14 @@ class Vector4 {
 		Vector4 operator/(float scalar);
 
 		/********************************************/ /**
+		* Overloading of the / operator. Gets the division of a scalar by our vector
+		*
+		* @param val The scalar we want to use to divide
+		* @return vecDiv The resulting division
+		***********************************************/
+		friend Vector4 operator/(float val, Vector4& vec);
+
+		/********************************************/ /**
 		 * Overloading of the /= operator. Assigns new coordinates to our vector
 		 *
 		 * @param scal The scalar we want to use to divide our vector by
@@ -294,7 +302,7 @@ class Vector4 {
 		 * Normalizes the vector.
 		 *
 		 ***********************************************/
-		Vector4 normalize();
+		Vector4& normalize();
 
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors

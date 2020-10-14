@@ -3,6 +3,7 @@
 #include "../../../headers/vectors/Vector4.h"
 
 #include <cassert>
+#include "../../../headers/matrices/Matrix2.h"
 
 // Matrix 4 Constructors
 Matrix4::Matrix4() {
@@ -295,21 +296,14 @@ Matrix4 Matrix4::transposed() {
 	return trans;
 }
 
-/*TODO : VERIFICAR QUE ISTO ESTA BEM*/
-Matrix4 Matrix4::convertMajorOrder() {  
-	Matrix4 trans = this->transposed();
+Matrix4 Matrix4::convertMajorOrder() {
 
-	for (int row = 0; row < 4; row++) {
-		for (int col = 0; col < 4; col++) {
-			matrix[row][col] = trans.matrix[row][col];
-		}
-	}
+	*this = transposed();
 
 	return *this;
 }
 
-/*AQUI FICAVA MELHOR COM MATRIX2 / Theres probably a way to make this not O(n^4)*/
-Matrix4 Matrix4::adjoint() {  // NÃO MEXI PORQUE NÃO CONHEÇO ESTA TUA SOLUÇÃO, mas suponho que a dos coeficientes funcione
+Matrix4 Matrix4::adjoint() {  
 	Matrix4 trans = transposed();
 	Matrix4 adj;
 
@@ -325,7 +319,7 @@ Matrix4 Matrix4::adjoint() {  // NÃO MEXI PORQUE NÃO CONHEÇO ESTA TUA SOLUÇÃO, m
 				}
 			}
 
-			adj.matrix[row][col] = temp[0] * temp[4] - temp[1] * temp[2];
+			adj.matrix[row][col] = Matrix2(new float[2][2]{ {temp[0],temp[1]}, {temp[2],temp[3]} }).determinant();
 
 			if ((row + col) % 2 != 0) adj.matrix[row][col] = -adj.matrix[row][col];
 		}

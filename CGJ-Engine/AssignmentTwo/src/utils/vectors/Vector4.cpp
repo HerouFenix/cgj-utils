@@ -79,7 +79,7 @@ void Vector4::setW(float _w) {
 	w = _w;
 }
 
-void Vector4::set(float _x, float _y, float _z,float _w) {
+void Vector4::set(float _x, float _y, float _z, float _w) {
 	x = _x;
 	y = _y;
 	z = _z;
@@ -134,6 +134,11 @@ Vector4 Vector4::operator/(float operand)
 {
 	assert(operand != 0);
 	return Vector4(x / operand, y / operand, z / operand, w / operand);
+}
+
+Vector4 operator/(float val, Vector4& vec) {
+	assert(vec.getX() != 0 && vec.getY() != 0 && vec.getZ() != 0 && vec.getW() != 0);
+	return  Vector4(val / vec.getX(), val / vec.getY(), val / vec.getZ(), val / vec.getW());
 }
 
 
@@ -252,7 +257,7 @@ float Vector4::magnitude() {
 }
 
 //Normalize
-Vector4 Vector4::normalize()
+Vector4& Vector4::normalize()
 {
 	float magn = magnitude();
 	assert(magn != 0);

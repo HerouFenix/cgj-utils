@@ -78,13 +78,13 @@ class Vector3 {
 
 		/********************************************/ /**
 		 * Function used to set the Vector3's y coordinate
-		 * @param _y The new y coordinate we want to assign to our vector
+		 * @param _y The new x coordinate we want to assign to our vector
 		 ***********************************************/
 		void setY(float _y);
 
 		/********************************************/ /**
 		 * Function used to set the Vector3's z coordinate
-		 * @param _z The new z coordinate we want to assign to our vector
+		 * @param _z The new x coordinate we want to assign to our vector
 		 ***********************************************/
 		void setZ(float _z);
 
@@ -213,6 +213,14 @@ class Vector3 {
 		Vector3 operator/(float scalar);
 
 		/********************************************/ /**
+		* Overloading of the / operator. Gets the division of a scalar by our vector
+		*
+		* @param val The scalar we want to use to divide
+		* @return vecDiv The resulting division
+		***********************************************/
+		friend Vector3 operator/(float val, Vector3& vec);
+
+		/********************************************/ /**
 		 * Overloading of the /= operator. Assigns new coordinates to our vector
 		 *
 		 * @param scal The scalar we want to use to divide our vector by
@@ -279,7 +287,7 @@ class Vector3 {
 		 * Normalizes the vector.
 		 *
 		 ***********************************************/
-		Vector3 normalize();
+		Vector3& normalize();
 
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors
