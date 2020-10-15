@@ -72,6 +72,21 @@ float Matrix2::get(int row, int col) {
 	return matrix[row][col];
 }
 
+float* Matrix2::getMatrix() {
+	float arr[4] = { matrix[0][0],matrix[0][1],matrix[1][0],matrix[1][1]};
+	return arr;
+}
+
+float* Matrix2::getRowMajor() {
+	float arr[4] = { matrix[0][0],matrix[0][1],matrix[1][0],matrix[1][1]};
+	return arr;
+}
+
+float* Matrix2::getColMajor() {
+	float arr[4] = { matrix[0][0],matrix[1][0],matrix[0][1], matrix[1][1]};
+	return arr;
+}
+
 //Matrix2 Setters
 void Matrix2::set(int row, int col, float val) {
 	assert(row >= 0 && row < 2 && col >= 0 && col < 2);

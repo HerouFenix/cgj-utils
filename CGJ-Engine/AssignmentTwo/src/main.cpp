@@ -18,6 +18,14 @@ int main() {
 
 	Matrix3 mat2(new float[3][3]{ {1,2,3},{4,5,6},{7,8,9} });
 	std::cout << "Matrix 2: " << mat2 << "\n";
+	std::cout << "Matrix 2 Row Major: ";
+	for (int i = 0; i < 9; i++)
+		std::cout << mat2.getRowMajor()[i] << " ";
+	std::cout << "\n";
+	std::cout << "Matrix 2 Col Major: ";
+	for (int i = 0; i < 9; i++)
+		std::cout << mat2.getColMajor()[i] << " ";
+	std::cout << "\n";
 
 	std::cout << "Matrix 2 [2][2]: " << mat2.get(2,2) << "\n";
 
@@ -170,6 +178,15 @@ int main() {
 	Matrix2 mat6(new float[2][2]{ {1,2},{3,4}});
 	std::cout << "Matrix 6: " << mat6 << "\n";
 
+	std::cout << "Matrix 6 Row Major: ";
+	for (int i = 0; i < 4; i++)
+		std::cout << mat6.getRowMajor()[i] << " ";
+	std::cout << "\n";
+	std::cout << "Matrix 6 Col Major: ";
+	for (int i = 0; i < 4; i++)
+		std::cout << mat6.getColMajor()[i] << " ";
+	std::cout << "\n";
+
 	std::cout << "Matrix 6 [1][1]: " << mat6.get(1, 1) << "\n";
 
 	std::cout << "Matrix 6 [1]: " << mat6[1] << "\n";
@@ -317,6 +334,14 @@ int main() {
 
 	Matrix4 mat10(new float[4][4]{ {1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16} });
 	std::cout << "Matrix 10: " << mat10 << "\n";
+	std::cout << "Matrix 10 Row Major: ";
+	for (int i = 0; i < 16; i++)
+		std::cout << mat10.getRowMajor()[i] << " ";
+	std::cout << "\n";
+	std::cout << "Matrix 10 Col Major: ";
+	for (int i = 0; i < 16; i++)
+		std::cout << mat10.getColMajor()[i] << " ";
+	std::cout << "\n";
 
 	std::cout << "Matrix 10 [2][2]: " << mat10.get(2, 2) << "\n";
 
