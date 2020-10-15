@@ -324,18 +324,50 @@ public:
 	 * @param sz The z value to use on the rotation
 	 * @param sw The w value to use on the rotation
 	 * @param radians Whether you're using radians or not. Default is true
+	 * @param round Whether the cos and sin values should be rounded out to 8 decimal places
 	 * @return mat The 4x4 rotation matrix
 	 ***********************************************/
-	static Matrix4 rotation(float sx, float sy, float sz, bool radians=true);
+	static Matrix4 rotation(float sx, float sy, float sz, bool radians=true, bool round = false);
 
 	/********************************************/ /**
 	 * Returns the rotation matrix according to the given parameters
 	 *
 	 * @param radians Whether you're using radians or not. Default is true
 	 * @param vec The parameters to use on the rotation
+	 * @param round Whether the cos and sin values should be rounded out to 8 decimal places
 	 * @return mat The 4x4 rotation matrix
 	 ***********************************************/
-	static Matrix4 rotation(Vector3& vec, bool radians=true);
+	static Matrix4 rotation(Vector3& vec, bool radians=true, bool round = false);
+
+	/********************************************/ /**
+	 * Returns the rotation matrix over the X axis
+	 *
+	 * @param ang The angle of rotation
+	 * @param radians Whether you're using radians or not. Default is true
+	 * @param round Whether the cos and sin values should be rounded out to 8 decimal places
+	 * @return mat The 4x4 rotation matrix
+	 ***********************************************/
+	static Matrix4 rotationX(float ang, bool radians = true, bool round = false);
+
+	/********************************************/ /**
+	 * Returns the rotation matrix over the Y axis
+	 *
+	 * @param ang The angle of rotation
+	 * @param radians Whether you're using radians or not. Default is true
+	 * @param round Whether the cos and sin values should be rounded out to 8 decimal places
+	 * @return mat The 4x4 rotation matrix
+	 ***********************************************/
+	static Matrix4 rotationY(float ang, bool radians = true, bool round = false);
+
+	/********************************************/ /**
+	 * Returns the rotation matrix over the Z axis
+	 *
+	 * @param ang The angle of rotation
+	 * @param radians Whether you're using radians or not. Default is true
+	 * @param round Whether the cos and sin values should be rounded out to 8 decimal places
+	 * @return mat The 4x4 rotation matrix
+	 ***********************************************/
+	static Matrix4 rotationZ(float ang, bool radians = true, bool round = false);
 
 
 	/********************************************/ /**

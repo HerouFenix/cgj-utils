@@ -8,7 +8,7 @@
 #include <math.h>
 #include <cassert>
 
-# define PI 3.14159265358979323846
+# define PI atan(1)*4
 
 // Matrix 4 Constructors
 Matrix4::Matrix4() {
@@ -230,13 +230,13 @@ Vector4 Matrix4::operator*(Vector4& vec) {
 }
 
 Vector4 operator*(Vector4& vec, Matrix4& mat) {
-	float x = vec.getX() * mat.matrix[0][0] + vec.getY() * mat.matrix[1][0] + vec.getZ() * mat.matrix[2][0] + vec.getZ() * mat.matrix[3][0];
+	float x = vec.getX() * mat.matrix[0][0] + vec.getY() * mat.matrix[1][0] + vec.getZ() * mat.matrix[2][0] + vec.getW() * mat.matrix[3][0];
 
-	float y = vec.getX() * mat.matrix[0][1] + vec.getY() * mat.matrix[1][1] + vec.getZ() * mat.matrix[2][1] + vec.getZ() * mat.matrix[3][1];
+	float y = vec.getX() * mat.matrix[0][1] + vec.getY() * mat.matrix[1][1] + vec.getZ() * mat.matrix[2][1] + vec.getW() * mat.matrix[3][1];
 
-	float z = vec.getX() * mat.matrix[0][2] + vec.getY() * mat.matrix[1][2] + vec.getZ() * mat.matrix[2][2] + vec.getZ() * mat.matrix[3][2];
+	float z = vec.getX() * mat.matrix[0][2] + vec.getY() * mat.matrix[1][2] + vec.getZ() * mat.matrix[2][2] + vec.getW() * mat.matrix[3][2];
 
-	float w = vec.getX() * mat.matrix[0][3] + vec.getY() * mat.matrix[1][3] + vec.getZ() * mat.matrix[2][3] + vec.getZ() * mat.matrix[3][3];
+	float w = vec.getX() * mat.matrix[0][3] + vec.getY() * mat.matrix[1][3] + vec.getZ() * mat.matrix[2][3] + vec.getW() * mat.matrix[3][3];
 
 	return Vector4(x, y, z, w);
 }
@@ -427,8 +427,8 @@ Matrix4 Matrix4::translation(Vector3& vec) {
 	return Matrix4(new float[4][4]{ {1,0,0,vec.getX()}, {0,1,0,vec.getY()}, {0,0,1,vec.getZ()}, {0,0,0,1} });
 }
 
-Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians) {
-	if (!radians) {
+Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians, bool round) {
+	if (!radians) { // Convert to radians
 		sx = sx * PI / 180.0;
 		sy = sy * PI / 180.0;
 		sz = sz * PI / 180.0;
@@ -442,6 +442,17 @@ Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians) {
 	float sinB = sin(sy);
 	float sinA = sin(sz);
 
+	// Round - Useful for angles like PI/2 
+	if (round) {
+		cosG = roundf(cosG * 10000000) / 10000000;
+		cosB = roundf(cosB * 10000000) / 10000000;
+		cosA = roundf(cosA * 10000000) / 10000000;
+
+		sinG = roundf(sinG * 10000000) / 10000000;
+		sinB = roundf(sinB * 10000000) / 10000000;
+		sinA = roundf(sinA * 10000000) / 10000000;
+	}
+
 	return Matrix4(
 		new float[4][4]{ 
 			{cosA*cosB, cosA*sinB*sinG - sinA*cosG, cosA*sinB*cosG + sinA*sinG,0}, 
@@ -452,10 +463,81 @@ Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians) {
 	);
 }
 
-Matrix4 Matrix4::rotation(Vector3& vec, bool radians) {
+Matrix4 Matrix4::rotation(Vector3& vec, bool radians, bool round) {
 	float sx = vec.getX();
 	float sy = vec.getY();
 	float sz = vec.getZ();
 	
-	return rotation(sx, sy, sz, radians);
+	return rotation(sx, sy, sz, radians, round);
+}
+
+Matrix4 Matrix4::rotationX(float ang, bool radians, bool round) {
+	if (!radians) { // Convert to radians
+		ang = ang * PI / 180.0;
+	}
+
+	float cosAng = cos(ang);
+	float sinAng = sin(ang);
+
+	// Round - Useful for angles like PI/2 
+	if (round) {
+		cosAng = roundf(cosAng * 10000000) / 10000000;
+		sinAng = roundf(sinAng * 10000000) / 10000000;
+	}
+
+	return Matrix4(
+		new float[4][4]{
+			{1, 0, 0, 0},
+			{0, cosAng, -sinAng, 0},
+			{0, sinAng, cosAng, 0},
+			{0,0,0,1}
+		}
+	);
+}
+
+Matrix4 Matrix4::rotationY(float ang, bool radians, bool round) {
+	if (!radians) { // Convert to radians
+		ang = ang * PI / 180.0;
+	}
+
+	float cosAng = cos(ang);
+	float sinAng = sin(ang);
+
+	// Round - Useful for angles like PI/2 
+	if (round) {
+		cosAng = roundf(cosAng * 10000000) / 10000000;
+		sinAng = roundf(sinAng * 10000000) / 10000000;
+	}
+
+	return Matrix4(
+		new float[4][4]{
+			{cosAng, 0, sinAng, 0},
+			{0, 1, 0, 0},
+			{-sinAng, 0, cosAng, 0},
+			{0,0,0,1}
+		}
+	);
+}
+
+Matrix4 Matrix4::rotationZ(float ang, bool radians, bool round) {
+	if (!radians) { // Convert to radians
+		ang = ang * PI / 180.0;
+	}
+	float cosAng = cos(ang);
+	float sinAng = sin(ang);
+
+	// Round - Useful for angles like PI/2 
+	if (round) {
+		cosAng = roundf(cosAng * 10000000) / 10000000;
+		sinAng = roundf(sinAng * 10000000) / 10000000;
+	}
+
+	return Matrix4(
+		new float[4][4]{
+			{cosAng, -sinAng, 0, 0},
+			{sinAng, cosAng, 0, 0},
+			{0, 0, 1, 0},
+			{0,0,0,1}
+		}
+	);
 }

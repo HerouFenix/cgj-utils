@@ -423,6 +423,8 @@ int main() {
 	std::cout << "Matrix10 != Matrix11 : " << (mat10 != mat11) << "\n";
 
 	std::cout << "\n=======MATRIX METHODS=======\n";
+	float PI = atan(1) * 4;
+
 	std::cout << "Matrix9: " << mat9;
 	mat10 = Matrix4(new float[4][4]{ {1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16} });
 	std::cout << "Matrix10: " << mat10 << "\n";
@@ -443,8 +445,19 @@ int main() {
 	std::cout << "Transition Matrix values (1,2,3)): " << Matrix4::translation(1, 2, 3) << "\n\n";
 
 	std::cout << "Rotation Matrix (Vector (1,2,3)): " << Matrix4::rotation(vec1) << "\n";
-	std::cout << "Rotation Matrix radians (1,2,3)): " << Matrix4::rotation(1, 2, 3) << "\n";
-	std::cout << "Rotation Matrix degrees (90,0,0)): " << Matrix4::rotation(90, 0,0, false) << "\n\n";
+	std::cout << "Rotation Matrix radians (1,2,3)): " << Matrix4::rotation(1, 2, 3) << "\n\n";
+
+	std::cout << "Rotation Matrix degrees (90,0,0)): " << Matrix4::rotation(90, 0,0, false, true) << "\n";
+	std::cout << "RotationX Matrix 90 degrees: " << Matrix4::rotationX(90, false, true) << "\n";
+	std::cout << "RotationX Matrix 90 degrees == Rotation Matrix (90,0,0): " << (Matrix4::rotationX(90, false, true) == Matrix4::rotation(90, 0, 0, false, true))<< "\n\n";
+
+	std::cout << "Rotation Matrix degrees (0,90,0)): " << Matrix4::rotation(0, 90, 0, false, true) << "\n";
+	std::cout << "RotationY Matrix PI/2 radians: " << Matrix4::rotationY(PI/2, true, true) << "\n";
+	std::cout << "RotationY Matrix 90 degrees == Rotation Matrix (0,90,0): " << (Matrix4::rotationY(90, false, true) == Matrix4::rotation(0, 90, 0, false, true)) << "\n\n";
+
+	std::cout << "Rotation Matrix degrees (0,0,90)): " << Matrix4::rotation(0, 0, 90, false, true) << "\n";
+	std::cout << "RotationZ Matrix 90 degrees: " << Matrix4::rotationZ(90, false, true) << "\n";
+	std::cout << "RotationY Matrix 90 degrees == Rotation Matrix (0,0,90): " << (Matrix4::rotationZ(90, false, true) == Matrix4::rotation(0, 0, 90, false, true)) << "\n\n";
 
 	std::cout << "\n=======CONVERSIONS=======\n";
 	matA = Matrix3(1);
@@ -453,8 +466,16 @@ int main() {
 
 	matB = Matrix2(1);
 	matC = matB;
-	std::cout << "Matrix4 from Matrix2: " << matC;
+	std::cout << "Matrix4 from Matrix2: " << matC << "\n";
 
+	Matrix4 matD = Matrix4::rotationX(90, false, true);
+	std::cout << "3D RotationX Matrix 90 degrees: " << Matrix3(matD) << "\n";
+
+	matD = Matrix4::rotationY(PI/2, true, true);
+	std::cout << "3D RotationY Matrix PI/2 radians: " << Matrix3(matD) << "\n";
+
+	matD = Matrix4::rotationZ(90, false, true);
+	std::cout << "3D RotationZ Matrix 90 degrees: " << Matrix3(matD) << "\n";
 	std::cout << "=====================MATRIX 4x4=====================\n\n\n";
 
 	return 0;
