@@ -346,15 +346,20 @@ bool Matrix2::operator==(const Matrix2& mat) {
 
 
 bool Matrix2::operator!=(const Matrix2& mat) {
+	int count = 0;
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
-			if (matrix[row][col] == mat.matrix[row][col]) { 
-				return false;
+			if (matrix[row][col] == mat.matrix[row][col]) {
+				count++;
 			}
 		}
 	}
-
-	return true;
+	if (count == 4) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 //Matrix2 Methods

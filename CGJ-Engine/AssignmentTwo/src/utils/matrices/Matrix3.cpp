@@ -363,15 +363,7 @@ bool Matrix3::operator==(const Matrix3& mat) {
 
 
 bool Matrix3::operator!=(const Matrix3& mat) {
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			if (matrix[row][col] == mat.matrix[row][col]) { 
-				return false;
-			}
-		}
-	}
 
-	/* 
 	int count = 0;
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
@@ -383,10 +375,10 @@ bool Matrix3::operator!=(const Matrix3& mat) {
 	if (count == 9){
 		return false;
 	}
-	*/
-
-
-	return true;
+	else {
+		return true;
+	}
+	
 }
 
 //Matrix3 Methods

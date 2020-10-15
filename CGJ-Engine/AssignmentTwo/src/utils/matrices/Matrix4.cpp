@@ -377,15 +377,21 @@ bool Matrix4::operator==(const Matrix4& mat) {
 
 
 bool Matrix4::operator!=(const Matrix4& mat) {
+	int count = 0;
 	for (int row = 0; row < 4; row++) {
 		for (int col = 0; col < 4; col++) {
-			if (matrix[row][col] == mat.matrix[row][col]) {
-				return false;
+			if (matrix[row][col] == mat.matrix[row][col]) { 
+				count++;
 			}
 		}
 	}
+	if (count == 16) {
+		return false;
+	}
+	else {
+		return true;
+	}
 
-	return true;
 }
 
 //Matrix4 Methods
