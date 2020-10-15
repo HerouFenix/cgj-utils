@@ -1,9 +1,10 @@
 #include "../../../headers/matrices/Matrix3.h"
+#include "../../../headers/matrices/Matrix2.h"
+#include "../../../headers/matrices/Matrix4.h"
 
 #include "../../../headers/vectors/Vector3.h"
 
 #include <cassert>
-#include "../../../headers/matrices/Matrix2.h"
 
 // Matrix 3 Constructors
 Matrix3::Matrix3() {
@@ -18,6 +19,28 @@ Matrix3::Matrix3(float val) {
 }
 
 Matrix3::Matrix3(float mat[3][3]) {
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matrix[row][col] = mat[row][col];
+		}
+	}
+}
+
+Matrix3::Matrix3(Matrix2& mat) {
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			if (row == 2 || col == 2) {
+				matrix[row][col] = 0;
+			}
+			else {
+				matrix[row][col] = mat[row][col];
+
+			}
+		}
+	}
+}
+
+Matrix3::Matrix3(Matrix4& mat) {
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
 			matrix[row][col] = mat[row][col];
@@ -63,6 +86,10 @@ void Matrix3::set(int row, int col, float val) {
 
 
 //Matrix3 Operations
+float* Matrix3::operator[](int val) {
+	return matrix[val];
+}
+
 Matrix3 Matrix3::operator+(const Matrix3& mat)
 {
 	/* NEEDLESS ASSERTION
@@ -82,6 +109,30 @@ Matrix3 Matrix3::operator+(const Matrix3& mat)
 	return matSum;
 }
 
+Matrix3 Matrix3::operator+(float val)
+{
+	Matrix3 matSum;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matSum.matrix[row][col] = matrix[row][col] + val;
+		}
+	}
+
+	return matSum;
+}
+
+Matrix3 operator+(float val, Matrix3& mat)
+{
+	Matrix3 matSum;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matSum.matrix[row][col] = mat.matrix[row][col] + val;
+		}
+	}
+
+	return matSum;
+}
+
 Matrix3 Matrix3::operator-(const Matrix3& mat)
 {
 	Matrix3 matSub;
@@ -92,6 +143,30 @@ Matrix3 Matrix3::operator-(const Matrix3& mat)
 	}
 
 	return matSub;
+}
+
+Matrix3 Matrix3::operator-(float val)
+{
+	Matrix3 matSum;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matSum.matrix[row][col] = matrix[row][col] - val;
+		}
+	}
+
+	return matSum;
+}
+
+Matrix3 operator-(float val, Matrix3& mat)
+{
+	Matrix3 matSum;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matSum.matrix[row][col] = val - mat.matrix[row][col];
+		}
+	}
+
+	return matSum;
 }
 
 Matrix3 Matrix3::operator*(const Matrix3& mat) {
@@ -170,7 +245,7 @@ Matrix3 operator/(float val, Matrix3& mat)
 	Matrix3 matMul;
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
-			matMul.matrix[row][col] = mat.matrix[row][col] / val;
+			matMul.matrix[row][col] = val / mat.matrix[row][col];
 		}
 	}
 
@@ -188,10 +263,30 @@ Matrix3& Matrix3::operator+=(const Matrix3& mat) {
 	return *this;
 }
 
+Matrix3& Matrix3::operator+=(float val) {
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matrix[row][col] = matrix[row][col] + val;
+		}
+	}
+
+	return *this;
+}
+
 Matrix3& Matrix3::operator-=(const Matrix3& mat) {
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
 			matrix[row][col] = matrix[row][col] - mat.matrix[row][col];
+		}
+	}
+
+	return *this;
+}
+
+Matrix3& Matrix3::operator-=(float val) {
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			matrix[row][col] = matrix[row][col] - val;
 		}
 	}
 

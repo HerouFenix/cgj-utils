@@ -1,9 +1,14 @@
 #include "../../../headers/matrices/Matrix4.h"
+#include "../../../headers/matrices/Matrix2.h"
+#include "../../../headers/matrices/Matrix3.h"
 
+#include "../../../headers/vectors/Vector3.h"
 #include "../../../headers/vectors/Vector4.h"
 
+#include <math.h>
 #include <cassert>
-#include "../../../headers/matrices/Matrix2.h"
+
+# define PI 3.14159265358979323846
 
 // Matrix 4 Constructors
 Matrix4::Matrix4() {
@@ -25,6 +30,33 @@ Matrix4::Matrix4(float mat[4][4]) {
 	}
 }
 
+
+Matrix4::Matrix4(Matrix2& mat) {
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			if (row >= 2 || col >= 2) {
+				matrix[row][col] = 0;
+			}
+			else {
+				matrix[row][col] = mat[row][col];
+			}
+		}
+	}
+}
+
+Matrix4::Matrix4(Matrix3& mat) {
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			if (row == 3 || col == 3) {
+				matrix[row][col] = 0;
+			}
+			else {
+				matrix[row][col] = mat[row][col];
+			}
+		}
+	}
+}
+
 //Matrix4 Print
 std::ostream& operator<<(std::ostream& os, const Matrix4& matrix)
 {
@@ -34,7 +66,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix4& matrix)
 
 		for (int col = 0; col < 4; col++) {
 			os << matrix.matrix[row][col];
-			if (col != 2) {
+			if (col != 3) {
 				os << ", ";
 			}
 		}
@@ -63,6 +95,10 @@ void Matrix4::set(int row, int col, float val) {
 
 
 //Matrix4 Operations
+float* Matrix4::operator[](int val) {
+	return matrix[val];
+}
+
 Matrix4 Matrix4::operator+(const Matrix4& mat)
 {
 	/* NEEDLESS ASSERTION
@@ -82,6 +118,30 @@ Matrix4 Matrix4::operator+(const Matrix4& mat)
 	return matSum;
 }
 
+Matrix4 Matrix4::operator+(float val)
+{
+	Matrix4 matSum;
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			matSum.matrix[row][col] = matrix[row][col] + val;
+		}
+	}
+
+	return matSum;
+}
+
+Matrix4 operator+(float val, Matrix4& mat)
+{
+	Matrix4 matSum;
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			matSum.matrix[row][col] = mat.matrix[row][col] + val;
+		}
+	}
+
+	return matSum;
+}
+
 Matrix4 Matrix4::operator-(const Matrix4& mat)
 {
 	Matrix4 matSub;
@@ -92,6 +152,30 @@ Matrix4 Matrix4::operator-(const Matrix4& mat)
 	}
 
 	return matSub;
+}
+
+Matrix4 Matrix4::operator-(float val)
+{
+	Matrix4 matSum;
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			matSum.matrix[row][col] = matrix[row][col] - val;
+		}
+	}
+
+	return matSum;
+}
+
+Matrix4 operator-(float val, Matrix4& mat)
+{
+	Matrix4 matSum;
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			matSum.matrix[row][col] = val-mat.matrix[row][col];
+		}
+	}
+
+	return matSum;
 }
 
 Matrix4 Matrix4::operator*(const Matrix4& mat) {
@@ -174,7 +258,7 @@ Matrix4 operator/(float val, Matrix4& mat)
 	Matrix4 matMul;
 	for (int row = 0; row < 4; row++) {
 		for (int col = 0; col < 4; col++) {
-			matMul.matrix[row][col] = mat.matrix[row][col] / val;
+			matMul.matrix[row][col] = val / mat.matrix[row][col];
 		}
 	}
 
@@ -192,6 +276,16 @@ Matrix4& Matrix4::operator+=(const Matrix4& mat) {
 	return *this;
 }
 
+Matrix4& Matrix4::operator+=(float val) {
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			matrix[row][col] = matrix[row][col] + val;
+		}
+	}
+
+	return *this;
+}
+
 Matrix4& Matrix4::operator-=(const Matrix4& mat) {
 	for (int row = 0; row < 4; row++) {
 		for (int col = 0; col < 4; col++) {
@@ -202,8 +296,18 @@ Matrix4& Matrix4::operator-=(const Matrix4& mat) {
 	return *this;
 }
 
+Matrix4& Matrix4::operator-=(float val) {
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			matrix[row][col] = matrix[row][col] - val;
+		}
+	}
+
+	return *this;
+}
+
 Matrix4& Matrix4::operator*=(const Matrix4& mat) {
-	return *this = *this *mat;
+	return *this = *this * mat;
 }
 
 Matrix4& Matrix4::operator*=(float val) {
@@ -275,7 +379,7 @@ bool Matrix4::operator==(const Matrix4& mat) {
 bool Matrix4::operator!=(const Matrix4& mat) {
 	for (int row = 0; row < 4; row++) {
 		for (int col = 0; col < 4; col++) {
-			if (matrix[row][col] == mat.matrix[row][col]) { 
+			if (matrix[row][col] == mat.matrix[row][col]) {
 				return false;
 			}
 		}
@@ -303,45 +407,55 @@ Matrix4 Matrix4::convertMajorOrder() {
 	return *this;
 }
 
-Matrix4 Matrix4::adjoint() {  
-	Matrix4 trans = transposed();
-	Matrix4 adj;
+Matrix4 Matrix4::identity() {
+	return Matrix4(new float[4][4]{ {1,0,0},{0,1,0},{0,0,1} });
+}
 
-	for (int row = 0; row < 4; row++) {
-		for (int col = 0; col < 4; col++) {
-			float temp[4] = { 0,0,0,0 };
-			int index = 0;
+Matrix4 Matrix4::scaling(float sx, float sy, float sz) {
+	return Matrix4(new float[4][4]{ {sx,0,0,0}, {0,sy,0,0}, {0,0,sz,0}, {0,0,0,1} });
+}
 
-			for (int i = 0; i < 4; i++) {
-				for (int j = 0; j < 4; j++) {
-					if (i == row || j == col) continue;
-					temp[index++] = trans.matrix[i][j];
-				}
-			}
+Matrix4 Matrix4::scaling(Vector3& vec) {
+	return Matrix4(new float[4][4]{ {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,1} });
+}
 
-			adj.matrix[row][col] = Matrix2(new float[2][2]{ {temp[0],temp[1]}, {temp[2],temp[3]} }).determinant();
+Matrix4 Matrix4::translation(float sx, float sy, float sz) {
+	return Matrix4(new float[4][4]{ {1,0,0,sx}, {0,1,0,sy}, {0,0,1,sz}, {0,0,0,1} });
+}
 
-			if ((row + col) % 2 != 0) adj.matrix[row][col] = -adj.matrix[row][col];
+Matrix4 Matrix4::translation(Vector3& vec) {
+	return Matrix4(new float[4][4]{ {1,0,0,vec.getX()}, {0,1,0,vec.getY()}, {0,0,1,vec.getZ()}, {0,0,0,1} });
+}
+
+Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians) {
+	if (!radians) {
+		sx = sx * PI / 180.0;
+		sy = sy * PI / 180.0;
+		sz = sz * PI / 180.0;
+	}
+
+	float cosG = cos(sx);
+	float cosB = cos(sy);
+	float cosA = cos(sz);
+
+	float sinG = sin(sx);
+	float sinB = sin(sy);
+	float sinA = sin(sz);
+
+	return Matrix4(
+		new float[4][4]{ 
+			{cosA*cosB, cosA*sinB*sinG - sinA*cosG, cosA*sinB*cosG + sinA*sinG,0}, 
+			{sinA*cosB, sinA*sinB*sinG + cosA*cosG, sinA*sinB*cosG - cosA*sinG, 0}, 
+			{-sinB, cosB*sinG, cosB*cosG, 0}, 
+			{0,0,0,1} 
 		}
-	}
+	);
+}
 
-	return adj;
-	}
-
-	Matrix4 Matrix4::identity() {
-		return Matrix4(new float[4][4]{ {1,0,0},{0,1,0},{0,0,1} });
-	}
-
-	Matrix4 Matrix4::scaling(float sx, float sy, float sz, float sw) {
-		return Matrix4(new float[4][4]{ {sx,0,0,0}, {0,sy,0,0}, {0,0,sz,0}, {0,0,0,sw} });
-	}
-
-	/* Não implementei poruqe não consigo arranjar uma forma de o fazer
-	Matrix4 Matrix4::translation(Vector4& vec) {   
-
-	}
-
-	Matrix4 Matrix4::rotation(Vector4& vec) {
-
-	}
-	*/
+Matrix4 Matrix4::rotation(Vector3& vec, bool radians) {
+	float sx = vec.getX();
+	float sy = vec.getY();
+	float sz = vec.getZ();
+	
+	return rotation(sx, sy, sz, radians);
+}

@@ -8,6 +8,10 @@
 #include<iostream>
 
 class Vector4;
+class Vector3;
+
+class Matrix2;
+class Matrix3;
 
 class Matrix4 {
 private:
@@ -32,6 +36,20 @@ public:
 	 * @param mat The array of arrays that specify our matrix cell's values
 	 ***********************************************/
 	Matrix4(float mat[4][4]);
+
+	/********************************************/ /**
+	* Function used to create a Matrix4 from a Matrix2
+	*
+	* @param vec The Matrix4 we want to get the coordinates from
+	***********************************************/
+	Matrix4(Matrix2& mat);
+
+	/********************************************/ /**
+	* Function used to create a Matrix4 from a Matrix3
+	*
+	* @param vec The Matrix3 we want to get the coordinates from
+	***********************************************/
+	Matrix4(Matrix3& mat);
 
 	/********************************************/ /**
 	 * Overloading of the << operator. Prints our Matrix
@@ -63,6 +81,13 @@ public:
 	void set(int row, int col, float val);
 
 	/********************************************/ /**
+	 * Overloading of the [] operator to get a row
+	 *
+	 * @param val The row of the matrix
+	 ***********************************************/
+	float* operator[](int val);
+
+	/********************************************/ /**
 	 * Overloading of the + operator when summing two Matrix4
 	 *
 	 * @param mat The matrix4 we want to sum with
@@ -71,17 +96,50 @@ public:
 	Matrix4 operator+(const Matrix4& mat);
 
 	/********************************************/ /**
-	 * Overloading of the - operator when subtracting two Matrix4
+		* Overloading of the + operator when adding a matrix and a value
+		*
+		* @param val The value we want to add with
+		* @return matSum The sum of a matrix and a val
+		***********************************************/
+	Matrix4 operator+(float val);
+
+	/********************************************/ /**
+	 * Overloading of the + operator when adding a matrix and a value
 	 *
-	 * @param mat The matrix4 we want to sub with
+	 * @param val The value we want to add with
+	 * @return matSum The sum of a matrix and a val
+	 ***********************************************/
+	friend Matrix4 operator+(float val, Matrix4& mat);
+
+	/********************************************/ /**
+	 * Overloading of the - operator when subtracting two Matrix3
+	 *
+	 * @param mat The matrix3 we want to sub with
 	 * @return matSub The sub of the two matrices
 	 ***********************************************/
 	Matrix4 operator-(const Matrix4& mat);
 
 	/********************************************/ /**
-	 * Overloading of the * operator when multiplying two Matrix4
+	 * Overloading of the - operator when subtracting a matrix and a value
 	 *
-	 * @param mat The matrix4 we want to multiply with
+	 * @param val The value we want to subtract with
+	 * @return matSub The subtraction of the two matrices
+	 ***********************************************/
+	Matrix4 operator-(float val);
+
+	/********************************************/ /**
+	 * Overloading of the - operator when subtracting a matrix and a value
+	 *
+	 * @param val The value we want to subtract with
+	 * @return matSub The subtraction of the two matrices
+	 ***********************************************/
+	friend Matrix4 operator-(float val, Matrix4& mat);
+
+
+	/********************************************/ /**
+	 * Overloading of the * operator when multiplying two Matrix3
+	 *
+	 * @param mat The matrix3 we want to multiply with
 	 * @return matMult The multiplication of the two matrices
 	 ***********************************************/
 	Matrix4 operator*(const Matrix4& mat);
@@ -103,10 +161,10 @@ public:
 	friend Matrix4 operator*(float val, Matrix4& mat);
 
 	/********************************************/ /**
-	 * Overloading of the * operator when multiplying a matrix and a Vector4
+	 * Overloading of the * operator when multiplying a matrix and a Vector3
 	 *
 	 * @param vec The vector we want to multiply with
-	 * @return Vector4 The multiplication of the two matrices
+	 * @return Vector3 The multiplication of the two matrices
 	 ***********************************************/
 	Vector4 operator*(Vector4& vec);
 
@@ -142,11 +200,25 @@ public:
 	Matrix4& operator+=(const Matrix4& vec);
 
 	/********************************************/ /**
+	 * Overloading of the += operator. Assigns new coordinates to our matrix
+	 *
+	 * @param val The value we want to sum by
+	 ***********************************************/
+	Matrix4& operator+=(float val);
+
+	/********************************************/ /**
 	 * Overloading of the -= operator. Assigns new coordinates to our matrix
 	 *
 	 * @param mat The Matrix we want to sub to our Matrix
 	 ***********************************************/
 	Matrix4& operator-=(const Matrix4& vec);
+
+	/********************************************/ /**
+	 * Overloading of the -= operator. Assigns new coordinates to our matrix
+	 *
+	 * @param val The value we want to sub by
+	 ***********************************************/
+	Matrix4& operator-=(float val);
 
 	/********************************************/ /**
 	 * Overloading of the *= operator. Assigns new coordinates to our matrix
@@ -219,27 +291,6 @@ public:
 	Matrix4 convertMajorOrder();
 
 	/********************************************/ /**
-	 * Returns the matrix's determinant
-	 *
-	 * @return det The determinant of the matrix
-	 ***********************************************/
-	float determinant();
-
-	/********************************************/ /**
-	 * Returns the adjoint matrix
-	 *
-	 * @return adj The adjoint of the matrix
-	 ***********************************************/
-	Matrix4 adjoint();
-
-	/********************************************/ /**
-	 * Returns the inverse matrix or throws an error if the matrix can't be inversed
-	 *
-	 * @return mat The inversed matrix
-	 ***********************************************/
-	Matrix4 inverse();
-
-	/********************************************/ /**
 	 * Returns the identity matrix
 	 *
 	 * @return mat The 4x4 identity matrix
@@ -253,27 +304,58 @@ public:
 	 * @param sy The y value to use on the scaling
 	 * @param sz The z value to use on the scaling
 	 * @param sw The w value to use on the scaling
-	 * @return mat The 4x4 dual matrix
+	 * @return mat The 4x4 scaling matrix
 	 ***********************************************/
-	static Matrix4 scaling(float sx, float sy, float sz, float sw);
+	static Matrix4 scaling(float sx, float sy, float sz);
 
+	/********************************************/ /**
+	 * Returns the scaling matrix according to the given parameters
+	 *
+	 * @param vec The parameters to use on the scaling
+	 * @return mat The 4x4 scaling matrix
+	 ***********************************************/
+	static Matrix4 scaling(Vector3& vec);
 
 	/********************************************/ /**
 	 * Returns the rotation matrix according to the given parameters
 	 *
-	 * @param vec The parameters to use on the scaling
-	 * @return mat The 4x4 dual matrix
+	 * @param sx The x value to use on the rotation
+	 * @param sy The y value to use on the rotation
+	 * @param sz The z value to use on the rotation
+	 * @param sw The w value to use on the rotation
+	 * @param radians Whether you're using radians or not. Default is true
+	 * @return mat The 4x4 rotation matrix
 	 ***********************************************/
-	static Matrix4 rotation(Vector4& vec);
+	static Matrix4 rotation(float sx, float sy, float sz, bool radians=true);
+
+	/********************************************/ /**
+	 * Returns the rotation matrix according to the given parameters
+	 *
+	 * @param radians Whether you're using radians or not. Default is true
+	 * @param vec The parameters to use on the rotation
+	 * @return mat The 4x4 rotation matrix
+	 ***********************************************/
+	static Matrix4 rotation(Vector3& vec, bool radians=true);
 
 
 	/********************************************/ /**
 	 * Returns the translation matrix according to the given parameters
 	 *
-	 * @param vec The parameters to use on the scaling
-	 * @return mat The 4x4 dual matrix
+	 * @param sx The x value to use on the translation
+	 * @param sy The y value to use on the translation
+	 * @param sz The z value to use on the translation
+	 * @param sw The w value to use on the translation
+	 * @return mat The 4x4 translation matrix
 	 ***********************************************/
-	static Matrix4 translation(Vector4& vec);
+	static Matrix4 translation(float sx, float sy, float sz);
+
+	/********************************************/ /**
+	 * Returns the translation matrix according to the given parameters
+	 *
+	 * @param vec The parameters to use on the translation
+	 * @return mat The 4x4 translation matrix
+	 ***********************************************/
+	static Matrix4 translation(Vector3& vec);
 };
 
 

@@ -8,6 +8,8 @@
 #include<iostream>
 
 class Vector2;
+class Matrix3;
+class Matrix4;
 
 class Matrix2 {
 private:
@@ -32,6 +34,20 @@ public:
 	 * @param mat The array of arrays that specify our matrix cell's values
 	 ***********************************************/
 	Matrix2(float mat[2][2]);
+
+	/********************************************/ /**
+	* Function used to create a Matrix2 from a Matrix3
+	*
+	* @param vec The Matrix3 we want to get the coordinates from
+	***********************************************/
+	Matrix2(Matrix3& mat);
+
+	/********************************************/ /**
+	* Function used to create a Matrix2 from a Matrix4
+	*
+	* @param vec The Matrix4 we want to get the coordinates from
+	***********************************************/
+	Matrix2(Matrix4& mat);
 
 	/********************************************/ /**
 	 * Overloading of the << operator. Prints our Matrix
@@ -63,6 +79,13 @@ public:
 	void set(int row, int col, float val);
 
 	/********************************************/ /**
+	* Overloading of the [] operator to get a row
+	*
+	* @param val The row of the matrix
+	***********************************************/
+	float* operator[](int val);
+
+	/********************************************/ /**
 	 * Overloading of the + operator when summing two Matrix3
 	 *
 	 * @param mat The matrix3 we want to sum with
@@ -71,12 +94,45 @@ public:
 	Matrix2 operator+(const Matrix2& mat);
 
 	/********************************************/ /**
+	 * Overloading of the + operator when adding a matrix and a value
+	 *
+	 * @param val The value we want to add with
+	 * @return matSum The sum of a matrix and a val
+	 ***********************************************/
+	Matrix2 operator+(float val);
+
+	/********************************************/ /**
+	 * Overloading of the + operator when adding a matrix and a value
+	 *
+	 * @param val The value we want to add with
+	 * @return matSum The sum of a matrix and a val
+	 ***********************************************/
+	friend Matrix2 operator+(float val, Matrix2& mat);
+
+	/********************************************/ /**
 	 * Overloading of the - operator when subtracting two Matrix3
 	 *
 	 * @param mat The matrix3 we want to sub with
 	 * @return matSub The sub of the two matrices
 	 ***********************************************/
 	Matrix2 operator-(const Matrix2& mat);
+
+	/********************************************/ /**
+	 * Overloading of the - operator when subtracting a matrix and a value
+	 *
+	 * @param val The value we want to subtract with
+	 * @return matSub The subtraction of the two matrices
+	 ***********************************************/
+	Matrix2 operator-(float val);
+
+	/********************************************/ /**
+	 * Overloading of the - operator when subtracting a matrix and a value
+	 *
+	 * @param val The value we want to subtract with
+	 * @return matSub The subtraction of the two matrices
+	 ***********************************************/
+	friend Matrix2 operator-(float val, Matrix2& mat);
+
 
 	/********************************************/ /**
 	 * Overloading of the * operator when multiplying two Matrix3
@@ -142,11 +198,25 @@ public:
 	Matrix2& operator+=(const Matrix2& vec);
 
 	/********************************************/ /**
+	 * Overloading of the += operator. Assigns new coordinates to our matrix
+	 *
+	 * @param val The value we want to sum by
+	 ***********************************************/
+	Matrix2& operator+=(float val);
+
+	/********************************************/ /**
 	 * Overloading of the -= operator. Assigns new coordinates to our matrix
 	 *
 	 * @param mat The Matrix we want to sub to our Matrix
 	 ***********************************************/
 	Matrix2& operator-=(const Matrix2& vec);
+
+	/********************************************/ /**
+	 * Overloading of the -= operator. Assigns new coordinates to our matrix
+	 *
+	 * @param val The value we want to sub by
+	 ***********************************************/
+	Matrix2& operator-=(float val);
 
 	/********************************************/ /**
 	 * Overloading of the *= operator. Assigns new coordinates to our matrix

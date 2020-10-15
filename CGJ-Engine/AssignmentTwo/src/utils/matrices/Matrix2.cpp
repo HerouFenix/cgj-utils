@@ -1,4 +1,6 @@
 #include "../../../headers/matrices/Matrix2.h"
+#include "../../../headers/matrices/Matrix3.h"
+#include "../../../headers/matrices/Matrix4.h"
 
 #include "../../../headers/vectors/Vector2.h"
 
@@ -17,6 +19,22 @@ Matrix2::Matrix2(float val) {
 }
 
 Matrix2::Matrix2(float mat[2][2]) {
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matrix[row][col] = mat[row][col];
+		}
+	}
+}
+
+Matrix2::Matrix2(Matrix3& mat) {
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matrix[row][col] = mat[row][col];
+		}
+	}
+}
+
+Matrix2::Matrix2(Matrix4& mat) {
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
 			matrix[row][col] = mat[row][col];
@@ -62,6 +80,10 @@ void Matrix2::set(int row, int col, float val) {
 
 
 //Matrix2 Operations
+float* Matrix2::operator[](int val) {
+	return matrix[val];
+}
+
 Matrix2 Matrix2::operator+(const Matrix2& mat)
 {
 	/* NEEDLESS ASSERTION
@@ -81,12 +103,56 @@ Matrix2 Matrix2::operator+(const Matrix2& mat)
 	return matSum;
 }
 
+Matrix2 Matrix2::operator+(float val) {
+	Matrix2 matSum;
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matSum.matrix[row][col] = matrix[row][col] + val;
+		}
+	}
+
+	return matSum;
+}
+
+Matrix2 operator+(float val, Matrix2& mat) {
+	Matrix2 matSum;
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matSum.matrix[row][col] = mat.matrix[row][col] + val;
+		}
+	}
+
+	return matSum;
+}
+
 Matrix2 Matrix2::operator-(const Matrix2& mat)
 {
 	Matrix2 matSub;
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
 			matSub.matrix[row][col] = matrix[row][col] - mat.matrix[row][col];
+		}
+	}
+
+	return matSub;
+}
+
+Matrix2 Matrix2::operator-(float val) {
+	Matrix2 matSum;
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matSum.matrix[row][col] = matrix[row][col] - val;
+		}
+	}
+
+	return matSum;
+}
+
+Matrix2 operator-(float val, Matrix2& mat) {
+	Matrix2 matSub;
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matSub.matrix[row][col] = val - mat.matrix[row][col];
 		}
 	}
 
@@ -165,7 +231,7 @@ Matrix2 operator/(float val, Matrix2& mat)
 	Matrix2 matMul;
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
-			matMul.matrix[row][col] = mat.matrix[row][col] / val;
+			matMul.matrix[row][col] = val/mat.matrix[row][col];
 		}
 	}
 
@@ -183,10 +249,30 @@ Matrix2& Matrix2::operator+=(const Matrix2& mat) {
 	return *this;
 }
 
+Matrix2& Matrix2::operator+=(float val) {
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matrix[row][col] = matrix[row][col] + val;
+		}
+	}
+
+	return *this;
+}
+
 Matrix2& Matrix2::operator-=(const Matrix2& mat) {
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
 			matrix[row][col] = matrix[row][col] - mat.matrix[row][col];
+		}
+	}
+
+	return *this;
+}
+
+Matrix2& Matrix2::operator-=(float val) {
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			matrix[row][col] = matrix[row][col] - val;
 		}
 	}
 
