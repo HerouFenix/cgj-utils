@@ -78,6 +78,21 @@ float Matrix3::get(int row, int col) {
 	return matrix[row][col];
 }
 
+float* Matrix3::getMatrix() {
+	float arr[9] = { matrix[0][0],matrix[0][1],matrix[0][2], matrix[1][0],matrix[1][1],matrix[1][2], matrix[2][0],matrix[2][1],matrix[2][2] };
+	return arr;
+}
+
+float* Matrix3::getRowMajor() {
+	float arr[9] = { matrix[0][0],matrix[0][1],matrix[0][2], matrix[1][0],matrix[1][1],matrix[1][2], matrix[2][0],matrix[2][1],matrix[2][2]};
+	return arr;
+}
+
+float* Matrix3::getColMajor() {
+	float arr[9] = { matrix[0][0],matrix[1][0],matrix[2][0], matrix[0][1],matrix[1][1],matrix[2][1], matrix[0][2],matrix[1][2],matrix[2][2] };
+	return arr;
+}
+
 //Matrix3 Setters
 void Matrix3::set(int row, int col, float val) {
 	assert(row >= 0 && row < 3 && col >= 0 && col < 3);

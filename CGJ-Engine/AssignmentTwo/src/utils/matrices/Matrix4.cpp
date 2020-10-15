@@ -87,6 +87,21 @@ float Matrix4::get(int row, int col) {
 	return matrix[row][col];
 }
 
+float* Matrix4::getMatrix() {
+	float arr[16] = { matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3], matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3], matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3], matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3] };
+	return arr;
+}
+
+float* Matrix4::getRowMajor() {
+	float arr[16] = { matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3], matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3], matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3], matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3] };
+	return arr;
+}
+
+float* Matrix4::getColMajor() {
+	float arr[16] = { matrix[0][0],matrix[1][0],matrix[2][0],matrix[3][0], matrix[0][1],matrix[1][1],matrix[2][1],matrix[3][1], matrix[0][2],matrix[1][2],matrix[2][2],matrix[3][2], matrix[0][3],matrix[1][3],matrix[2][3],matrix[3][3] };
+	return arr;
+}
+
 //Matrix4 Setters
 void Matrix4::set(int row, int col, float val) {
 	assert(row >= 0 && row < 4 && col >= 0 && col < 4);

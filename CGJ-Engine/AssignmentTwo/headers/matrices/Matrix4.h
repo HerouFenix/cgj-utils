@@ -72,6 +72,27 @@ public:
 	float get(int row, int col);
 
 	/********************************************/ /**
+	 * Function used to get the matrix in array form
+	 *
+	 * @return arr The array corresponding to the matrix
+	 ***********************************************/
+	float* getMatrix();
+
+	/********************************************/ /**
+	* Function used to get the matrix in array form (Row Major)
+	*
+	* @return arr The array corresponding to the matrix
+	***********************************************/
+	float* getRowMajor();
+
+	/********************************************/ /**
+	* Function used to get the matrix in array form (Col Major)
+	*
+	* @return arr The array corresponding to the matrix
+	***********************************************/
+	float* getColMajor();
+
+	/********************************************/ /**
 	 * Function used to set a specific cell's value
 	 *
 	 * @param row The row of the cell
