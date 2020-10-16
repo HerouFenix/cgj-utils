@@ -70,18 +70,18 @@ public:
 	float get(int row, int col);
 
 	/********************************************/ /**
-	 * Function used to get the matrix in array form
-	 *
-	 * @return arr The array corresponding to the matrix
-	 ***********************************************/
-	float* getMatrix();
-
-	/********************************************/ /**
 	* Function used to get the matrix in array form (Row Major)
 	*
-	* @return arr The array corresponding to the matrix
+	* @param arr The array corresponding to the matrix
 	***********************************************/
-	float* getRowMajor();
+	void getRowMajor(float* arr);
+
+	/********************************************/ /**
+	* Function used to get the matrix in array form (Col Major)
+	*
+	* @param arr The array corresponding to the matrix
+	***********************************************/
+	void getColMajor(float* arr);
 
 	/********************************************/ /**
 	* Function used to get the matrix in array form (Col Major)
@@ -303,11 +303,11 @@ public:
 	Matrix2 transposed();
 
 	/********************************************/ /**
-	 * Converts a row major to column major and column major to row major (respectively)
+	 * Converts matrix to its transposed
 	 *
 	 * @return The converted matrix
 	 ***********************************************/
-	Matrix2 convertMajorOrder();
+	Matrix2& transpose();
 
 	/********************************************/ /**
 	 * Returns the matrix's determinant

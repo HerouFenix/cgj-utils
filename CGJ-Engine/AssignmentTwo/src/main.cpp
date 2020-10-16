@@ -19,15 +19,20 @@ int main() {
 	Matrix3 mat2(new float[3][3]{ {1,2,3},{4,5,6},{7,8,9} });
 	std::cout << "Matrix 2: " << mat2 << "\n";
 	std::cout << "Matrix 2 Row Major: ";
+	float rowMaj3x3[9];
+	mat2.getRowMajor(rowMaj3x3);
 	for (int i = 0; i < 9; i++)
-		std::cout << mat2.getRowMajor()[i] << " ";
-	std::cout << "\n";
-	std::cout << "Matrix 2 Col Major: ";
-	for (int i = 0; i < 9; i++)
-		std::cout << mat2.getColMajor()[i] << " ";
+		std::cout << rowMaj3x3[i] << " ";
 	std::cout << "\n";
 
-	std::cout << "Matrix 2 [2][2]: " << mat2.get(2,2) << "\n";
+	std::cout << "Matrix 2 Col Major: ";
+	float colMaj3x3[9];
+	mat2.getColMajor(colMaj3x3);
+	for (int i = 0; i < 9; i++)
+		std::cout << colMaj3x3[i] << " ";
+	std::cout << "\n";
+
+	std::cout << "Matrix 2 [2][2]: " << mat2.get(2, 2) << "\n";
 
 	std::cout << "Matrix 2 [1]: " << mat2[1] << "\n";
 	std::cout << "Matrix 2 [1][1]: " << mat2[1][1] << "\n";
@@ -54,7 +59,7 @@ int main() {
 	std::cout << "Matrix3: " << mat3 << "\n";
 
 	std::cout << "Matrix3 * 2 = " << mat3 * 2 << "\n";
-	std::cout << "1/2.0f * Matrix3 = " << 1/2.0f * mat3 << "\n";
+	std::cout << "1/2.0f * Matrix3 = " << 1 / 2.0f * mat3 << "\n";
 
 	std::cout << "Matrix3 + 2 = " << mat3 + 2 << "\n";
 	std::cout << "Matrix3 - 2 = " << mat3 - 2 << "\n";
@@ -70,8 +75,8 @@ int main() {
 	Vector3 vec1(1, 2, 3);
 	std::cout << "Vector1: " << vec1 << "\n";
 
-	std::cout << "Matrix3 * Vector1 = " << mat3*vec1 << "\n";
-	std::cout << "Vector1 * Matrix3 = " << vec1*mat3 << "\n\n";
+	std::cout << "Matrix3 * Vector1 = " << mat3 * vec1 << "\n";
+	std::cout << "Vector1 * Matrix3 = " << vec1 * mat3 << "\n\n";
 
 	std::cout << "Matrix2: " << mat2;
 	std::cout << "Vector1: " << vec1 << "\n";
@@ -82,7 +87,7 @@ int main() {
 	std::cout << "\n=======ASSIGNMENTS=======\n";
 	std::cout << "Matrix3: " << mat3;
 
-	vec1.set(1,2,3);
+	vec1.set(1, 2, 3);
 	std::cout << "Vector1: " << vec1 << "\n";
 
 	Matrix3 mat4;
@@ -139,8 +144,8 @@ int main() {
 	std::cout << "Transposed Matrix1: " << mat1.transposed();
 	std::cout << "Transposed Matrix2: " << mat2.transposed();
 
-	std::cout << "Col Major Matrix2: " << mat2.convertMajorOrder();
-	std::cout << "Row Major Matrix2: " << mat2.convertMajorOrder();
+	std::cout << "Col Major Matrix2: " << mat2.transpose();
+	std::cout << "Row Major Matrix2: " << mat2.transpose();
 
 	std::cout << "Determinant Matrix1: " << mat1.determinant() << "\n";
 	std::cout << "Determinant Matrix2: " << mat2.determinant() << "\n";
@@ -171,20 +176,24 @@ int main() {
 	std::cout << "=====================MATRIX 2x2=====================\n";
 
 	std::cout << "=======CONSTRUCTORS, SETTERS & GETTERS=======\n";
-
 	Matrix2 mat5;
 	std::cout << "Matrix 5: " << mat5 << "\n";
 
-	Matrix2 mat6(new float[2][2]{ {1,2},{3,4}});
+	Matrix2 mat6(new float[2][2]{ {1,2},{3,4} });
 	std::cout << "Matrix 6: " << mat6 << "\n";
 
 	std::cout << "Matrix 6 Row Major: ";
+	float rowMaj2x2[4];
+	mat6.getRowMajor(rowMaj2x2);
 	for (int i = 0; i < 4; i++)
-		std::cout << mat6.getRowMajor()[i] << " ";
+		std::cout << rowMaj2x2[i] << " ";
 	std::cout << "\n";
+
 	std::cout << "Matrix 6 Col Major: ";
+	float colMaj2x2[4];
+	mat6.getColMajor(colMaj2x2);
 	for (int i = 0; i < 4; i++)
-		std::cout << mat6.getColMajor()[i] << " ";
+		std::cout << colMaj2x2[i] << " ";
 	std::cout << "\n";
 
 	std::cout << "Matrix 6 [1][1]: " << mat6.get(1, 1) << "\n";
@@ -300,8 +309,8 @@ int main() {
 	std::cout << "Transposed Matrix 5: " << mat5.transposed();
 	std::cout << "Transposed Matrix 6: " << mat6.transposed();
 
-	std::cout << "Col Major Matrix 6: " << mat6.convertMajorOrder();
-	std::cout << "Row Major Matrix 6: " << mat6.convertMajorOrder();
+	std::cout << "Col Major Matrix 6: " << mat6.transpose();
+	std::cout << "Row Major Matrix 6: " << mat6.transpose();
 
 	std::cout << "Determinant Matrix 5: " << mat5.determinant() << "\n";
 	std::cout << "Determinant Matrix 6: " << mat6.determinant() << "\n";
@@ -335,12 +344,17 @@ int main() {
 	Matrix4 mat10(new float[4][4]{ {1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16} });
 	std::cout << "Matrix 10: " << mat10 << "\n";
 	std::cout << "Matrix 10 Row Major: ";
+	float rowMaj4x4[16];
+	mat10.getRowMajor(rowMaj4x4);
 	for (int i = 0; i < 16; i++)
-		std::cout << mat10.getRowMajor()[i] << " ";
+		std::cout << rowMaj4x4[i] << " ";
 	std::cout << "\n";
+
 	std::cout << "Matrix 10 Col Major: ";
+	float colMaj4x4[16];
+	mat10.getColMajor(colMaj4x4);
 	for (int i = 0; i < 16; i++)
-		std::cout << mat10.getColMajor()[i] << " ";
+		std::cout << colMaj4x4[i] << " ";
 	std::cout << "\n";
 
 	std::cout << "Matrix 10 [2][2]: " << mat10.get(2, 2) << "\n";
@@ -383,7 +397,7 @@ int main() {
 	std::cout << "\n=======MATRIX-VECTOR OPERATORS=======\n";
 	std::cout << "Matrix11: " << mat11;
 
-	Vector4 vec3(1, 2, 3,4);
+	Vector4 vec3(1, 2, 3, 4);
 	std::cout << "Vector3: " << vec3 << "\n";
 
 	std::cout << "Matrix11 * Vector3 = " << mat11 * vec3 << "\n";
@@ -398,7 +412,7 @@ int main() {
 	std::cout << "\n=======ASSIGNMENTS=======\n";
 	std::cout << "Matrix11: " << mat11;
 
-	vec3.set(1, 2, 3,4);
+	vec3.set(1, 2, 3, 4);
 	std::cout << "Vector3: " << vec3 << "\n";
 
 	Matrix4 mat12;
@@ -457,14 +471,14 @@ int main() {
 	std::cout << "Transposed Matrix9: " << mat9.transposed();
 	std::cout << "Transposed Matrix10: " << mat10.transposed();
 
-	std::cout << "Col Major Matrix10: " << mat10.convertMajorOrder();
-	std::cout << "Row Major Matrix10: " << mat10.convertMajorOrder();
+	std::cout << "Col Major Matrix10: " << mat10.transpose();
+	std::cout << "Row Major Matrix10: " << mat10.transpose();
 
 	std::cout << "Identity Matrix: " << Matrix3::identity();
 
 	vec1.set(1, 2, 3);
 	std::cout << "Scaling Matrix (Vector (1,2,3)): " << Matrix4::scaling(vec1) << "\n";
-	std::cout << "Scaling Matrix values (1,2,3)): " << Matrix4::scaling(1,2,3) << "\n\n";
+	std::cout << "Scaling Matrix values (1,2,3)): " << Matrix4::scaling(1, 2, 3) << "\n\n";
 
 	std::cout << "Transition Matrix (Vector (1,2,3)): " << Matrix4::translation(vec1) << "\n";
 	std::cout << "Transition Matrix values (1,2,3)): " << Matrix4::translation(1, 2, 3) << "\n\n";
@@ -472,12 +486,12 @@ int main() {
 	std::cout << "Rotation Matrix (Vector (1,2,3)): " << Matrix4::rotation(vec1) << "\n";
 	std::cout << "Rotation Matrix radians (1,2,3)): " << Matrix4::rotation(1, 2, 3) << "\n\n";
 
-	std::cout << "Rotation Matrix degrees (90,0,0)): " << Matrix4::rotation(90, 0,0, false, true) << "\n";
+	std::cout << "Rotation Matrix degrees (90,0,0)): " << Matrix4::rotation(90, 0, 0, false, true) << "\n";
 	std::cout << "RotationX Matrix 90 degrees: " << Matrix4::rotationX(90, false, true) << "\n";
-	std::cout << "RotationX Matrix 90 degrees == Rotation Matrix (90,0,0): " << (Matrix4::rotationX(90, false, true) == Matrix4::rotation(90, 0, 0, false, true))<< "\n\n";
+	std::cout << "RotationX Matrix 90 degrees == Rotation Matrix (90,0,0): " << (Matrix4::rotationX(90, false, true) == Matrix4::rotation(90, 0, 0, false, true)) << "\n\n";
 
 	std::cout << "Rotation Matrix degrees (0,90,0)): " << Matrix4::rotation(0, 90, 0, false, true) << "\n";
-	std::cout << "RotationY Matrix PI/2 radians: " << Matrix4::rotationY(PI/2, true, true) << "\n";
+	std::cout << "RotationY Matrix PI/2 radians: " << Matrix4::rotationY(PI / 2, true, true) << "\n";
 	std::cout << "RotationY Matrix 90 degrees == Rotation Matrix (0,90,0): " << (Matrix4::rotationY(90, false, true) == Matrix4::rotation(0, 90, 0, false, true)) << "\n\n";
 
 	std::cout << "Rotation Matrix degrees (0,0,90)): " << Matrix4::rotation(0, 0, 90, false, true) << "\n";
@@ -496,12 +510,51 @@ int main() {
 	Matrix4 matD = Matrix4::rotationX(90, false, true);
 	std::cout << "3D RotationX Matrix 90 degrees: " << Matrix3(matD) << "\n";
 
-	matD = Matrix4::rotationY(PI/2, true, true);
+	matD = Matrix4::rotationY(PI / 2, true, true);
 	std::cout << "3D RotationY Matrix PI/2 radians: " << Matrix3(matD) << "\n";
 
 	matD = Matrix4::rotationZ(90, false, true);
 	std::cout << "3D RotationZ Matrix 90 degrees: " << Matrix3(matD) << "\n";
 	std::cout << "=====================MATRIX 4x4=====================\n\n\n";
+
+	std::cout << "=====================CHALLENGE=====================\n";
+	Vector4 vec(0.5, 0, 0, 1);
+	Vector3 norm(0, 1, 0);
+
+	Matrix3 model(0.0);
+
+	//Scale vec by 2
+	Matrix4 scal = Matrix4::scaling(2, 2, 2);
+	std::cout << "Scaling by 2: " << scal << "\n";
+
+	// Rotate
+	Matrix4 rotat = Matrix4::rotationY(90, false, true);
+	std::cout << "Rotate 90º around Y: " << rotat << "\n";
+
+	// Translate
+	Vector3 transVec(1, 0, 0);
+	Matrix4 trans = Matrix4::translation(transVec);
+	std::cout << "Translation by (1,0,0): " << trans << "\n";
+
+
+	Matrix4 modelMatrix = trans * rotat * scal;
+	std::cout << "Model Matrix: " << modelMatrix << "\n";
+
+	Matrix3 modelMatrix3 = modelMatrix;
+	std::cout << "Model Matrix 3x3: " << modelMatrix3 << "\n";
+
+	Matrix3 inverseModel = modelMatrix3.inverse();
+	Matrix3 normalMatrix = inverseModel.transposed();
+	std::cout << "Normal Matrix: " << normalMatrix << "\n";
+
+	// Multiplications
+
+	Vector4 vecModelMul = modelMatrix * vec;
+	Vector3 normNormMul = normalMatrix * norm;
+	std::cout << "Vector * Model Matrix: " << vecModelMul << "\n";
+	std::cout << "Normal * Normal Matrix: " << normNormMul << "\n";
+
+	std::cout << "=====================CHALLENGE=====================\n\n\n";
 
 	return 0;
 }

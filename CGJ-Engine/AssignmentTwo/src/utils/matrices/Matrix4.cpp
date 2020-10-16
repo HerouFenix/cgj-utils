@@ -92,14 +92,22 @@ float* Matrix4::getMatrix() {
 	return arr;
 }
 
-float* Matrix4::getRowMajor() {
-	float arr[16] = { matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3], matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3], matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3], matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3] };
-	return arr;
+void Matrix4::getRowMajor(float* arr) {
+	int index = 0;
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+			arr[index++] = matrix[row][col];
+		}
+	}
 }
 
-float* Matrix4::getColMajor() {
-	float arr[16] = { matrix[0][0],matrix[1][0],matrix[2][0],matrix[3][0], matrix[0][1],matrix[1][1],matrix[2][1],matrix[3][1], matrix[0][2],matrix[1][2],matrix[2][2],matrix[3][2], matrix[0][3],matrix[1][3],matrix[2][3],matrix[3][3] };
-	return arr;
+void Matrix4::getColMajor(float* arr) {
+	int index = 0;
+	for (int col = 0; col < 4; col++) {
+		for (int row = 0; row < 4; row++) {
+			arr[index++] = matrix[row][col];
+		}
+	}
 }
 
 //Matrix4 Setters
@@ -421,7 +429,7 @@ Matrix4 Matrix4::transposed() {
 	return trans;
 }
 
-Matrix4 Matrix4::convertMajorOrder() {
+Matrix4& Matrix4::transpose() {
 
 	*this = transposed();
 
@@ -432,12 +440,16 @@ Matrix4 Matrix4::identity() {
 	return Matrix4(new float[4][4]{ {1,0,0},{0,1,0},{0,0,1} });
 }
 
-Matrix4 Matrix4::scaling(float sx, float sy, float sz) {
-	return Matrix4(new float[4][4]{ {sx,0,0,0}, {0,sy,0,0}, {0,0,sz,0}, {0,0,0,1} });
+Matrix4 Matrix4::scaling(float sx, float sy, float sz, float sw) {
+	return Matrix4(new float[4][4]{ {sx,0,0,0}, {0,sy,0,0}, {0,0,sz,0}, {0,0,0,sw} });
 }
 
 Matrix4 Matrix4::scaling(Vector3& vec) {
 	return Matrix4(new float[4][4]{ {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,1} });
+}
+
+Matrix4 Matrix4::scaling(Vector4& vec) {
+	return Matrix4(new float[4][4]{ {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,vec.getW()} });
 }
 
 Matrix4 Matrix4::translation(float sx, float sy, float sz) {

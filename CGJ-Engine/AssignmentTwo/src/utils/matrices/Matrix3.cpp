@@ -83,16 +83,23 @@ float* Matrix3::getMatrix() {
 	return arr;
 }
 
-float* Matrix3::getRowMajor() {
-	float arr[9] = { matrix[0][0],matrix[0][1],matrix[0][2], matrix[1][0],matrix[1][1],matrix[1][2], matrix[2][0],matrix[2][1],matrix[2][2]};
-	return arr;
+void Matrix3::getRowMajor(float* arr) {
+	int index = 0;
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			arr[index++] = matrix[row][col];
+		}
+	}
 }
 
-float* Matrix3::getColMajor() {
-	float arr[9] = { matrix[0][0],matrix[1][0],matrix[2][0], matrix[0][1],matrix[1][1],matrix[2][1], matrix[0][2],matrix[1][2],matrix[2][2] };
-	return arr;
+void Matrix3::getColMajor(float* arr) {
+	int index = 0;
+	for (int col = 0; col < 3; col++) {
+		for (int row = 0; row < 3; row++) {
+			arr[index++] = matrix[row][col];
+		}
+	}
 }
-
 //Matrix3 Setters
 void Matrix3::set(int row, int col, float val) {
 	assert(row >= 0 && row < 3 && col >= 0 && col < 3);
@@ -408,8 +415,7 @@ Matrix3 Matrix3::transposed() {
 	return trans;
 }
 
-Matrix3 Matrix3::convertMajorOrder() {  
-
+Matrix3& Matrix3::transpose() {
 	*this = transposed();
 
 	return *this;

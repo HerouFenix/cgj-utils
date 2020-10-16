@@ -79,16 +79,16 @@ class Matrix3 {
 		/********************************************/ /**
 		* Function used to get the matrix in array form (Row Major)
 		*
-		* @return arr The array corresponding to the matrix
+		* @param arr The array corresponding to the matrix
 		***********************************************/
-		float* getRowMajor();
+		void getRowMajor(float* arr);
 
 		/********************************************/ /**
 		* Function used to get the matrix in array form (Col Major)
 		*
-		* @return arr The array corresponding to the matrix
+		* @param arr The array corresponding to the matrix
 		***********************************************/
-		float* getColMajor();
+		void getColMajor(float* arr);
 
 		/********************************************/ /**
 		 * Function used to set a specific cell's value
@@ -303,11 +303,11 @@ class Matrix3 {
 		Matrix3 transposed();
 
 		/********************************************/ /**
-		 * Converts a row major to column major and column major to row major (respectively)
-		 *
-		 * @return The converted matrix
-		 ***********************************************/
-		Matrix3 convertMajorOrder();
+		* Converts matrix to its transposed
+		*
+		* @return The converted matrix
+		***********************************************/
+		Matrix3& transpose();
 
 		/********************************************/ /**
 		 * Returns the matrix's determinant

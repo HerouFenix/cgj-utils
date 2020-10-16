@@ -72,14 +72,22 @@ float Matrix2::get(int row, int col) {
 	return matrix[row][col];
 }
 
-float* Matrix2::getMatrix() {
-	float arr[4] = { matrix[0][0],matrix[0][1],matrix[1][0],matrix[1][1]};
-	return arr;
+void Matrix2::getRowMajor(float* arr) {
+	int index = 0;
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			arr[index++] = matrix[row][col];
+		}
+	}
 }
 
-float* Matrix2::getRowMajor() {
-	float arr[4] = { matrix[0][0],matrix[0][1],matrix[1][0],matrix[1][1]};
-	return arr;
+void Matrix2::getColMajor(float* arr) {
+	int index = 0;
+	for (int col = 0; col < 2; col++) {
+		for (int row = 0; row < 2; row++) {
+			arr[index++] = matrix[row][col];
+		}
+	}
 }
 
 float* Matrix2::getColMajor() {
@@ -389,14 +397,8 @@ Matrix2 Matrix2::transposed() {
 	return trans;
 }
 
-Matrix2 Matrix2::convertMajorOrder() {
-	Matrix2 trans = this->transposed();
-
-	for (int row = 0; row < 2; row++) {
-		for (int col = 0; col < 2; col++) {
-			matrix[row][col] = trans.matrix[row][col];
-		}
-	}
+Matrix2& Matrix2::transpose() {
+	*this = transposed();
 
 	return *this;
 }

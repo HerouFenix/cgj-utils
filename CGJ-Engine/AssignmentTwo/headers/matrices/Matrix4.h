@@ -81,16 +81,16 @@ public:
 	/********************************************/ /**
 	* Function used to get the matrix in array form (Row Major)
 	*
-	* @return arr The array corresponding to the matrix
+	* @param arr The array corresponding to the matrix
 	***********************************************/
-	float* getRowMajor();
+	void getRowMajor(float* arr);
 
 	/********************************************/ /**
 	* Function used to get the matrix in array form (Col Major)
 	*
-	* @return arr The array corresponding to the matrix
+	* @param arr The array corresponding to the matrix
 	***********************************************/
-	float* getColMajor();
+	void getColMajor(float* arr);
 
 	/********************************************/ /**
 	 * Function used to set a specific cell's value
@@ -305,11 +305,11 @@ public:
 	Matrix4 transposed();
 
 	/********************************************/ /**
-	 * Converts a row major to column major and column major to row major (respectively)
+	 * Converts matrix to its transposed
 	 *
 	 * @return The converted matrix
 	 ***********************************************/
-	Matrix4 convertMajorOrder();
+	Matrix4& transpose();
 
 	/********************************************/ /**
 	 * Returns the identity matrix
@@ -327,7 +327,7 @@ public:
 	 * @param sw The w value to use on the scaling
 	 * @return mat The 4x4 scaling matrix
 	 ***********************************************/
-	static Matrix4 scaling(float sx, float sy, float sz);
+	static Matrix4 scaling(float sx, float sy, float sz, float sw = 1);
 
 	/********************************************/ /**
 	 * Returns the scaling matrix according to the given parameters
@@ -336,6 +336,14 @@ public:
 	 * @return mat The 4x4 scaling matrix
 	 ***********************************************/
 	static Matrix4 scaling(Vector3& vec);
+
+	/********************************************/ /**
+	 * Returns the scaling matrix according to the given parameters
+	 *
+	 * @param vec The parameters to use on the scaling
+	 * @return mat The 4x4 scaling matrix
+	 ***********************************************/
+	static Matrix4 scaling(Vector4& vec);
 
 	/********************************************/ /**
 	 * Returns the rotation matrix according to the given parameters
