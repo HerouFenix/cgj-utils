@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssignmentTwo", "Assignment
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGJ-Engine", "CGJ-Engine\CGJ-Engine.vcxproj", "{AEF2C0C3-13DC-42E3-8A29-821B9CDC5D93}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssignmentThree", "AssignmentThree\AssignmentThree.vcxproj", "{BDAC428F-6084-4B33-A012-BEB2EB26B748}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{AEF2C0C3-13DC-42E3-8A29-821B9CDC5D93}.Release|x64.Build.0 = Release|x64
 		{AEF2C0C3-13DC-42E3-8A29-821B9CDC5D93}.Release|x86.ActiveCfg = Release|Win32
 		{AEF2C0C3-13DC-42E3-8A29-821B9CDC5D93}.Release|x86.Build.0 = Release|Win32
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Debug|x64.ActiveCfg = Debug|x64
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Debug|x64.Build.0 = Debug|x64
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Debug|x86.ActiveCfg = Debug|Win32
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Debug|x86.Build.0 = Debug|Win32
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x64.ActiveCfg = Release|x64
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x64.Build.0 = Release|x64
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x86.ActiveCfg = Release|Win32
+		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
