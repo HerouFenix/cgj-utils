@@ -1,23 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-// Assignment 1 consists in the following:
-//
-// - Update your graphics drivers to their latest versions.
-// - Download the appropriate libraries GLEW and GLFW for your system.
-// - Create a project to compile, link and run the code provided in this 
-//   section in your favourite programming environment 
-//   (course will use VS2019 Community Edition).
-// - Verify what OpenGL contexts your computer can support, a minimum of 
-//   OpenGL 3.3 support is required for this course.
-//
-// Further suggestions to verify your understanding of the concepts explored:
-// - Create an abstract class for an OpenGL application.
-// - Change the program so display is called at 30 FPS.
-//
-// (c)2013-20 by Carlos Martinho
-//
-///////////////////////////////////////////////////////////////////////////////
-
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -260,7 +240,7 @@ void setupOpenGL(int winx, int winy)
 #if _DEBUG
 	checkOpenGLInfo();
 #endif
-	glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
