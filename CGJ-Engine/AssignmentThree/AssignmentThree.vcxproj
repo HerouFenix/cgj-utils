@@ -20,6 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\utils\matrices\Matrix2.cpp" />
+    <ClCompile Include="src\utils\matrices\Matrix3.cpp" />
+    <ClCompile Include="src\utils\matrices\Matrix4.cpp" />
+    <ClCompile Include="src\utils\vectors\Vector2.cpp" />
+    <ClCompile Include="src\utils\vectors\Vector3.cpp" />
+    <ClCompile Include="src\utils\vectors\Vector4.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="headers\matrices\Matrix2.h" />
+    <ClInclude Include="headers\matrices\Matrix3.h" />
+    <ClInclude Include="headers\matrices\Matrix4.h" />
+    <ClInclude Include="headers\vectors\Vector2.h" />
+    <ClInclude Include="headers\vectors\Vector3.h" />
+    <ClInclude Include="headers\vectors\Vector4.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -25,6 +25,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
 static const std::string errorSource(GLenum source)
@@ -318,12 +319,61 @@ void run(GLFWwindow* win)
 		double elapsed_time = time - last_time;
 		last_time = time;
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		display_callback(win, elapsed_time);
-		glfwSwapBuffers(win);
-		glfwPollEvents();
-
 		//checkOpenGLError("ERROR: MAIN/RUN");
+
+		float points[] = {
+			0.0f,  0.5f,  0.0f,
+			0.5f, -0.5f,  0.0f,
+			-0.5f, -0.5f,  0.0f
+		};
+
+		GLuint vbo = 0;
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+
+		GLuint vao = 0;
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+
+
+		const char* vertexShader =
+			"#version 400\n"
+			"in vec3 vp;"
+			"void main() {"
+			"  gl_Position = vec4(vp, 1.0);"
+			"}";
+
+		const char* fragmentShader =
+			"#version 400\n"
+			"out vec4 frag_colour;"
+			"void main() {"
+			"  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
+			"}";
+
+		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vs, 1, &vertexShader, NULL);
+		glCompileShader(vs);
+		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fs, 1, &fragmentShader, NULL);
+		glCompileShader(fs);
+
+		GLuint shader_programme = glCreateProgram();
+		glAttachShader(shader_programme, fs);
+		glAttachShader(shader_programme, vs);
+		glLinkProgram(shader_programme);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(shader_programme);
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glfwPollEvents();
+		glfwSwapBuffers(win);
+
 	}
 	glfwDestroyWindow(win);
 	glfwTerminate();
@@ -333,13 +383,97 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	int gl_major = 4, gl_minor = 3;
-	int is_fullscreen = 0;
-	int is_vsync = 1;
-	GLFWwindow* win = setup(gl_major, gl_minor, 
-		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
-	run(win);
-	exit(EXIT_SUCCESS);
+	// start GL context and O/S window using the GLFW helper library
+	if (!glfwInit()) {
+		fprintf(stderr, "ERROR: could not start GLFW3\n");
+		return 1;
+	}
+
+	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello Triangle", NULL, NULL);
+	if (!window) {
+		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
+		glfwTerminate();
+		return 1;
+	}
+	glfwMakeContextCurrent(window);
+
+	// start GLEW extension handler
+	glewExperimental = GL_TRUE;
+	glewInit();
+
+	// get version info
+	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
+	const GLubyte* version = glGetString(GL_VERSION); // version as a string
+	printf("Renderer: %s\n", renderer);
+	printf("OpenGL version supported %s\n", version);
+
+	// tell GL to only draw onto a pixel if the shape is closer to the viewer
+	glEnable(GL_DEPTH_TEST); // enable depth-testing
+	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+
+	/* OTHER STUFF GOES HERE NEXT */
+
+	while (!glfwWindowShouldClose(window))
+	{
+
+		float sq[] = {
+			-0.5f,  0.5f,  0.0f,
+			0.5f,  0.5f,  0.0f,
+			0.5f, -0.5f,  0.0f,
+			-0.5f,  -0.5f,  0.0f,
+		};
+
+		GLuint vbo = 0;
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), sq, GL_STATIC_DRAW);
+
+		GLuint vao = 0;
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+
+
+		const char* vertexShader =
+			"#version 400\n"
+			"in vec3 vp;"
+			"void main() {"
+			"  gl_Position = vec4(vp, 1.0);"
+			"}";
+
+		const char* fragmentShader =
+			"#version 400\n"
+			"out vec4 frag_colour;"
+			"void main() {"
+			"  frag_colour = vec4(1.0, 0.0, 0.0, 1.0);"
+			"}";
+
+		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vs, 1, &vertexShader, NULL);
+		glCompileShader(vs);
+		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fs, 1, &fragmentShader, NULL);
+		glCompileShader(fs);
+
+		GLuint shader_programme = glCreateProgram();
+		glAttachShader(shader_programme, fs);
+		glAttachShader(shader_programme, vs);
+		glLinkProgram(shader_programme);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(shader_programme);
+		glBindVertexArray(vao);
+		glDrawArrays(GL_POLYGON, 0, 4);
+		glfwPollEvents();
+		glfwSwapBuffers(window);
+
+	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
+
 }
 
 /////////////////////////////////////////////////////////////////////////// END
