@@ -56,5 +56,12 @@
     <ClInclude Include="headers\vectors\Vector4.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\Shader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Vertex.shader" />
+    <None Include="resources\shaders\Fragment.shader" />
   </ItemGroup>
 </Project>
