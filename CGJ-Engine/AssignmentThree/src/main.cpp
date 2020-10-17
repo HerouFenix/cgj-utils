@@ -201,6 +201,12 @@ void destroyShaderProgram()
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
+// Vertex Buffer Object (VBO):
+//		- Array of bytes (memory) 
+//		- A blob of memory in our VRAM (stores data used to represent shapes)
+
+// Vertex Attribute Object (VAO):
+//		-
 
 typedef struct
 {
@@ -232,9 +238,9 @@ void createBufferObjects()
 		{
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
 			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	// Attribute 1 - Positions of the vertices
 			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW)); // Attribute 2 - Colors of the vertices
 		}
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
 		{
@@ -278,8 +284,8 @@ const Matrix I = {
 }; // Row Major (GLSL is Column Major)
 
 const Matrix R = {
-	-1.0f, 0.0f,  0.0f, 0.0f,
-	0.0f,  -1.0f,  0.0f, 0.0f,
+	0.707f, -0.707f,  0.0f, 0.0f,
+	0.707f,  0.707f,  0.0f, 0.0f,
 	0.0f,  0.0f,  1.0f,  0.0f,
 	0.0f,  0.0f,  0.0f,  1.0f
 }; // Row Major (GLSL is Column Major)
@@ -288,10 +294,11 @@ void drawScene()
 {
 	// Drawing directly in clip space
 
+	//Sellect VAO to be drawn
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
 
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I);
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
 	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
 	//glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
