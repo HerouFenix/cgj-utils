@@ -6,6 +6,16 @@
 #include <GLFW/glfw3.h>
 
 
+#define VERTICES 0
+#define COLORS 1
+
+GLuint VaoId, VboId[2];
+GLuint VertexShaderId, FragmentShaderId, ProgramId;
+GLint UniformId;
+
+#define ERROR_CALLBACK
+#ifdef  ERROR_CALLBACK
+
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
 static const std::string errorSource(GLenum source)
@@ -55,7 +65,9 @@ static void error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsize
 	std::cerr << "  source:     " << errorSource(source) << std::endl;
 	std::cerr << "  type:       " << errorType(type) << std::endl;
 	std::cerr << "  severity:   " << errorSeverity(severity) << std::endl;
-	std::cerr << "  debug call: " << std::endl << message << std::endl << std::endl;
+	std::cerr << "  debug call: " << std::endl << message << std::endl;
+	std::cerr << "Press <return>.";
+	std::cin.ignore();
 }
 
 void setupErrorCallback()
@@ -64,14 +76,17 @@ void setupErrorCallback()
 	glDebugMessageCallback(error, 0);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_TRUE);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
 	// params: source, type, severity, count, ids, enabled
 }
+
+#else // ERROR_CALLBACK
 
 ///////////////////////////////////////////////// ERROR HANDLING (All versions)
 
 static const std::string errorString(GLenum error)
 {
-	switch(error) {
+	switch (error) {
 	case GL_NO_ERROR:
 		return "No error has been recorded.";
 	case GL_INVALID_ENUM:
@@ -92,7 +107,7 @@ static const std::string errorString(GLenum error)
 	}
 }
 
-static bool isOpenGLError() 
+static bool isOpenGLError()
 {
 	bool isError = false;
 	GLenum errCode;
@@ -111,57 +126,213 @@ static void checkOpenGLError(std::string error)
 	}
 }
 
+#endif // ERROR_CALLBACK
+
+/////////////////////////////////////////////////////////////////////// SHADERs
+
+const GLchar* VertexShader =
+{
+	"#version 330 core\n"
+
+	"in vec4 in_Position;\n"
+	"in vec4 in_Color;\n"
+	"out vec4 ex_Color;\n"
+
+	"uniform mat4 Matrix;\n"
+
+	"void main(void)\n"
+	"{\n"
+	"	gl_Position = Matrix * in_Position;\n"
+	"	ex_Color = in_Color;\n"
+	"}\n"
+};
+
+const GLchar* FragmentShader =
+{
+	"#version 330 core\n"
+
+	"in vec4 ex_Color;\n"
+	"out vec4 out_Color;\n"
+
+	"void main(void)\n"
+	"{\n"
+	"	out_Color = ex_Color;\n"
+	"}\n"
+};
+
+void createShaderProgram()
+{
+	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
+	glCompileShader(VertexShaderId);
+
+	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
+	glCompileShader(FragmentShaderId);
+
+	ProgramId = glCreateProgram();
+	glAttachShader(ProgramId, VertexShaderId);
+	glAttachShader(ProgramId, FragmentShaderId);
+
+	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
+	glBindAttribLocation(ProgramId, COLORS, "in_Color");
+
+	glLinkProgram(ProgramId);
+	UniformId = glGetUniformLocation(ProgramId, "Matrix");
+
+	glDetachShader(ProgramId, VertexShaderId);
+	glDeleteShader(VertexShaderId);
+	glDetachShader(ProgramId, FragmentShaderId);
+	glDeleteShader(FragmentShaderId);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not create shaders.");
+#endif
+}
+
+void destroyShaderProgram()
+{
+	glUseProgram(0);
+	glDeleteProgram(ProgramId);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not destroy shaders.");
+#endif
+}
+
+/////////////////////////////////////////////////////////////////////// VAOs & VBOs
+// Vertex Buffer Object (VBO):
+//		- Array of bytes (memory) 
+//		- A blob of memory in our VRAM (stores data used to represent shapes)
+
+// Vertex Attribute Object (VAO):
+//		-
+
+typedef struct
+{
+	GLfloat XYZW[4];
+	GLfloat RGBA[4];
+} Vertex;
+
+const Vertex Vertices[] =
+{
+	{{ -0.25f, -0.25f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{  0.25f, -0.25f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.25f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+	{{  -0.25f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }}
+};
+
+const GLubyte Indices[] =
+{
+	0,1,2,3
+};
+
+void createBufferObjects()
+{
+	glGenVertexArrays(1, &VaoId);
+	glBindVertexArray(VaoId);
+	{
+		glGenBuffers(2, VboId);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+		{
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	// Attribute 1 - Positions of the vertices
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW)); // Attribute 2 - Colors of the vertices
+		}
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+		}
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
+#endif
+}
+
+void destroyBufferObjects()
+{
+	glBindVertexArray(VaoId);
+	glDisableVertexAttribArray(VERTICES);
+	glDisableVertexAttribArray(COLORS);
+	glDeleteBuffers(2, VboId);
+	glDeleteVertexArrays(1, &VaoId);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
+#endif
+}
+
+/////////////////////////////////////////////////////////////////////// SCENE
+
+typedef GLfloat Matrix[16];
+
+const Matrix I = {
+	1.0f,  0.0f,  0.0f,  0.0f,
+	0.0f,  1.0f,  0.0f,  0.0f,
+	0.0f,  0.0f,  1.0f,  0.0f,
+	0.0f,  0.0f,  0.0f,  1.0f
+}; // Row Major (GLSL is Column Major)
+
+const Matrix R = {
+	0.707f, -0.707f,  0.0f, 0.0f,
+	0.707f,  0.707f,  0.0f, 0.0f,
+	0.0f,  0.0f,  1.0f,  0.0f,
+	0.0f,  0.0f,  0.0f,  1.0f
+}; // Row Major (GLSL is Column Major)
+
+void drawScene()
+{
+	// Drawing directly in clip space
+
+	//Sellect VAO to be drawn
+	glBindVertexArray(VaoId);
+	glUseProgram(ProgramId);
+
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+	//glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
+	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+	glUseProgram(0);
+	glBindVertexArray(0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not draw scene.");
+#endif
+}
+
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
 void window_close_callback(GLFWwindow* win)
 {
-	std::cout << "closing..." << std::endl;
+	destroyShaderProgram();
+	destroyBufferObjects();
 }
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
-	std::cout << "size: " << winx << " " << winy << std::endl;
 	glViewport(0, 0, winx, winy);
 }
-
-void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
-{
-	std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(win, GLFW_TRUE);
-		window_close_callback(win);
-	}
-}
-
-void mouse_callback(GLFWwindow* win, double xpos, double ypos)
-{
-	std::cout << "mouse: " << xpos << " " << ypos << std::endl;
-}
-
-void mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
-{
-	std::cout << "button: " << button << " " << action << " " << mods << std::endl;
-}
-
-void scroll_callback(GLFWwindow* win, double xoffset, double yoffset)
-{
-	std::cout << "scroll: " << xoffset << " " << yoffset << std::endl;
-}
-
-void joystick_callback(int jid, int event)
-{
-	std::cout << "joystick: " << jid << " " << event << std::endl;
-}
-
-///////////////////////////////////////////////////////////////////////// SETUP
 
 void glfw_error_callback(int error, const char* description)
 {
 	std::cerr << "GLFW Error: " << description << std::endl;
 }
 
-GLFWwindow* setupWindow(int winx, int winy, const char* title, 
+///////////////////////////////////////////////////////////////////////// SETUP
+
+GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	int is_fullscreen, int is_vsync)
 {
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
@@ -178,17 +349,11 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 
 void setupCallbacks(GLFWwindow* win)
 {
-	glfwSetKeyCallback(win, key_callback);
-	glfwSetCursorPosCallback(win, mouse_callback);
-	glfwSetMouseButtonCallback(win, mouse_button_callback);
-	glfwSetScrollCallback(win, scroll_callback);
-	glfwSetJoystickCallback(joystick_callback);
-
 	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 }
 
-GLFWwindow* setupGLFW(int gl_major, int gl_minor, 
+GLFWwindow* setupGLFW(int gl_major, int gl_minor,
 	int winx, int winy, const char* title, int is_fullscreen, int is_vsync)
 {
 	glfwSetErrorCallback(glfw_error_callback);
@@ -215,7 +380,7 @@ void setupGLEW()
 	// Allow extension entry points to be loaded even if the extension isn't 
 	// present in the driver's extensions string.
 	GLenum result = glewInit();
-	if (result != GLEW_OK) 
+	if (result != GLEW_OK)
 	{
 		std::cerr << "ERROR glewInit: " << glewGetString(result) << std::endl;
 		exit(EXIT_FAILURE);
@@ -252,42 +417,26 @@ void setupOpenGL(int winx, int winy)
 	glViewport(0, 0, winx, winy);
 }
 
-GLFWwindow* setup(int major, int minor, 
+GLFWwindow* setup(int major, int minor,
 	int winx, int winy, const char* title, int is_fullscreen, int is_vsync)
 {
-	GLFWwindow* win = 
+	GLFWwindow* win =
 		setupGLFW(major, minor, winx, winy, title, is_fullscreen, is_vsync);
 	setupGLEW();
 	setupOpenGL(winx, winy);
+#ifdef ERROR_CALLBACK
 	setupErrorCallback();
+#endif
+	createShaderProgram();
+	createBufferObjects();
 	return win;
 }
 
 ////////////////////////////////////////////////////////////////////////// RUN
 
-void updateFPS(GLFWwindow* win, double elapsed_sec)
-{	
-	static unsigned int acc_frames = 0;
-	static double acc_time = 0.0;
-	const double UPDATE_TIME = 1.0;
-
-	++acc_frames;
-	acc_time += elapsed_sec;
-	if (acc_time > UPDATE_TIME)
-	{
-		std::ostringstream oss;
-		double fps = acc_frames / acc_time;
-		oss << std::fixed << std::setw(5) << std::setprecision(1) << fps << " FPS";
-		glfwSetWindowTitle(win, oss.str().c_str());
-
-		acc_frames = 0;
-		acc_time = 0.0;
-	}
-}
-
-void display_callback(GLFWwindow* win, double elapsed_sec)
+void display(GLFWwindow* win, double elapsed_sec)
 {
-	updateFPS(win, elapsed_sec);
+	drawScene();
 }
 
 void run(GLFWwindow* win)
@@ -299,61 +448,14 @@ void run(GLFWwindow* win)
 		double elapsed_time = time - last_time;
 		last_time = time;
 
-		//checkOpenGLError("ERROR: MAIN/RUN");
-
-		float points[] = {
-			0.0f,  0.5f,  0.0f,
-			0.5f, -0.5f,  0.0f,
-			-0.5f, -0.5f,  0.0f
-		};
-
-		GLuint vbo = 0;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
-
-		GLuint vao = 0;
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-
-
-		const char* vertexShader =
-			"#version 400\n"
-			"in vec3 vp;"
-			"void main() {"
-			"  gl_Position = vec4(vp, 1.0);"
-			"}";
-
-		const char* fragmentShader =
-			"#version 400\n"
-			"out vec4 frag_colour;"
-			"void main() {"
-			"  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
-			"}";
-
-		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vs, 1, &vertexShader, NULL);
-		glCompileShader(vs);
-		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fs, 1, &fragmentShader, NULL);
-		glCompileShader(fs);
-
-		GLuint shader_programme = glCreateProgram();
-		glAttachShader(shader_programme, fs);
-		glAttachShader(shader_programme, vs);
-		glLinkProgram(shader_programme);
-
+		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(shader_programme);
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glfwPollEvents();
+		display(win, elapsed_time);
 		glfwSwapBuffers(win);
-
+		glfwPollEvents();
+#ifndef ERROR_CALLBACK
+		checkOpenGLError("ERROR: MAIN/RUN");
+#endif
 	}
 	glfwDestroyWindow(win);
 	glfwTerminate();
@@ -363,97 +465,13 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	// start GL context and O/S window using the GLFW helper library
-	if (!glfwInit()) {
-		fprintf(stderr, "ERROR: could not start GLFW3\n");
-		return 1;
-	}
-
-	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello Triangle", NULL, NULL);
-	if (!window) {
-		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
-		glfwTerminate();
-		return 1;
-	}
-	glfwMakeContextCurrent(window);
-
-	// start GLEW extension handler
-	glewExperimental = GL_TRUE;
-	glewInit();
-
-	// get version info
-	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
-	const GLubyte* version = glGetString(GL_VERSION); // version as a string
-	printf("Renderer: %s\n", renderer);
-	printf("OpenGL version supported %s\n", version);
-
-	// tell GL to only draw onto a pixel if the shape is closer to the viewer
-	glEnable(GL_DEPTH_TEST); // enable depth-testing
-	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-
-	/* OTHER STUFF GOES HERE NEXT */
-
-	while (!glfwWindowShouldClose(window))
-	{
-
-		float sq[] = {
-			-0.5f,  0.5f,  0.0f,
-			0.5f,  0.5f,  0.0f,
-			0.5f, -0.5f,  0.0f,
-			-0.5f,  -0.5f,  0.0f,
-		};
-
-		GLuint vbo = 0;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), sq, GL_STATIC_DRAW);
-
-		GLuint vao = 0;
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-
-
-		const char* vertexShader =
-			"#version 400\n"
-			"in vec3 vp;"
-			"void main() {"
-			"  gl_Position = vec4(vp, 1.0);"
-			"}";
-
-		const char* fragmentShader =
-			"#version 400\n"
-			"out vec4 frag_colour;"
-			"void main() {"
-			"  frag_colour = vec4(1.0, 0.0, 0.0, 1.0);"
-			"}";
-
-		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vs, 1, &vertexShader, NULL);
-		glCompileShader(vs);
-		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fs, 1, &fragmentShader, NULL);
-		glCompileShader(fs);
-
-		GLuint shader_programme = glCreateProgram();
-		glAttachShader(shader_programme, fs);
-		glAttachShader(shader_programme, vs);
-		glLinkProgram(shader_programme);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(shader_programme);
-		glBindVertexArray(vao);
-		glDrawArrays(GL_POLYGON, 0, 4);
-		glfwPollEvents();
-		glfwSwapBuffers(window);
-
-	}
-	glfwDestroyWindow(window);
-	glfwTerminate();
-
+	int gl_major = 4, gl_minor = 3;
+	int is_fullscreen = 0;
+	int is_vsync = 1;
+	GLFWwindow* win = setup(gl_major, gl_minor,
+		640, 480, "Tetromino", is_fullscreen, is_vsync);
+	run(win);
+	exit(EXIT_SUCCESS);
 }
 
 /////////////////////////////////////////////////////////////////////////// END
