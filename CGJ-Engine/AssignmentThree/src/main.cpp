@@ -216,15 +216,35 @@ typedef struct
 
 const Vertex Vertices[] =
 {
-	{{ -0.25f, -0.25f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{  0.25f, -0.25f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.25f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-	{{  -0.25f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }}
+	{{ -0.25f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{  0.f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+	{{  -0.25f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+
+	{{ 0.01f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{  0.26f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.26f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+	{{  0.01f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+
+	{{ 0.27f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{  0.52f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.52f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+	{{  0.27f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+
+	{{ 0.53f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{  0.77f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.77f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+	{{  0.53f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+
+	{{ 0.53f, 0.26f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{  0.77f, 0.26f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.77f,  0.51f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
+	{{  0.53f,  0.51f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }}
 };
 
 const GLubyte Indices[] =
 {
-	0,1,2,3
+	0,1,2,3, 4,5,6,7, 8,9,10,11, 12,13,14,15, 16,17,18,19
 };
 
 void createBufferObjects()
@@ -300,6 +320,10 @@ void drawScene()
 
 	glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
 	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)4);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)8);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)12);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)16);
 
 	//glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
 	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
