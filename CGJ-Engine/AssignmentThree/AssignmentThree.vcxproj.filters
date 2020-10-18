@@ -36,6 +36,18 @@
     <ClCompile Include="src\utils\vectors\Vector4.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_I.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_L.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_RL.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\matrices\Matrix2.h">
@@ -54,6 +66,12 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="headers\vectors\Vector4.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vertex\Vertex.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\shapes\Tetromino.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

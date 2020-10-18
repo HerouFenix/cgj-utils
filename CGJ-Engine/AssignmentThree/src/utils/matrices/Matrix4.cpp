@@ -436,7 +436,7 @@ Matrix4& Matrix4::transpose() {
 }
 
 Matrix4 Matrix4::identity() {
-	return Matrix4(new float[4][4]{ {1,0,0},{0,1,0},{0,0,1} });
+	return Matrix4(new float[4][4]{ {1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1} });
 }
 
 Matrix4 Matrix4::scaling(float sx, float sy, float sz, float sw) {

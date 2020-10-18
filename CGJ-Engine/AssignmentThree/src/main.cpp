@@ -5,6 +5,17 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../headers/vectors/Vector3.h"
+#include "../headers/vectors/Vector2.h"
+#include "../headers/vectors/Vector4.h"
+
+#include "../headers/matrices/Matrix3.h"
+#include "../headers/matrices/Matrix2.h"
+#include "../headers/matrices/Matrix4.h"
+
+
+#include "../headers/shapes/Tetromino.h"
+
 
 #define VERTICES 0
 #define COLORS 1
@@ -208,47 +219,17 @@ void destroyShaderProgram()
 // Vertex Attribute Object (VAO):
 //		-
 
-typedef struct
-{
-	GLfloat XYZW[4];
-	GLfloat RGBA[4];
-} Vertex;
 
-const Vertex Vertices[] =
-{
-	{{ -0.25f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{  0.f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-	{{  -0.25f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-
-	{{ 0.01f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{  0.26f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.26f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-	{{  0.01f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-
-	{{ 0.27f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{  0.52f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.52f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-	{{  0.27f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-
-	{{ 0.53f, 0.f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{  0.77f, 0.f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.77f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-	{{  0.53f,  0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-
-	{{ 0.53f, 0.26f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{  0.77f, 0.26f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.77f,  0.51f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }},
-	{{  0.53f,  0.51f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }}
-};
-
-const GLubyte Indices[] =
-{
-	0,1,2,3, 4,5,6,7, 8,9,10,11, 12,13,14,15, 16,17,18,19
-};
+Tetromino_L I_shape;
 
 void createBufferObjects()
 {
+	Vertex vertices[4];
+	I_shape.getVertices(vertices);
+
+	unsigned char indices[4];
+	I_shape.getIndices(indices);
+
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 	{
@@ -256,15 +237,15 @@ void createBufferObjects()
 
 		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
 		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 			glEnableVertexAttribArray(VERTICES);
 			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	// Attribute 1 - Positions of the vertices
 			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW)); // Attribute 2 - Colors of the vertices
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(vertices[0].positions)); // Attribute 2 - Colors of the vertices
 		}
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
 		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 		}
 	}
 	glBindVertexArray(0);
@@ -294,39 +275,59 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-typedef GLfloat Matrix[16];
+typedef float Matrix[16];
 
 const Matrix I = {
 	1.0f,  0.0f,  0.0f,  0.0f,
 	0.0f,  1.0f,  0.0f,  0.0f,
 	0.0f,  0.0f,  1.0f,  0.0f,
 	0.0f,  0.0f,  0.0f,  1.0f
-}; // Row Major (GLSL is Column Major)
-
+};
 const Matrix R = {
 	0.707f, -0.707f,  0.0f, 0.0f,
 	0.707f,  0.707f,  0.0f, 0.0f,
 	0.0f,  0.0f,  1.0f,  0.0f,
 	0.0f,  0.0f,  0.0f,  1.0f
-}; // Row Major (GLSL is Column Major)
+};
+
+int again = 0;
 
 void drawScene()
 {
+	if (again) {
+		I_shape.transform(Matrix4::rotationZ(45, false));
+		again = 0;
+	}
 	// Drawing directly in clip space
 
 	//Sellect VAO to be drawn
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
 
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)4);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)8);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)12);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)16);
 
-	//glUniformMatrix4fv(UniformId, 1, GL_TRUE, R);
-	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
+	float matrix[16];
+	I_shape.getTransforms()[0].getRowMajor(matrix);
+
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+
+	I_shape.getTransforms()[1].getRowMajor(matrix);
+
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+
+	I_shape.getTransforms()[2].getRowMajor(matrix);
+
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+
+	I_shape.getTransforms()[3].getRowMajor(matrix);
+
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -493,7 +494,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 480, "Tetromino", is_fullscreen, is_vsync);
+		1080, 1080, "Tetromino", is_fullscreen, is_vsync);
 	run(win);
 	exit(EXIT_SUCCESS);
 }
