@@ -14,13 +14,19 @@
 #include "../headers/matrices/Matrix4.h"
 
 
-#include "../headers/shapes/Tetromino.h"
+#include "../headers/scene/SceneManager.h"
 
 
 #define VERTICES 0
 #define COLORS 1
 
-GLuint VaoId, VboId[2];
+typedef struct
+{
+	GLuint VaoId;
+	GLuint VboId[2];
+} Shape;
+
+Shape shapesBuffers[4];
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLint UniformId;
 
@@ -220,37 +226,58 @@ void destroyShaderProgram()
 //		-
 
 
-Tetromino_I I_shape;
+SceneManager sceneManager;
 
 void createBufferObjects()
 {
-	Vertex vertices[4];
-	I_shape.getVertices(vertices);
+	int sqPiece = sceneManager.createSQPiece();
+	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
 
-	unsigned char indices[4];
-	I_shape.getIndices(indices);
+	int lPiece = sceneManager.createLPiece();
+	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
+	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.115,0.04,0));
 
-	glGenVertexArrays(1, &VaoId);
-	glBindVertexArray(VaoId);
-	{
-		glGenBuffers(2, VboId);
+	int rlPiece = sceneManager.createRLPiece();
+	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
+	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.04, -0.115, 0));
 
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+	int iPiece = sceneManager.createIPiece();
+	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
+	sceneManager.transformPiece(iPiece, Matrix4::translation(0.115, 0.115, 0));
+
+	int index = 0;
+	for (Tetromino piece : sceneManager.getPieces()) {
+		Vertex vertices[4];
+		piece.getVertices(vertices);
+
+		unsigned char indices[4];
+		piece.getIndices(indices);
+
+		glGenVertexArrays(1, &shapesBuffers[index].VaoId);
+		glBindVertexArray(shapesBuffers[index].VaoId);
 		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	// Attribute 1 - Positions of the vertices
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(vertices[0].positions)); // Attribute 2 - Colors of the vertices
+			glGenBuffers(2, shapesBuffers[index].VboId);
+
+			glBindBuffer(GL_ARRAY_BUFFER, shapesBuffers[index].VboId[0]);
+			{
+				glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+				glEnableVertexAttribArray(VERTICES);
+				glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	// Attribute 1 - Positions of the vertices
+				glEnableVertexAttribArray(COLORS);
+				glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(vertices[0].positions)); // Attribute 2 - Colors of the vertices
+			}
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shapesBuffers[index].VboId[1]);
+			{
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+			}
 		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		}
+
+		index++;
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
@@ -259,14 +286,16 @@ void createBufferObjects()
 
 void destroyBufferObjects()
 {
-	glBindVertexArray(VaoId);
-	glDisableVertexAttribArray(VERTICES);
-	glDisableVertexAttribArray(COLORS);
-	glDeleteBuffers(2, VboId);
-	glDeleteVertexArrays(1, &VaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	for (Shape shape : shapesBuffers) {
+		glBindVertexArray(shape.VaoId);
+		glDisableVertexAttribArray(VERTICES);
+		glDisableVertexAttribArray(COLORS);
+		glDeleteBuffers(2, shape.VboId);
+		glDeleteVertexArrays(1, &shape.VaoId);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
@@ -290,44 +319,27 @@ const Matrix R = {
 	0.0f,  0.0f,  0.0f,  1.0f
 };
 
-int again = 0;
 
 void drawScene()
 {
-	if (again) {
-		I_shape.transform(Matrix4::rotationZ(90, false, true));
-		again = 0;
-	}
 	// Drawing directly in clip space
 
 	//Sellect VAO to be drawn
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
+	for (int i = 0; i < sceneManager.getSize(); i++) {
+		glBindVertexArray(shapesBuffers[i].VaoId);
+		glUseProgram(ProgramId);
 
+		Tetromino currentPiece = sceneManager.getPieceAt(i);
 
-	float matrix[16];
-	I_shape.getTransforms()[0].getRowMajor(matrix);
+		for (int j = 0; j < 4; j++) {
+			float matrix[16];
+			currentPiece.getTransforms()[j].getRowMajor(matrix);
 
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+			glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
+			glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
-
-	I_shape.getTransforms()[1].getRowMajor(matrix);
-
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
-
-
-	I_shape.getTransforms()[2].getRowMajor(matrix);
-
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
-
-
-	I_shape.getTransforms()[3].getRowMajor(matrix);
-
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
+		}
+	}
 
 	glUseProgram(0);
 	glBindVertexArray(0);

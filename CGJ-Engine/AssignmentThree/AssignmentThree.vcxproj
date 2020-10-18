@@ -23,6 +23,7 @@
     <ClCompile Include="src\utils\matrices\Matrix2.cpp" />
     <ClCompile Include="src\utils\matrices\Matrix3.cpp" />
     <ClCompile Include="src\utils\matrices\Matrix4.cpp" />
+    <ClCompile Include="src\utils\scene\SceneManager.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_I.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_L.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="headers\matrices\Matrix2.h" />
     <ClInclude Include="headers\matrices\Matrix3.h" />
     <ClInclude Include="headers\matrices\Matrix4.h" />
+    <ClInclude Include="headers\scene\SceneManager.h" />
     <ClInclude Include="headers\shapes\Tetromino.h" />
     <ClInclude Include="headers\vectors\Vector2.h" />
     <ClInclude Include="headers\vectors\Vector3.h" />

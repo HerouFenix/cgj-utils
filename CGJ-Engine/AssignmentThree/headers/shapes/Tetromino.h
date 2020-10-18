@@ -1,9 +1,6 @@
 #ifndef TETROMINO
 #define TETROMINO
 
-#define VERTICES 0
-#define COLORS 1
-
 // Tetromino I CLASS HEADER
 /// Class used to create, manipulate and draw a Tetromino I shape
 #include<iostream>

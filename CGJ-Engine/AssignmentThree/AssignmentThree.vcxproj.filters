@@ -51,6 +51,9 @@
     <ClCompile Include="src\utils\shapes\Tetromino_SQ.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\scene\SceneManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\matrices\Matrix2.h">
@@ -75,6 +78,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="headers\shapes\Tetromino.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\scene\SceneManager.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

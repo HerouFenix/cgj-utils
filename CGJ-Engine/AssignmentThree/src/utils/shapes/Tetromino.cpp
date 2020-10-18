@@ -42,14 +42,9 @@ Tetromino::Tetromino(Vector4 center) {
 	vertices[3].positions = Vector4(center.getX() - 0.05f, center.getY() + 0.05f, center.getZ(), 1.0f);
 
 	// Set base square colours
-	srand(time(NULL));
 	float r = (float)(rand() % 256) / 255;
 	float g = (float)(rand() % 256) / 255;
 	float b = (float)(rand() % 256) / 255;
-
-	std::cout << r << "\n";
-	std::cout << g << "\n";
-	std::cout << b << "\n";
 
 	vertices[0].colour[0] = r; vertices[0].colour[1] = g; vertices[0].colour[2] = b; vertices[0].colour[3] = 1.0f;
 	vertices[1].colour[0] = r; vertices[1].colour[1] = g; vertices[1].colour[2] = b; vertices[1].colour[3] = 1.0f;
