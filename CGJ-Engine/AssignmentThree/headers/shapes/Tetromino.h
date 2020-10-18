@@ -134,10 +134,33 @@ public:
 	Tetromino_RL(float colour[4], Vector4 center = Vector4());
 
 	/********************************************/ /**
-	* Creates a new Tetromino L with a random colour
+	* Creates a new Tetromino Reverse L with a random colour
 	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
 	***********************************************/
 	Tetromino_RL(Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Resets all transformations made
+	***********************************************/
+	void reset();
+
+};
+
+class Tetromino_SQ : public Tetromino {
+public:
+	// FUNCTION DECLARATIONS
+	/********************************************/ /**
+	* Creates a new Tetromino Square
+	* @param colour - An int array containing information on R,G,B,A. Values should range from 0 to 255.
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	***********************************************/
+	Tetromino_SQ(float colour[4], Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Creates a new Tetromino Square with a random colour
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	***********************************************/
+	Tetromino_SQ(Vector4 center = Vector4());
 
 	/********************************************/ /**
 	* Resets all transformations made

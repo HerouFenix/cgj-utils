@@ -220,7 +220,7 @@ void destroyShaderProgram()
 //		-
 
 
-Tetromino_L I_shape;
+Tetromino_I I_shape;
 
 void createBufferObjects()
 {
@@ -295,7 +295,7 @@ int again = 0;
 void drawScene()
 {
 	if (again) {
-		I_shape.transform(Matrix4::rotationZ(45, false));
+		I_shape.transform(Matrix4::rotationZ(90, false, true));
 		again = 0;
 	}
 	// Drawing directly in clip space
@@ -494,7 +494,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		1080, 1080, "Tetromino", is_fullscreen, is_vsync);
+		920, 920, "Tetromino", is_fullscreen, is_vsync);
 	run(win);
 	exit(EXIT_SUCCESS);
 }
