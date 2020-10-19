@@ -54,6 +54,15 @@
     <ClCompile Include="src\utils\scene\SceneManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_T.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_S.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_RS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\matrices\Matrix2.h">

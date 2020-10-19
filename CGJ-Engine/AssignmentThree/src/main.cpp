@@ -26,7 +26,7 @@ typedef struct
 	GLuint VboId[2];
 } Shape;
 
-Shape shapesBuffers[4];
+Shape shapesBuffers[7];
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLint UniformId;
 
@@ -245,6 +245,19 @@ void createBufferObjects()
 	sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
 
+
+	int tPiece = sceneManager.createTPiece();
+	sceneManager.transformPiece(tPiece, Matrix4::translation(0.55, 0.11, 0));
+	sceneManager.transformPiece(tPiece, Matrix4::rotationZ(45, false, true));
+
+	int sPiece = sceneManager.createSPiece();
+	sceneManager.transformPiece(sPiece, Matrix4::translation(0.44, 0.0, 0));
+	sceneManager.transformPiece(sPiece, Matrix4::rotationZ(45, false, true));
+
+	int rsPiece = sceneManager.createRSPiece();
+	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
+	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
+
 	int index = 0;
 	for (Tetromino piece : sceneManager.getPieces()) {
 		Vertex vertices[4];
@@ -303,22 +316,6 @@ void destroyBufferObjects()
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
-
-typedef float Matrix[16];
-
-const Matrix I = {
-	1.0f,  0.0f,  0.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,  0.0f,
-	0.0f,  0.0f,  1.0f,  0.0f,
-	0.0f,  0.0f,  0.0f,  1.0f
-};
-const Matrix R = {
-	0.707f, -0.707f,  0.0f, 0.0f,
-	0.707f,  0.707f,  0.0f, 0.0f,
-	0.0f,  0.0f,  1.0f,  0.0f,
-	0.0f,  0.0f,  0.0f,  1.0f
-};
-
 
 void drawScene()
 {

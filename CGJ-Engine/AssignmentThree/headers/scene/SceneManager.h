@@ -99,6 +99,51 @@ public:
 	int createSQPiece(Vector4 center = Vector4());
 
 	/********************************************/ /**
+	* Creates and adds a new T piece
+	* @param colour - An int array containing information on R,G,B,A. Values should range from 0 to 255.
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	* @return The index of the the newly created T piece
+	***********************************************/
+	int createTPiece(float colour[4], Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Creates and adds a new T piece
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	* @return The index of the the newly created T piece
+	***********************************************/
+	int createTPiece(Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Creates and adds a new S piece
+	* @param colour - An int array containing information on R,G,B,A. Values should range from 0 to 255.
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	* @return The index of the the newly created S piece
+	***********************************************/
+	int createSPiece(float colour[4], Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Creates and adds a new S piece
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	* @return The index of the the newly created S piece
+	***********************************************/
+	int createSPiece(Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Creates and adds a new RS piece
+	* @param colour - An int array containing information on R,G,B,A. Values should range from 0 to 255.
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	* @return The index of the the newly created RS piece
+	***********************************************/
+	int createRSPiece(float colour[4], Vector4 center = Vector4());
+
+	/********************************************/ /**
+	* Creates and adds a new RS piece
+	* @param center - A Vector4 specifying the center position of the shape. (0,0,0,0) by default
+	* @return The index of the the newly created RS piece
+	***********************************************/
+	int createRSPiece(Vector4 center = Vector4());
+
+	/********************************************/ /**
 	* Transforms a piece at a given index
 	* @param The index of the the index of the piece
 	* @param The transformation matrix

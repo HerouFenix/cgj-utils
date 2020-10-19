@@ -86,6 +86,54 @@ int SceneManager::createSQPiece(Vector4 center)
 	return currentSize - 1;
 }
 
+int SceneManager::createTPiece(float colour[4], Vector4 center)
+{
+	sceneShapes.push_back(Tetromino_T(colour, center));
+	currentSize++;
+
+	return currentSize - 1;
+}
+
+int SceneManager::createTPiece(Vector4 center)
+{
+	sceneShapes.push_back(Tetromino_T(center));
+	currentSize++;
+
+	return currentSize - 1;
+}
+
+int SceneManager::createSPiece(float colour[4], Vector4 center)
+{
+	sceneShapes.push_back(Tetromino_S(colour, center));
+	currentSize++;
+
+	return currentSize - 1;
+}
+
+int SceneManager::createSPiece(Vector4 center)
+{
+	sceneShapes.push_back(Tetromino_S(center));
+	currentSize++;
+
+	return currentSize - 1;
+}
+
+int SceneManager::createRSPiece(float colour[4], Vector4 center)
+{
+	sceneShapes.push_back(Tetromino_RS(colour, center));
+	currentSize++;
+
+	return currentSize - 1;
+}
+
+int SceneManager::createRSPiece(Vector4 center)
+{
+	sceneShapes.push_back(Tetromino_RS(center));
+	currentSize++;
+
+	return currentSize - 1;
+}
+
 void SceneManager::transformPiece(int index, Matrix4 mat)
 {
 	sceneShapes.at(index).transform(mat);
