@@ -234,16 +234,16 @@ void createBufferObjects()
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
 
 	int lPiece = sceneManager.createLPiece();
+	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22,-0.11,0));
 	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
-	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.115,0.04,0));
 
 	int rlPiece = sceneManager.createRLPiece();
+	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11,-0.11, 0));
 	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
-	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.04, -0.115, 0));
 
 	int iPiece = sceneManager.createIPiece();
+	sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
-	sceneManager.transformPiece(iPiece, Matrix4::translation(0.115, 0.115, 0));
 
 	int index = 0;
 	for (Tetromino piece : sceneManager.getPieces()) {

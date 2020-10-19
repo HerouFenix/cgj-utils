@@ -40,6 +40,10 @@ Tetromino::Tetromino(Vector4 center) {
 	vertices[1].positions = Vector4(center.getX() + 0.05f, center.getY() - 0.05f, center.getZ(), 1.0f);
 	vertices[2].positions = Vector4(center.getX() + 0.05f, center.getY() + 0.05f, center.getZ(), 1.0f);
 	vertices[3].positions = Vector4(center.getX() - 0.05f, center.getY() + 0.05f, center.getZ(), 1.0f);
+	/*vertices[0].positions = Vector4(center.getX() - 0.00f, center.getY() - 0.00f, center.getZ(), 1.0f);
+	vertices[1].positions = Vector4(center.getX() + 0.10f, center.getY() - 0.00f, center.getZ(), 1.0f);
+	vertices[2].positions = Vector4(center.getX() + 0.10f, center.getY() + 0.10f, center.getZ(), 1.0f);
+	vertices[3].positions = Vector4(center.getX() - 0.00f, center.getY() + 0.10f, center.getZ(), 1.0f);*/
 
 	// Set base square colours
 	float r = (float)(rand() % 256) / 255;
