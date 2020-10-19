@@ -230,34 +230,6 @@ SceneManager sceneManager;
 
 void createBufferObjects()
 {
-	int sqPiece = sceneManager.createSQPiece();
-	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
-
-	int lPiece = sceneManager.createLPiece();
-	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22,-0.11,0));
-	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
-
-	int rlPiece = sceneManager.createRLPiece();
-	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11,-0.11, 0));
-	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
-
-	int iPiece = sceneManager.createIPiece();
-	sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
-	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
-
-
-	int tPiece = sceneManager.createTPiece();
-	sceneManager.transformPiece(tPiece, Matrix4::translation(0.55, 0.11, 0));
-	sceneManager.transformPiece(tPiece, Matrix4::rotationZ(45, false, true));
-
-	int sPiece = sceneManager.createSPiece();
-	sceneManager.transformPiece(sPiece, Matrix4::translation(0.44, 0.0, 0));
-	sceneManager.transformPiece(sPiece, Matrix4::rotationZ(45, false, true));
-
-	int rsPiece = sceneManager.createRSPiece();
-	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
-	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
-
 	int index = 0;
 	for (Tetromino piece : sceneManager.getPieces()) {
 		Vertex vertices[4];
@@ -320,11 +292,11 @@ void destroyBufferObjects()
 void drawScene()
 {
 	// Drawing directly in clip space
+	glUseProgram(ProgramId);
 
 	//Sellect VAO to be drawn
 	for (int i = 0; i < sceneManager.getSize(); i++) {
 		glBindVertexArray(shapesBuffers[i].VaoId);
-		glUseProgram(ProgramId);
 
 		Tetromino currentPiece = sceneManager.getPieceAt(i);
 
@@ -499,6 +471,39 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+	// DRAW SCENE //
+
+	int sqPiece = sceneManager.createSQPiece();
+	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
+
+	int lPiece = sceneManager.createLPiece();
+	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22, -0.11, 0));
+	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
+
+	int rlPiece = sceneManager.createRLPiece();
+	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11, -0.11, 0));
+	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
+
+	int iPiece = sceneManager.createIPiece();
+	sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
+	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
+
+	/////////////////////////////////////////////////////////////////////
+
+	int tPiece = sceneManager.createTPiece();
+	sceneManager.transformPiece(tPiece, Matrix4::translation(0.55, 0.11, 0));
+	sceneManager.transformPiece(tPiece, Matrix4::rotationZ(45, false, true));
+
+	int sPiece = sceneManager.createSPiece();
+	sceneManager.transformPiece(sPiece, Matrix4::translation(0.44, 0.0, 0));
+	sceneManager.transformPiece(sPiece, Matrix4::rotationZ(45, false, true));
+
+	int rsPiece = sceneManager.createRSPiece();
+	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
+	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
+
+
+
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
