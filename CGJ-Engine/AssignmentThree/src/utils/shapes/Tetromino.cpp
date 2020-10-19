@@ -32,6 +32,8 @@ Tetromino::Tetromino(float colour[4], Vector4 center) {
 
 	identity[0][3] = -0.11f;
 	transforms[3] = identity;
+
+	rendered = false;
 }
 
 Tetromino::Tetromino(Vector4 center) {
@@ -54,6 +56,8 @@ Tetromino::Tetromino(Vector4 center) {
 	vertices[1].colour[0] = r; vertices[1].colour[1] = g; vertices[1].colour[2] = b; vertices[1].colour[3] = 1.0f;
 	vertices[2].colour[0] = r; vertices[2].colour[1] = g; vertices[2].colour[2] = b; vertices[2].colour[3] = 1.0f;
 	vertices[3].colour[0] = r; vertices[3].colour[1] = g; vertices[3].colour[2] = b; vertices[3].colour[3] = 1.0f;
+
+	rendered = false;
 }
 
 Vertex* Tetromino::getVertices()

@@ -18,6 +18,7 @@ protected:
 	Vertex vertices[4];	// Vertices of the base square
 	Matrix4 transforms[4];	// Transform matrices used to draw entire shape
 	unsigned char indices[4] = { 0,1,2,3 };
+	bool rendered;
 public: 
 	// FUNCTION DECLARATIONS
 	/********************************************/ /**
@@ -72,6 +73,16 @@ public:
 	* Resets all transformations made
 	***********************************************/
 	void reset();
+
+	/********************************************/ /**
+	* Sets the shape as rendered
+	***********************************************/
+	void setAsRendered();
+
+	/********************************************/ /**
+	* Sets the shape as rendered
+	***********************************************/
+	bool IsRendered();
 };
 
 class Tetromino_I: public Tetromino {

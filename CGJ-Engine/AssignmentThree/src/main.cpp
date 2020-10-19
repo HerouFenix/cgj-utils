@@ -15,316 +15,51 @@
 
 
 #include "../headers/scene/SceneManager.h"
-
-
-#define VERTICES 0
-#define COLORS 1
-
-typedef struct
-{
-	GLuint VaoId;
-	GLuint VboId[2];
-} Shape;
-
-Shape shapesBuffers[7];
-GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLint UniformId;
-
-#define ERROR_CALLBACK
-#ifdef  ERROR_CALLBACK
-
-////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
-
-static const std::string errorSource(GLenum source)
-{
-	switch (source) {
-	case GL_DEBUG_SOURCE_API:				return "API";
-	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:		return "window system";
-	case GL_DEBUG_SOURCE_SHADER_COMPILER:	return "shader compiler";
-	case GL_DEBUG_SOURCE_THIRD_PARTY:		return "third party";
-	case GL_DEBUG_SOURCE_APPLICATION:		return "application";
-	case GL_DEBUG_SOURCE_OTHER:				return "other";
-	default:								exit(EXIT_FAILURE);
-	}
-}
-
-static const std::string errorType(GLenum type)
-{
-	switch (type) {
-	case GL_DEBUG_TYPE_ERROR:				return "error";
-	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:	return "deprecated behavior";
-	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:	return "undefined behavior";
-	case GL_DEBUG_TYPE_PORTABILITY:			return "portability issue";
-	case GL_DEBUG_TYPE_PERFORMANCE:			return "performance issue";
-	case GL_DEBUG_TYPE_MARKER:				return "stream annotation";
-	case GL_DEBUG_TYPE_PUSH_GROUP:			return "push group";
-	case GL_DEBUG_TYPE_POP_GROUP:			return "pop group";
-	case GL_DEBUG_TYPE_OTHER_ARB:			return "other";
-	default:								exit(EXIT_FAILURE);
-	}
-}
-
-static const std::string errorSeverity(GLenum severity)
-{
-	switch (severity) {
-	case GL_DEBUG_SEVERITY_HIGH:			return "high";
-	case GL_DEBUG_SEVERITY_MEDIUM:			return "medium";
-	case GL_DEBUG_SEVERITY_LOW:				return "low";
-	case GL_DEBUG_SEVERITY_NOTIFICATION:	return "notification";
-	default:								exit(EXIT_FAILURE);
-	}
-}
-
-static void error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-	const GLchar* message, const void* userParam)
-{
-	std::cerr << "GL ERROR:" << std::endl;
-	std::cerr << "  source:     " << errorSource(source) << std::endl;
-	std::cerr << "  type:       " << errorType(type) << std::endl;
-	std::cerr << "  severity:   " << errorSeverity(severity) << std::endl;
-	std::cerr << "  debug call: " << std::endl << message << std::endl;
-	std::cerr << "Press <return>.";
-	std::cin.ignore();
-}
-
-void setupErrorCallback()
-{
-	glEnable(GL_DEBUG_OUTPUT);
-	glDebugMessageCallback(error, 0);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_TRUE);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
-	// params: source, type, severity, count, ids, enabled
-}
-
-#else // ERROR_CALLBACK
-
-///////////////////////////////////////////////// ERROR HANDLING (All versions)
-
-static const std::string errorString(GLenum error)
-{
-	switch (error) {
-	case GL_NO_ERROR:
-		return "No error has been recorded.";
-	case GL_INVALID_ENUM:
-		return "An unacceptable value is specified for an enumerated argument.";
-	case GL_INVALID_VALUE:
-		return "A numeric argument is out of range.";
-	case GL_INVALID_OPERATION:
-		return "The specified operation is not allowed in the current state.";
-	case GL_INVALID_FRAMEBUFFER_OPERATION:
-		return "The framebuffer object is not complete.";
-	case GL_OUT_OF_MEMORY:
-		return "There is not enough memory left to execute the command.";
-	case GL_STACK_UNDERFLOW:
-		return "An attempt has been made to perform an operation that would cause an internal stack to underflow.";
-	case GL_STACK_OVERFLOW:
-		return "An attempt has been made to perform an operation that would cause an internal stack to overflow.";
-	default: exit(EXIT_FAILURE);
-	}
-}
-
-static bool isOpenGLError()
-{
-	bool isError = false;
-	GLenum errCode;
-	while ((errCode = glGetError()) != GL_NO_ERROR) {
-		isError = true;
-		std::cerr << "OpenGL ERROR [" << errorString(errCode) << "]." << std::endl;
-	}
-	return isError;
-}
-
-static void checkOpenGLError(std::string error)
-{
-	if (isOpenGLError()) {
-		std::cerr << error << std::endl;
-		exit(EXIT_FAILURE);
-	}
-}
-
-#endif // ERROR_CALLBACK
-
-/////////////////////////////////////////////////////////////////////// SHADERs
-
-const GLchar* VertexShader =
-{
-	"#version 330 core\n"
-
-	"in vec4 in_Position;\n"
-	"in vec4 in_Color;\n"
-	"out vec4 ex_Color;\n"
-
-	"uniform mat4 Matrix;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	gl_Position = Matrix * in_Position;\n"
-	"	ex_Color = in_Color;\n"
-	"}\n"
-};
-
-const GLchar* FragmentShader =
-{
-	"#version 330 core\n"
-
-	"in vec4 ex_Color;\n"
-	"out vec4 out_Color;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	out_Color = ex_Color;\n"
-	"}\n"
-};
-
-void createShaderProgram()
-{
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
-	glCompileShader(VertexShaderId);
-
-	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
-	glCompileShader(FragmentShaderId);
-
-	ProgramId = glCreateProgram();
-	glAttachShader(ProgramId, VertexShaderId);
-	glAttachShader(ProgramId, FragmentShaderId);
-
-	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
-	glBindAttribLocation(ProgramId, COLORS, "in_Color");
-
-	glLinkProgram(ProgramId);
-	UniformId = glGetUniformLocation(ProgramId, "Matrix");
-
-	glDetachShader(ProgramId, VertexShaderId);
-	glDeleteShader(VertexShaderId);
-	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(FragmentShaderId);
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not create shaders.");
-#endif
-}
-
-void destroyShaderProgram()
-{
-	glUseProgram(0);
-	glDeleteProgram(ProgramId);
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not destroy shaders.");
-#endif
-}
-
-/////////////////////////////////////////////////////////////////////// VAOs & VBOs
-// Vertex Buffer Object (VBO):
-//		- Array of bytes (memory) 
-//		- A blob of memory in our VRAM (stores data used to represent shapes)
-
-// Vertex Attribute Object (VAO):
-//		-
+#include "../headers/drawing/VertexArray.h"
+#include "../headers/drawing/VertexBufferLayout.h"
 
 
 SceneManager sceneManager;
 
-void createBufferObjects()
-{
-	int index = 0;
-	for (Tetromino piece : sceneManager.getPieces()) {
-		Vertex vertices[4];
-		piece.getVertices(vertices);
 
-		unsigned char indices[4];
-		piece.getIndices(indices);
-
-		glGenVertexArrays(1, &shapesBuffers[index].VaoId);
-		glBindVertexArray(shapesBuffers[index].VaoId);
-		{
-			glGenBuffers(2, shapesBuffers[index].VboId);
-
-			glBindBuffer(GL_ARRAY_BUFFER, shapesBuffers[index].VboId[0]);
-			{
-				glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-				glEnableVertexAttribArray(VERTICES);
-				glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	// Attribute 1 - Positions of the vertices
-				glEnableVertexAttribArray(COLORS);
-				glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(vertices[0].positions)); // Attribute 2 - Colors of the vertices
-			}
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shapesBuffers[index].VboId[1]);
-			{
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-			}
-		}
-
-		index++;
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
-#endif
-}
-
-void destroyBufferObjects()
-{
-	for (Shape shape : shapesBuffers) {
-		glBindVertexArray(shape.VaoId);
-		glDisableVertexAttribArray(VERTICES);
-		glDisableVertexAttribArray(COLORS);
-		glDeleteBuffers(2, shape.VboId);
-		glDeleteVertexArrays(1, &shape.VaoId);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-	}
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
-#endif
-}
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-void drawScene()
+void drawScene_Tetramino()
 {
-	// Drawing directly in clip space
-	glUseProgram(ProgramId);
+	Renderer renderer;
 
-	//Sellect VAO to be drawn
+	Shader shader("resources/shaders/Basic.shader");
+
+	GLuint indices[] = {0, 1, 2, 3};
+	IndexBuffer ib(indices, 4);
+
+	VertexBufferLayout layout;
+	layout.Push<float>(4);
+	layout.Push<float>(4);
+
+	VertexArray va;
+	VertexBuffer vb(0, 4 * 8 * sizeof(float));
 	for (int i = 0; i < sceneManager.getSize(); i++) {
-		glBindVertexArray(shapesBuffers[i].VaoId);
-
-		Tetromino currentPiece = sceneManager.getPieceAt(i);
-
+		Vertex vertices[4];
+		sceneManager.getPieceAt(i).getVertices(vertices);
+		vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
+		shader.Bind();
+		va.Bind();
+		ib.Bind();
+		va.AddBuffer(vb, layout);
 		for (int j = 0; j < 4; j++) {
 			float matrix[16];
-			currentPiece.getTransforms()[j].getRowMajor(matrix);
-
-			glUniformMatrix4fv(UniformId, 1, GL_TRUE, matrix);
-			glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_BYTE, (GLvoid*)0);
-
+			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
+			shader.SetUniform4fv("Matrix", matrix);
+			renderer.Draw(va, ib, shader);
 		}
 	}
-
-	glUseProgram(0);
-	glBindVertexArray(0);
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not draw scene.");
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
-void window_close_callback(GLFWwindow* win)
-{
-	destroyShaderProgram();
-	destroyBufferObjects();
-}
+
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
@@ -355,7 +90,6 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 
 void setupCallbacks(GLFWwindow* win)
 {
-	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 }
 
@@ -433,17 +167,11 @@ GLFWwindow* setup(int major, int minor,
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
-	createShaderProgram();
-	createBufferObjects();
+	//createShaderProgram();
 	return win;
 }
 
 ////////////////////////////////////////////////////////////////////////// RUN
-
-void display(GLFWwindow* win, double elapsed_sec)
-{
-	drawScene();
-}
 
 void run(GLFWwindow* win)
 {
@@ -456,16 +184,22 @@ void run(GLFWwindow* win)
 
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		display(win, elapsed_time);
+
+
+		drawScene_Tetramino();
+
+
+
 		glfwSwapBuffers(win);
 		glfwPollEvents();
-#ifndef ERROR_CALLBACK
-		checkOpenGLError("ERROR: MAIN/RUN");
-#endif
+
 	}
 	glfwDestroyWindow(win);
 	glfwTerminate();
 }
+
+
+
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 

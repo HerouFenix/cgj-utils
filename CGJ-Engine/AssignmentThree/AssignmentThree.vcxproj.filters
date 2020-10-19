@@ -63,6 +63,24 @@
     <ClCompile Include="src\utils\shapes\Tetromino_RS.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\VertexBuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\VertexArray.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\Shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\IndexBuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\Renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\matrices\Matrix2.h">
@@ -92,5 +110,28 @@
     <ClInclude Include="headers\scene\SceneManager.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="headers\drawing\VertexBufferLayout.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\VertexBuffer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\VertexArray.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\Shader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\Renderer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\IndexBuffer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Vertex.shader" />
+    <None Include="resources\shaders\Fragment.shader" />
+    <None Include="resources\shaders\Basic.shader" />
   </ItemGroup>
 </Project>
