@@ -19,7 +19,14 @@ void main(void)
 in vec4 ex_Color;
 out vec4 out_Color;
 
+uniform int isBack;
+
 void main(void)
 {
-	out_Color = ex_Color;
+	if (isBack == 0) {
+		out_Color = ex_Color;
+	}
+	else {
+		out_Color = ex_Color * 0.5f;
+	}
 }

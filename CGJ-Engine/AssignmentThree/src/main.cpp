@@ -22,17 +22,21 @@
 SceneManager sceneManager;
 
 
-
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void drawScene_Tetramino()
 {
+
+
 	Renderer renderer;
 
 	Shader shader("resources/shaders/Basic.shader");
 
 	GLuint indices[] = {0, 1, 2, 3};
 	IndexBuffer ib(indices, 4);
+
+	GLuint indices_back[] = { 3, 2, 1, 0 };
+	IndexBuffer ib_back(indices_back, 4);
 
 	VertexBufferLayout layout;
 	layout.Push<float>(4);
@@ -52,7 +56,10 @@ void drawScene_Tetramino()
 			float matrix[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
 			shader.SetUniform4fv("Matrix", matrix);
+			shader.SetUniform1i("isBack", 0);
 			renderer.Draw(va, ib, shader);
+			shader.SetUniform1i("isBack", 1);
+			renderer.Draw(va, ib_back, shader);
 		}
 	}
 }
@@ -78,6 +85,7 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 {
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
 	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
+
 	if (!win)
 	{
 		glfwTerminate();
@@ -205,6 +213,9 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+
 	// DRAW SCENE //
 
 	int sqPiece = sceneManager.createSQPiece();

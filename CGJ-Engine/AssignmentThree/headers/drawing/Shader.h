@@ -26,6 +26,8 @@ public:
 	// Set uniforms
 	void SetUniform4fv(const std::string& name, float matrix[]);
 
+	void SetUniform1i(const std::string& name, int value);
+
 private:
 	ShaderProgramSource ParseShader(const std::string& path);
 	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
