@@ -1,4 +1,5 @@
 #include "../../../headers/camera/Camera.h"
+# define PI atan(1)*4
 
 Camera::Camera()
 {
@@ -46,11 +47,10 @@ void Camera::createOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bo
 
 void Camera::createPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ)
 {
-	GLfloat ang_rad = (fovy/2) * glm::pi<float>() / 180.0f;
+	GLfloat ang_rad = (fovy/2) * PI / 180.0f;
 	GLfloat d = 1 / tan(ang_rad);
 
 	Matrix4 proj_presp(new float[4][4]{
-
 			{(d/aspect), 0, 0, 0},
 			{0, d, 0, 0},
 			{0, 0, ((nearZ+farZ)/(nearZ - farZ)), 2*(nearZ * farZ) / (nearZ - farZ)},

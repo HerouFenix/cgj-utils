@@ -22,6 +22,14 @@ bool ortho = true;
 
 void drawScene_Tetramino()
 {
+	// CAMERA MOVEMENT //
+	const float radius = 5.0f;
+	float camX = sin(glfwGetTime()) * radius;
+	float camZ = cos(glfwGetTime()) * radius;
+	camera.createViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	
+	///////////////////////////////////////////////////////////////////////
+
 	float view[16];
 	Matrix4 viewM = camera.getView();
 	viewM.getRowMajor(view);
@@ -76,6 +84,8 @@ void drawScene_Tetramino()
 
 			shader.SetUniform4fv("Projection", proj);
 
+			shader.SetUniform1i("isBack", 0);
+
 			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 
 			ib.Unbind();
@@ -91,6 +101,8 @@ void drawScene_Tetramino()
 			shader.SetUniform4fv("View", view);
 
 			shader.SetUniform4fv("Projection", proj);
+
+			shader.SetUniform1i("isBack", 1);
 
 			renderer.Draw(va, ibBack, shader, sceneManager.getPieceAt(i).getMode());
 
@@ -134,9 +146,32 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	return win;
 }
 
+void window_close_callback(GLFWwindow* win)
+{
+	std::cout << "Bye bye!" << std::endl;
+}
+
+void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
+{
+	//std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(win, GLFW_TRUE);
+		window_close_callback(win);
+	}
+
+	// Change Perspective
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		ortho = !ortho;
+	}
+}
+
 void setupCallbacks(GLFWwindow* win)
 {
+	glfwSetKeyCallback(win, key_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
+	glfwSetWindowCloseCallback(win, window_close_callback);
 }
 
 GLFWwindow* setupGLFW(int gl_major, int gl_minor,
@@ -250,9 +285,9 @@ void run(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	// CAMERA SETUP //
-	camera.createViewMatrix(Vector3(-5,-5,-5), Vector3(0,0,0), Vector3(0,1,0));
+	camera.createViewMatrix(Vector3(5,0,5), Vector3(0,0,0), Vector3(0,1,0));
 	camera.createOrthoProjectionMatrix(-1,1, -1, 1, 1, 10);
-	camera.createPrespProjectionMatrix(30, 920/920, 1, 10);
+	camera.createPrespProjectionMatrix(15, 920/920, 1, 10);
 
 	/////////////////////////////////////////////////////////////////////
 

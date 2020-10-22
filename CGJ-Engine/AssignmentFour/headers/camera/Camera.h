@@ -2,8 +2,6 @@
 #include "../../../AssignmentOne/headers/Vector3.h"
 #include "../../../AssignmentTwo/headers/matrices/Matrix4.h"
 #include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 
 class Camera
 {
