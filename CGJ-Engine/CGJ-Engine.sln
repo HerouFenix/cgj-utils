@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssignmentOne", "AssignmentOne\AssignmentOne.vcxproj", "{68C3BF29-A183-48B3-BCBA-FDC178169D8D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1_AssignmentOne", "AssignmentOne\AssignmentOne.vcxproj", "{68C3BF29-A183-48B3-BCBA-FDC178169D8D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssignmentTwo", "AssignmentTwo\AssignmentTwo.vcxproj", "{8AE8F41D-B5F9-4AA7-A4D2-769803AE0B28}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2_AssignmentTwo", "AssignmentTwo\AssignmentTwo.vcxproj", "{8AE8F41D-B5F9-4AA7-A4D2-769803AE0B28}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGJ-Engine", "CGJ-Engine\CGJ-Engine.vcxproj", "{AEF2C0C3-13DC-42E3-8A29-821B9CDC5D93}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssignmentThree", "AssignmentThree\AssignmentThree.vcxproj", "{BDAC428F-6084-4B33-A012-BEB2EB26B748}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3_AssignmentThree", "AssignmentThree\AssignmentThree.vcxproj", "{BDAC428F-6084-4B33-A012-BEB2EB26B748}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4_AssignmentFour", "AssignmentFour\AssignmentFour.vcxproj", "{33447980-7FC6-46C1-93EB-CA2349CE8632}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x64.Build.0 = Release|x64
 		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x86.ActiveCfg = Release|Win32
 		{BDAC428F-6084-4B33-A012-BEB2EB26B748}.Release|x86.Build.0 = Release|Win32
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Debug|x64.ActiveCfg = Debug|x64
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Debug|x64.Build.0 = Debug|x64
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Debug|x86.ActiveCfg = Debug|Win32
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Debug|x86.Build.0 = Debug|Win32
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Release|x64.ActiveCfg = Release|x64
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Release|x64.Build.0 = Release|x64
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Release|x86.ActiveCfg = Release|Win32
+		{33447980-7FC6-46C1-93EB-CA2349CE8632}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

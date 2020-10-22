@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\utils\camera\Camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\Renderer.cpp" />
@@ -44,7 +43,6 @@
     <ClCompile Include="src\utils\vectors\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\camera\Camera.h" />
     <ClInclude Include="headers\drawing\IndexBuffer.h" />
     <ClInclude Include="headers\drawing\Renderer.h" />
     <ClInclude Include="headers\drawing\Shader.h" />

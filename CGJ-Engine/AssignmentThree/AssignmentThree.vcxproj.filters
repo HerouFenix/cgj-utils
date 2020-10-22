@@ -81,9 +81,6 @@
     <ClCompile Include="src\utils\drawing\Renderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\camera\Camera.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\matrices\Matrix2.h">
@@ -129,9 +126,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="headers\drawing\IndexBuffer.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\camera\Camera.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

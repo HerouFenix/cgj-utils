@@ -14,7 +14,6 @@
 #include "../matrices/Matrix4.h"
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 class Tetromino {
 protected:
@@ -83,16 +82,6 @@ public:
 	* Resets all transformations made
 	***********************************************/
 	void reset();
-
-	/********************************************/ /**
-	* Sets the shape as rendered
-	***********************************************/
-	void setAsRendered();
-
-	/********************************************/ /**
-	* Sets the shape as rendered
-	***********************************************/
-	bool IsRendered();
 };
 
 class Tetromino_I: public Tetromino {
