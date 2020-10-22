@@ -5,14 +5,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "../headers/vectors/Vector3.h"
-#include "../headers/vectors/Vector2.h"
-#include "../headers/vectors/Vector4.h"
-
-#include "../headers/matrices/Matrix3.h"
-#include "../headers/matrices/Matrix2.h"
 #include "../headers/matrices/Matrix4.h"
-
 
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
@@ -188,8 +181,6 @@ void run(GLFWwindow* win)
 
 		drawScene_Tetramino();
 
-
-
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 
@@ -206,21 +197,25 @@ void run(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	// DRAW SCENE //
+	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
 
 	int sqPiece = sceneManager.createSQPiece();
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
 
 	int lPiece = sceneManager.createLPiece();
-	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22, -0.11, 0));
+	//sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22, -0.11, 0));
 	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
+	sceneManager.transformPiece(lPiece, Matrix4::translation(-(squareDiagonal+squareDiagonal/2), squareDiagonal/2, 0));
 
 	int rlPiece = sceneManager.createRLPiece();
-	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11, -0.11, 0));
+	//sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11, -0.11, 0));
 	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
+	sceneManager.transformPiece(rlPiece, Matrix4::translation(0, -squareDiagonal, 0));
 
 	int iPiece = sceneManager.createIPiece();
-	sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
+	//sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
+	sceneManager.transformPiece(iPiece, Matrix4::translation(squareDiagonal + squareDiagonal/2, squareDiagonal/2, 0));
 
 	/////////////////////////////////////////////////////////////////////
 
@@ -235,7 +230,7 @@ int main(int argc, char* argv[])
 	int rsPiece = sceneManager.createRSPiece();
 	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
 	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
-
+	
 
 
 	int gl_major = 4, gl_minor = 3;
