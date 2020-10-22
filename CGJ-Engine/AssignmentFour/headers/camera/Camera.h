@@ -20,7 +20,11 @@ public:
 	void createOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far);
 	void createPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ);
 
-	const Matrix4 getMVP_orth();
-	const Matrix4 getMVP_presp();
+	const Matrix4 getVP_orth();
+	const Matrix4 getVP_presp();
+
+	const Matrix4 getOrthProj();
+	const Matrix4 getView();
+	const Matrix4 getPerspProj();
 };
 

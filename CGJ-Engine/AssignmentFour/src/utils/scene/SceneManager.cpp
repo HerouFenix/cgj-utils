@@ -126,9 +126,9 @@ int SceneManager::createRSPiece(float colour[4], Vector4 center)
 	return currentSize - 1;
 }
 
-int SceneManager::createRSPiece(Vector4 center)
+int SceneManager::createDebugPiece()
 {
-	sceneShapes.push_back(Tetromino_RS(center));
+	sceneShapes.push_back(Tetromino_DEBUG());
 	currentSize++;
 
 	return currentSize - 1;

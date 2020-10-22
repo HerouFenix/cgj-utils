@@ -11,9 +11,12 @@ Camera::~Camera()
 
 void Camera::createViewMatrix(Vector3 eye, Vector3 center, Vector3 up)
 {
-	Vector3 v = ((center - eye) / (center-eye).magnitude());
-	Vector3 s = ((v.crossProd(up)) / v.crossProd(up).magnitude());
+	Vector3 v = (center - eye);
+	v = v / v.magnitude();
+	Vector3 s = v.crossProd(up);
+	s = s / s.magnitude();
 	Vector3 u = s.crossProd(v);
+
 	Matrix4 rot(new float[4][4]{
 			{s.getX(), s.getY(), s.getZ(), 0},
 			{u.getX(), u.getY(), u.getZ(), 0},
@@ -32,10 +35,11 @@ void Camera::createViewMatrix(Vector3 eye, Vector3 center, Vector3 up)
 void Camera::createOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far)
 {
 	Matrix4 proj_orth(new float[4][4]{
-			{2 / (top - left), 0, 0, -((top + left) / (top - left))},
-			{0, 2 / (right - bottom), 0, -((right + bottom) / (right - bottom))},
-			{0, 0, (-2) / (far - near), -((far + near) / (far - near))},
-			{0,0,0,1} }
+		{2/(right-left), 0, 0, (left+right)/(left-right)},
+		{0, 2/(top-bottom), 0, (bottom+top) / (bottom-top)},
+		{0, 0, 2/(near-far), (near + far) / (near - far)},
+		{0, 0, 0, 1},
+		}
 	);
 	OrthProjMatrix = proj_orth;
 }
@@ -44,7 +48,6 @@ void Camera::createPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat n
 {
 	GLfloat ang_rad = (fovy/2) * glm::pi<float>() / 180.0f;
 	GLfloat d = 1 / tan(ang_rad);
-	std::cout << aspect;
 
 	Matrix4 proj_presp(new float[4][4]{
 
@@ -56,12 +59,24 @@ void Camera::createPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat n
 	PrespProjMatrix = proj_presp;
 }
 
-const Matrix4 Camera::getMVP_orth()
+const Matrix4 Camera::getVP_orth()
 {
 	return OrthProjMatrix * ViewMatrix;
 }
 
-const Matrix4 Camera::getMVP_presp()
+const Matrix4 Camera::getVP_presp()
 {
 	return PrespProjMatrix * ViewMatrix;
+}
+
+const Matrix4 Camera::getOrthProj() {
+	return OrthProjMatrix;
+}
+
+const Matrix4 Camera::getView() {
+	return ViewMatrix;
+}
+
+const Matrix4 Camera::getPerspProj() {
+	return PrespProjMatrix;
 }

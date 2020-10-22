@@ -7,34 +7,35 @@
 
 #include "../headers/matrices/Matrix4.h"
 
+#include "../headers/camera/Camera.h"
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
-#include "../headers/camera/Camera.h"
 
 int window_width;
 int window_height;
 
 SceneManager sceneManager;
-
-Camera c;
-bool ortho;
-
+Camera camera;
+bool ortho = true;
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void drawScene_Tetramino()
 {
-	/*
-	float mvp_arr[16];
-	Matrix4 mvp;
+	float view[16];
+	Matrix4 viewM = camera.getView();
+	viewM.getRowMajor(view);
+
+	float proj[16];
+	Matrix4 projM;
 	if (ortho) {
-		mvp = c.getMVP_orth();
+		projM = camera.getOrthProj();
 	}
 	else {
-		mvp = c.getMVP_presp();
+		projM = camera.getPerspProj();
 	}
-	mvp.getRowMajor(mvp_arr);
-	*/
+	projM.getRowMajor(proj);
+
 
 	Renderer renderer;
 
@@ -52,32 +53,51 @@ void drawScene_Tetramino()
 		sceneManager.getPieceAt(i).getVertices(vertices);
 
 		GLuint indices[4];
-		sceneManager.getPieceAt(i).getIndices(indices);
-		IndexBuffer ib(indices, 6);
+		
 
 		vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
 
 		shader.Bind();
 		va.Bind();
-		ib.Bind();
 		va.AddBuffer(vb, layout);
+
+		//Draw each square that makes up the piece using the transform matrices
 		for (int j = 0; j < 4; j++) {
-			float transform[16];
-			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(transform);
+			// Draw Front Face
+			sceneManager.getPieceAt(i).getIndices(indices);
+			IndexBuffer ib(indices, 6);
+			ib.Bind();
 
-			shader.SetUniform4fv("Matrix", transform);
-			//shader.SetUniform4fv("MVP", mvp_arr);
-			shader.SetUniform1i("isBack", 1);
+			float model[16];
+			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(model);
+			shader.SetUniform4fv("Model", model);
+
+			shader.SetUniform4fv("View", view);
+
+			shader.SetUniform4fv("Projection", proj);
+
 			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 
-			shader.SetUniform4fv("Matrix", transform);
-			//shader.SetUniform4fv("MVP", mvp_arr);
-			shader.SetUniform1i("isBack", 0);
-			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
+			ib.Unbind();
+
+
+			// Draw Back Face
+			sceneManager.getPieceAt(i).getReverseIndices(indices);
+			IndexBuffer ibBack(indices, 6);
+			ibBack.Bind();
+
+			shader.SetUniform4fv("Model", model);
+
+			shader.SetUniform4fv("View", view);
+
+			shader.SetUniform4fv("Projection", proj);
+
+			renderer.Draw(va, ibBack, shader, sceneManager.getPieceAt(i).getMode());
+
+			ibBack.Unbind();
 		}
 	}
 }
-
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
 
@@ -229,24 +249,23 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	//CAMERA SETUP
+	// CAMERA SETUP //
+	camera.createViewMatrix(Vector3(-5,-5,-5), Vector3(0,0,0), Vector3(0,1,0));
+	camera.createOrthoProjectionMatrix(-1,1, -1, 1, 1, 10);
+	camera.createPrespProjectionMatrix(30, 920/920, 1, 10);
 
-	//Camera Setup
-
-	c.createViewMatrix(Vector3(5, 5, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
-	c.createOrthoProjectionMatrix(0, window_width, 0, window_height, 1, 10);
-	c.createPrespProjectionMatrix(30, ((float)window_width / (float)window_height), 1, 10);
+	/////////////////////////////////////////////////////////////////////
 
 	// DRAW SCENE //
 	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
-
+	//int debugPiece = sceneManager.createDebugPiece();
 	int sqPiece = sceneManager.createSQPiece();
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
 
 	int lPiece = sceneManager.createLPiece();
 	//sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22, -0.11, 0));
 	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
-	sceneManager.transformPiece(lPiece, Matrix4::translation(-(squareDiagonal+squareDiagonal/2), squareDiagonal/2, 0));
+	sceneManager.transformPiece(lPiece, Matrix4::translation(-(squareDiagonal + squareDiagonal / 2), squareDiagonal / 2, 0));
 
 	int rlPiece = sceneManager.createRLPiece();
 	//sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11, -0.11, 0));
@@ -256,7 +275,7 @@ int main(int argc, char* argv[])
 	int iPiece = sceneManager.createIPiece();
 	//sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
-	sceneManager.transformPiece(iPiece, Matrix4::translation(squareDiagonal + squareDiagonal/2, squareDiagonal/2, 0));
+	sceneManager.transformPiece(iPiece, Matrix4::translation(squareDiagonal + squareDiagonal / 2, squareDiagonal / 2, 0));
 
 	/////////////////////////////////////////////////////////////////////
 

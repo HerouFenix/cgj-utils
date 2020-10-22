@@ -144,6 +144,12 @@ public:
 	int createRSPiece(Vector4 center = Vector4());
 
 	/********************************************/ /**
+	* Creates and adds a new DEBUG piece
+	* @return The index of the the newly created RS piece
+	***********************************************/
+	int createDebugPiece();
+
+	/********************************************/ /**
 	* Transforms a piece at a given index
 	* @param The index of the the index of the piece
 	* @param The transformation matrix

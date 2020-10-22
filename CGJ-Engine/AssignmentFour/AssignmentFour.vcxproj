@@ -32,6 +32,7 @@
     <ClCompile Include="src\utils\matrices\Matrix4.cpp" />
     <ClCompile Include="src\utils\scene\SceneManager.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino.cpp" />
+    <ClCompile Include="src\utils\shapes\Tetromino_DEBUG.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_I.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_L.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_RL.cpp" />
