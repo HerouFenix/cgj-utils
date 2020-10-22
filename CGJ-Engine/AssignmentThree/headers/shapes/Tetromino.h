@@ -13,11 +13,15 @@
 #include "../vectors/Vector4.h"
 #include "../matrices/Matrix4.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 class Tetromino {
 protected:
 	Vertex vertices[4];	// Vertices of the base square
 	Matrix4 transforms[4];	// Transform matrices used to draw entire shape
-	unsigned char indices[4] = { 0,1,2,3 };
+	GLuint indices[4] = { 0,1,2,3 };
+	GLenum mode = GL_TRIANGLE_FAN;
 	bool rendered;
 public: 
 	// FUNCTION DECLARATIONS
@@ -49,13 +53,19 @@ public:
 	* Returns this shape's index buffer
 	* @return indices - An array of unsigned ints containing the base shape's indices
 	***********************************************/
-	unsigned char* getIndices();
+	GLuint* getIndices();
 
 	/********************************************/ /**
 	* Copies this shape's index buffer into given array
 	* @return indices - An array of unsigned ints containing the base shape's indices
 	***********************************************/
-	void getIndices(unsigned char arr[4]);
+	void getIndices(GLuint arr[4]);
+
+	/********************************************/ /**
+	* Returns the GLenum draw mode to be used with to render this shape
+	* @return The draw mode for this shape
+	***********************************************/
+	GLenum getMode();
 
 	/********************************************/ /**
 	* Returns this shape's transform matrices needed to draw the shape from it's primary square

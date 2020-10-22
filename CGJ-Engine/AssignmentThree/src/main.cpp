@@ -40,9 +40,6 @@ void drawScene_Tetramino()
 
 	Shader shader("resources/shaders/Basic.shader");
 
-	GLuint indices[] = {0, 1, 2, 2, 0, 3};
-	IndexBuffer ib(indices, 6);
-
 	VertexBufferLayout layout;
 	layout.Push<float>(4);
 	layout.Push<float>(4);
@@ -51,8 +48,15 @@ void drawScene_Tetramino()
 	VertexBuffer vb(0, 4 * 8 * sizeof(float));
 	for (int i = 0; i < sceneManager.getSize(); i++) {
 		Vertex vertices[4];
+
 		sceneManager.getPieceAt(i).getVertices(vertices);
+
+		GLuint indices[4];
+		sceneManager.getPieceAt(i).getIndices(indices);
+		IndexBuffer ib(indices, 6);
+
 		vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
+
 		shader.Bind();
 		va.Bind();
 		ib.Bind();
@@ -63,11 +67,12 @@ void drawScene_Tetramino()
 			shader.SetUniform4fv("Matrix", matrix);
 			//shader.SetUniform4fv("MVP", mvp_arr);
 			shader.SetUniform1i("isBack", 1);
-			renderer.Draw(va, ib, shader);
+			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
+
 			shader.SetUniform4fv("Matrix", matrix);
 			//shader.SetUniform4fv("MVP", mvp_arr);
 			shader.SetUniform1i("isBack", 0);
-			renderer.Draw(va, ib, shader);
+			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 		}
 	}
 }
@@ -254,7 +259,7 @@ int main(int argc, char* argv[])
 
 	/////////////////////////////////////////////////////////////////////
 
-	int tPiece = sceneManager.createTPiece();
+	/*int tPiece = sceneManager.createTPiece();
 	sceneManager.transformPiece(tPiece, Matrix4::translation(0.55, 0.11, 0));
 	sceneManager.transformPiece(tPiece, Matrix4::rotationZ(45, false, true));
 
@@ -265,7 +270,7 @@ int main(int argc, char* argv[])
 	int rsPiece = sceneManager.createRSPiece();
 	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
 	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
-	
+	*/
 
 
 	int gl_major = 4, gl_minor = 3;

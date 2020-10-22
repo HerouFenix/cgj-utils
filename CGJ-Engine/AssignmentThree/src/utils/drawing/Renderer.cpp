@@ -16,12 +16,12 @@ bool GLLogCall(const char* function, const char* file, int line)
 	return true;
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, GLenum mode) const
 {
 	shader.Bind();
 	va.Bind();
 	ib.Bind();
-	GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+	GLCall(glDrawElements(mode, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 
 }
 

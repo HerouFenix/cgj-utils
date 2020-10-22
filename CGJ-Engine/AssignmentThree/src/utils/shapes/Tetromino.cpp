@@ -4,7 +4,6 @@
 #include "../../../headers/vectors/Vector4.h"
 #include "../../../headers/matrices/Matrix4.h"
 
-
 // Tetromino Constructors
 Tetromino::Tetromino(float colour[4], Vector4 center) {
 	// Set base square positions
@@ -73,17 +72,22 @@ void Tetromino::getVertices(Vertex arr[4])
 	arr[3] = vertices[3];
 }
 
-unsigned char* Tetromino::getIndices()
+GLuint* Tetromino::getIndices()
 {
 	return indices;
 }
 
-void Tetromino::getIndices(unsigned char arr[4])
+void Tetromino::getIndices(GLuint arr[4])
 {
 	arr[0] = indices[0];
 	arr[1] = indices[1];
 	arr[2] = indices[2];
 	arr[3] = indices[3];
+}
+
+GLenum Tetromino::getMode()
+{
+	return mode;
 }
 
 Matrix4* Tetromino::getTransforms()
