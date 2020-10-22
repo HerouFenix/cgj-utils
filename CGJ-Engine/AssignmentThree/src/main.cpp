@@ -10,22 +10,38 @@
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
+#include "../headers/camera/Camera.h"
 
+int window_width;
+int window_height;
 
 SceneManager sceneManager;
 
-
+Camera c;
+bool ortho;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void drawScene_Tetramino()
 {
+	/*
+	float mvp_arr[16];
+	Matrix4 mvp;
+	if (ortho) {
+		mvp = c.getMVP_orth();
+	}
+	else {
+		mvp = c.getMVP_presp();
+	}
+	mvp.getRowMajor(mvp_arr);
+	*/
+
 	Renderer renderer;
 
 	Shader shader("resources/shaders/Basic.shader");
 
-	GLuint indices[] = {0, 1, 2, 3};
-	IndexBuffer ib(indices, 4);
+	GLuint indices[] = {0, 1, 2, 2, 0, 3};
+	IndexBuffer ib(indices, 6);
 
 	VertexBufferLayout layout;
 	layout.Push<float>(4);
@@ -45,6 +61,12 @@ void drawScene_Tetramino()
 			float matrix[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
 			shader.SetUniform4fv("Matrix", matrix);
+			//shader.SetUniform4fv("MVP", mvp_arr);
+			shader.SetUniform1i("isBack", 1);
+			renderer.Draw(va, ib, shader);
+			shader.SetUniform4fv("Matrix", matrix);
+			//shader.SetUniform4fv("MVP", mvp_arr);
+			shader.SetUniform1i("isBack", 0);
 			renderer.Draw(va, ib, shader);
 		}
 	}
@@ -69,8 +91,12 @@ void glfw_error_callback(int error, const char* description)
 GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	int is_fullscreen, int is_vsync)
 {
+	window_width = winx;
+	window_height = winy;
+
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
 	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
+
 	if (!win)
 	{
 		glfwTerminate();
@@ -78,6 +104,7 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	}
 	glfwMakeContextCurrent(win);
 	glfwSwapInterval(is_vsync);
+
 	return win;
 }
 
@@ -196,6 +223,14 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+	//CAMERA SETUP
+
+	//Camera Setup
+
+	c.createViewMatrix(Vector3(5, 5, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	c.createOrthoProjectionMatrix(0, window_width, 0, window_height, 1, 10);
+	c.createPrespProjectionMatrix(30, ((float)window_width / (float)window_height), 1, 10);
+
 	// DRAW SCENE //
 	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
 
