@@ -7,10 +7,10 @@
 // Tetromino Constructors
 Tetromino::Tetromino(float colour[4], Vector4 center) {
 	// Set base square positions
-	vertices[0].positions = Vector4(center.getX() - 0.10f, center.getY() - 0.05f, center.getZ(), 1.0f);
-	vertices[1].positions = Vector4(center.getX() + 0.00f, center.getY() - 0.05f, center.getZ(), 1.0f);
-	vertices[2].positions = Vector4(center.getX() + 0.00f, center.getY() + 0.05f, center.getZ(), 1.0f);
-	vertices[3].positions = Vector4(center.getX() - 0.10f, center.getY() + 0.05f, center.getZ(), 1.0f);
+	vertices[0].positions = Vector4(center.getX() - 0.05f, center.getY() - 0.05f, center.getZ(), 1.0f);
+	vertices[1].positions = Vector4(center.getX() + 0.05f, center.getY() - 0.05f, center.getZ(), 1.0f);
+	vertices[2].positions = Vector4(center.getX() + 0.05f, center.getY() + 0.05f, center.getZ(), 1.0f);
+	vertices[3].positions = Vector4(center.getX() - 0.05f, center.getY() + 0.05f, center.getZ(), 1.0f);
 
 	// Set base square colours
 	float color[4] = { colour[0] / 256, colour[1] / 256, colour[2] / 256, colour[3] }; // Normalize RGB values

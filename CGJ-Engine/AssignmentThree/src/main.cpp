@@ -45,12 +45,12 @@ void drawScene_Tetramino()
 		va.Bind();
 		ib.Bind();
 		va.AddBuffer(vb, layout);
+
+		//Draw each square that makes up the piece using the transform matrices
 		for (int j = 0; j < 4; j++) {
 			float matrix[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
 			shader.SetUniform4fv("Matrix", matrix);
-			//shader.SetUniform4fv("MVP", mvp_arr);
-			shader.SetUniform1i("isBack", 1);
 			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 		}
 	}

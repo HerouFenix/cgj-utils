@@ -62,14 +62,15 @@ void drawScene_Tetramino()
 		ib.Bind();
 		va.AddBuffer(vb, layout);
 		for (int j = 0; j < 4; j++) {
-			float matrix[16];
-			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
-			shader.SetUniform4fv("Matrix", matrix);
+			float transform[16];
+			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(transform);
+
+			shader.SetUniform4fv("Matrix", transform);
 			//shader.SetUniform4fv("MVP", mvp_arr);
 			shader.SetUniform1i("isBack", 1);
 			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 
-			shader.SetUniform4fv("Matrix", matrix);
+			shader.SetUniform4fv("Matrix", transform);
 			//shader.SetUniform4fv("MVP", mvp_arr);
 			shader.SetUniform1i("isBack", 0);
 			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());

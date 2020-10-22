@@ -29,6 +29,6 @@ void main(void)
 		out_Color = ex_Color;
 	}
 	else {
-		out_Color = ex_Color * 0.5f;
+		out_Color = ex_Color * 0.25f;
 	}
 }

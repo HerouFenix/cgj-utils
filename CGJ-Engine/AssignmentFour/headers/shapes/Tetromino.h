@@ -62,6 +62,18 @@ public:
 	void getIndices(GLuint arr[4]);
 
 	/********************************************/ /**
+	* Returns this shape's index buffer - REVERSE WINDING ORDER
+	* @return indices - An array of unsigned ints containing the base shape's indices
+	***********************************************/
+	GLuint* getReverseIndices();
+
+	/********************************************/ /**
+	* Copies this shape's index buffer into given array - REVERSE WINDING ORDER
+	* @return indices - An array of unsigned ints containing the base shape's indices
+	***********************************************/
+	void getReverseIndices(GLuint arr[4]);
+
+	/********************************************/ /**
 	* Returns the GLenum draw mode to be used with to render this shape
 	* @return The draw mode for this shape
 	***********************************************/
