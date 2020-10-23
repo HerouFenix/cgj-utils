@@ -90,6 +90,14 @@ GLenum Tetromino::getMode()
 	return mode;
 }
 
+void Tetromino::getColours(float arr[4])
+{
+	arr[0] = vertices[0].colour[0];
+	arr[1] = vertices[1].colour[1];
+	arr[2] = vertices[2].colour[2];
+	arr[3] = vertices[3].colour[3];
+}
+
 Matrix4* Tetromino::getTransforms()
 {
 	return transforms;

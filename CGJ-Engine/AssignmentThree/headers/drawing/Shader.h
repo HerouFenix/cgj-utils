@@ -25,7 +25,7 @@ public:
 
 	// Set uniforms
 	void SetUniform4fv(const std::string& name, float matrix[]);
-
+	void SetUniform4fvec(const std::string& name, float vec[]);
 	void SetUniform1i(const std::string& name, int value);
 
 private:

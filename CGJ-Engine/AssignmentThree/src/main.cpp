@@ -18,6 +18,7 @@ SceneManager sceneManager;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
+// Each piece has its own "main" or "central" square
 void drawScene_Tetramino()
 {
 	Renderer renderer;
@@ -56,6 +57,56 @@ void drawScene_Tetramino()
 	}
 }
 
+// All pieces share the same "main" or "central" square
+/*void drawScene_Tetramino()
+{
+	Renderer renderer;
+
+	Shader shader("resources/shaders/Basic.shader");
+
+	VertexBufferLayout layout;
+	layout.Push<float>(4);
+	layout.Push<float>(4);
+
+	VertexArray va;
+	VertexBuffer vb(0, 4 * 8 * sizeof(float));
+
+	Vertex vertices[4];
+
+	//sceneManager.getPieceAt(i).getVertices(vertices);
+	vertices[0].positions = Vector4(0 - 0.05f, 0 - 0.05f, 0, 1.0f);
+	vertices[1].positions = Vector4(0 + 0.05f, 0 - 0.05f, 0, 1.0f);
+	vertices[2].positions = Vector4(0 + 0.05f, 0 + 0.05f, 0, 1.0f);
+	vertices[3].positions = Vector4(0 - 0.05f, 0 + 0.05f, 0, 1.0f);
+
+
+	GLuint indices[4] = { 0,1,2,3 };
+	//sceneManager.getPieceAt(i).getIndices(indices);
+	IndexBuffer ib(indices, 6);
+
+	vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
+
+	shader.Bind();
+	va.Bind();
+	ib.Bind();
+	va.AddBuffer(vb, layout);
+
+	float colours[4];
+	shader.SetUniform1i("isUniformColour", 1);
+
+	for (int i = 0; i < sceneManager.getSize(); i++) {
+		sceneManager.getPieceAt(i).getColours(colours);
+		shader.SetUniform4fvec("uniformColour", colours);
+		//Draw each square that makes up the piece using the transform matrices
+		for (int j = 0; j < 4; j++) {
+			float matrix[16];
+			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
+			shader.SetUniform4fv("Matrix", matrix);
+			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
+		}
+	}
+}
+*/
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
 

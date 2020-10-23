@@ -67,6 +67,11 @@ public:
 	GLenum getMode();
 
 	/********************************************/ /**
+	* Get Colours
+	***********************************************/
+	void getColours(float arr[4]);
+
+	/********************************************/ /**
 	* Returns this shape's transform matrices needed to draw the shape from it's primary square
 	* @return transforms - An array of Matrix 4 for each square of the shape
 	***********************************************/
