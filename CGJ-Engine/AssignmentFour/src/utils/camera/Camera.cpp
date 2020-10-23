@@ -3,7 +3,6 @@
 
 Camera::Camera()
 {
-	
 }
 
 Camera::~Camera()
@@ -26,10 +25,13 @@ void Camera::createViewMatrix(Vector3 eye, Vector3 center, Vector3 up)
 	);
 	Matrix4 trans(new float[4][4]{
 			{1, 0, 0, -eye.getX()},
-			{0, 1, 0, -eye.getY() },
-			{0, 0, 1, -eye.getZ() },
+			{0, 1, 0, -eye.getY()},
+			{0, 0, 1, -eye.getZ()},
 			{0,0,0,1} }
 	);
+
+	ViewM = rot;
+	ViewT = trans;
 	ViewMatrix = rot * trans;
 }
 
@@ -79,4 +81,12 @@ const Matrix4 Camera::getView() {
 
 const Matrix4 Camera::getPerspProj() {
 	return PrespProjMatrix;
+}
+
+void Camera::moveCamera(Vector3 move, float speed) {
+	ViewT[0][3] = ViewT[0][3] + move.getX() * speed;
+	ViewT[1][3] = ViewT[1][3] + move.getY() * speed;
+	ViewT[2][3] = ViewT[2][3] + move.getZ() * speed;
+
+	ViewMatrix = ViewM * ViewT;
 }

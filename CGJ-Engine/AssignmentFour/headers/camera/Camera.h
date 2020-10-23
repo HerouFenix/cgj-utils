@@ -6,7 +6,14 @@
 class Camera
 {
 private:
+	Vector3 eye;
+	Vector3 center;
+	Vector3 up;
+
+	Matrix4 ViewM;
+	Matrix4 ViewT;
 	Matrix4 ViewMatrix;
+
 	Matrix4 OrthProjMatrix;
 	Matrix4 PrespProjMatrix;
 
@@ -24,5 +31,7 @@ public:
 	const Matrix4 getOrthProj();
 	const Matrix4 getView();
 	const Matrix4 getPerspProj();
+
+	void moveCamera(Vector3 move, float speed=0.05);
 };
 

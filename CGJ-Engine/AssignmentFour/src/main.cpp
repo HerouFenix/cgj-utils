@@ -18,6 +18,13 @@ int window_height;
 SceneManager sceneManager;
 Camera camera;
 bool ortho = true;
+
+// KEY PRESSED
+bool upKeyPressed = false;
+bool leftKeyPressed = false;
+bool rightKeyPressed = false;
+bool downKeyPressed = false;
+
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void drawScene_Tetramino()
@@ -26,8 +33,26 @@ void drawScene_Tetramino()
 	const float radius = 5.0f;
 	float camX = sin(glfwGetTime()) * radius;
 	float camZ = cos(glfwGetTime()) * radius;
-	camera.createViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
-	
+	//camera.createViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
+
+	if (leftKeyPressed) {
+		camera.moveCamera(Vector3(-1, 0, 0), 0.01);
+	}
+	if (rightKeyPressed) {
+		camera.moveCamera(Vector3(1, 0, 0), 0.01);
+	}
+	if (upKeyPressed) {
+		if (ortho)
+			camera.moveCamera(Vector3(0, 1, 0), 0.01);
+		else
+			camera.moveCamera(Vector3(1, 0, 1), 0.01);
+	}
+	if (downKeyPressed) {
+		if (ortho)
+			camera.moveCamera(Vector3(0, -1, 0), 0.01);
+		else
+			camera.moveCamera(Vector3(-1, 0, -1), 0.01);
+	}
 	///////////////////////////////////////////////////////////////////////
 
 	float view[16];
@@ -61,7 +86,7 @@ void drawScene_Tetramino()
 		sceneManager.getPieceAt(i).getVertices(vertices);
 
 		GLuint indices[4];
-		
+
 
 		vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
 
@@ -154,17 +179,48 @@ void window_close_callback(GLFWwindow* win)
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	//std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(win, GLFW_TRUE);
-		window_close_callback(win);
+
+	// Key Presses
+	if (action == GLFW_PRESS) {
+		switch (key) {
+			case GLFW_KEY_P:
+				ortho = !ortho;
+				break;
+			case GLFW_KEY_ESCAPE:
+				glfwSetWindowShouldClose(win, GLFW_TRUE);
+				window_close_callback(win);
+				break;
+			case GLFW_KEY_A:
+				leftKeyPressed = true;
+				break;
+			case GLFW_KEY_D:
+				rightKeyPressed = true;
+				break;
+			case GLFW_KEY_W:
+				upKeyPressed = true;
+				break;
+			case GLFW_KEY_S:
+				downKeyPressed = true;
+				break;
+			}
+	}
+	else if (action == GLFW_RELEASE) {
+		switch (key) {
+			case GLFW_KEY_A:
+				leftKeyPressed = false;
+				break;
+			case GLFW_KEY_D:
+				rightKeyPressed = false;
+				break;
+			case GLFW_KEY_W:
+				upKeyPressed = false;
+				break;
+			case GLFW_KEY_S:
+				downKeyPressed = false;
+				break;
+			}
 	}
 
-	// Change Perspective
-	if (key == GLFW_KEY_P && action == GLFW_PRESS)
-	{
-		ortho = !ortho;
-	}
 }
 
 void setupCallbacks(GLFWwindow* win)
@@ -285,9 +341,9 @@ void run(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	// CAMERA SETUP //
-	camera.createViewMatrix(Vector3(5,0,5), Vector3(0,0,0), Vector3(0,1,0));
-	camera.createOrthoProjectionMatrix(-1,1, -1, 1, 1, 10);
-	camera.createPrespProjectionMatrix(15, 920/920, 1, 10);
+	camera.createViewMatrix(Vector3(5, 0, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	camera.createOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
+	camera.createPrespProjectionMatrix(15, 920 / 920, 1, 10);
 
 	/////////////////////////////////////////////////////////////////////
 
