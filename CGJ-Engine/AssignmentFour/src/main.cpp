@@ -40,16 +40,16 @@ void drawScene_Tetramino()
 	//camera.setViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
 
 	if (upKeyPressed) {
-		camera.moveCamera(0, 0.01);
+		camera.moveCamera(0, 0.1);
 	}
 	if (downKeyPressed) {
-		camera.moveCamera(1, 0.01);
+		camera.moveCamera(1, 0.1);
 	}
 	if (leftKeyPressed) {
-		camera.moveCamera(2, 0.01);
+		camera.moveCamera(2, 0.1);
 	}
 	if (rightKeyPressed) {
-		camera.moveCamera(3, 0.01);
+		camera.moveCamera(3, 0.1);
 	}
 	///////////////////////////////////////////////////////////////////////
 
@@ -238,7 +238,6 @@ void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 		4. Calculate the direction vector.
 	*/
 
-
 	if (firstMouse) // initially set to true
 	{
 		cursorX = xPos;
@@ -251,11 +250,7 @@ void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 	cursorX = xPos;
 	cursorY = yPos;
 
-	const float sensitivity = 0.01f;
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
-
-	camera.setDirectionVector(xOffset, yOffset);
+	camera.rotateCamera(xOffset, yOffset);
 }
 
 void setupCallbacks(GLFWwindow* win)

@@ -3,18 +3,17 @@
 
 Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
 {
-	cameraDirection = (center - eye);
+	cameraDirection = (center - eye).normalize();
 
 	// Set initial pitch and yaw
-	pitch = asin(center.getY() - eye.getY());
-	yaw = (center.getX() - eye.getX()) / cos(pitch);
 
-	yaw = yaw / (PI / 180.0);
-	pitch = pitch / (PI / 180.0);
+	// cameraDirection.Y = sinPitch => pitch = aSin(cameraDirection.Y)
+	pitch = asin(cameraDirection.getY());
 
-	setDirectionVector(0, 0);
-	std::cout << cameraDirection << "\n";
-	std::cout << (center - eye).normalize() << "\n";
+	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
+	yaw = acos(cameraDirection.getX() / cos(pitch));
+
+	setDirection(0.0f, 0.0f);
 
 	setViewMatrix(eye, eye + cameraDirection, up);
 }
@@ -77,33 +76,23 @@ void Camera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat near
 	);
 }
 
-void Camera::setDirectionVector(float xoffset, float yoffset)
+void Camera::setDirection(float xOffset, float yOffset)
 {
-	yaw += xoffset;
-	pitch += yoffset;
-	std::cout << "yaw: " << yaw << "\n";
-	std::cout << "pitch: " << pitch << "\n";
-
 	// Convert degrees to radians
-	float yawR = yaw; float pitchR = pitch;
-	yawR = yaw * PI / 180.0;
-	pitchR = pitch * PI / 180.0;
-	
-	// Round - Useful for angles like PI/2 
-	float cosYaw = cos(yawR);
-	float cosPitch = cos(pitchR);
-	float sinPitch = sin(pitchR);
-	float sinYaw = sin(yawR);
+	xOffset = xOffset * PI / 180.0;
+	yOffset = yOffset * PI / 180.0;
 
-	cosYaw = roundf(cosYaw * 10000000) / 10000000;
-	cosPitch = roundf(cosPitch * 10000000) / 10000000;
-	sinPitch = roundf(sinPitch * 10000000) / 10000000;
-	sinYaw = roundf(sinYaw * 10000000) / 10000000;
-
+	yaw -= xOffset;
+	pitch += yOffset;
+	 
+	float cosYaw = cos(yaw);
+	float cosPitch = cos(pitch);
+	float sinPitch = sin(pitch);
+	float sinYaw = sin(yaw);
 
 	cameraDirection.setX(cosYaw * cosPitch);
 	cameraDirection.setY(sinPitch);
-	cameraDirection.setZ(sinYaw * cosPitch);
+	cameraDirection.setZ(-sinYaw * cosPitch);
 
 	cameraDirection.normalize();
 }
@@ -142,14 +131,23 @@ void Camera::moveCamera(int move, float speed)
 			cameraEye -= speed * cameraDirection;
 			break;
 		case 2:
-			cameraEye -= cameraUp.crossProd(cameraDirection).normalize() * speed;
+			cameraEye -= cameraDirection.crossProd(cameraUp).normalize() * speed;
 			break;
 		case 3:
-			cameraEye += cameraUp.crossProd(cameraDirection).normalize() * speed;
+			cameraEye += cameraDirection.crossProd(cameraUp).normalize() * speed;
 			break;
 	}
 
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 
 	
+}
+
+void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
+{
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+
+	setDirection(xOffset, yOffset);
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }

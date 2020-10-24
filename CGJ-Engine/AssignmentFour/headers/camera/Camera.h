@@ -26,7 +26,7 @@ public:
 	void setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far);
 	void setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ);
 
-	void setDirectionVector(float xOffset, float yOffset);
+	void setDirection(float xOffset, float yOffset);
 
 	const Matrix4 getOrthVP();
 	const Matrix4 getPerspVP();
@@ -35,6 +35,7 @@ public:
 	const Matrix4 getPerspProj();
 	const Matrix4 getViewMatrix();
 
-	void moveCamera(int move, float speed = 0.1);
+	void moveCamera(int move, float speed = 0.1f);
+	void rotateCamera(float xOffset, float yOffset, float sensitivity = 0.1f);
 
 };
