@@ -1,92 +1,155 @@
 #include "../../../headers/camera/Camera.h"
 # define PI atan(1)*4
 
-Camera::Camera()
+Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
 {
+	cameraDirection = (center - eye);
+
+	// Set initial pitch and yaw
+	pitch = asin(center.getY() - eye.getY());
+	yaw = (center.getX() - eye.getX()) / cos(pitch);
+
+	yaw = yaw / (PI / 180.0);
+	pitch = pitch / (PI / 180.0);
+
+	setDirectionVector(0, 0);
+	std::cout << cameraDirection << "\n";
+	std::cout << (center - eye).normalize() << "\n";
+
+	setViewMatrix(eye, eye + cameraDirection, up);
 }
 
 Camera::~Camera()
 {
 }
 
-void Camera::createViewMatrix(Vector3 eye, Vector3 center, Vector3 up)
+void Camera::setViewMatrix(Vector3 eye, Vector3 center, Vector3 up)
 {
-	Vector3 v = (center - eye);
-	v = v / v.magnitude();
-	Vector3 s = v.crossProd(up);
-	s = s / s.magnitude();
-	Vector3 u = s.crossProd(v);
+	cameraEye = eye;
+	cameraCenter = center;
+	cameraUp = up;
 
-	Matrix4 rot(new float[4][4]{
-			{s.getX(), s.getY(), s.getZ(), 0},
-			{u.getX(), u.getY(), u.getZ(), 0},
-			{-v.getX(), -v.getY(), -v.getZ(), 0},
-			{0,0,0,1} }
-	);
+	Vector3 v = (center-eye).normalize(); // CameraDirection
+
+	Vector3 s = v.crossProd(up).normalize(); // CameraRight
+
+	Vector3 u = s.crossProd(v); // CameraUp
+
+	Matrix4 axis(new float[4][4]{
+			{  s.getX(),  s.getY(),	 s.getZ(), 0},
+			{  u.getX(),  u.getY(),	 u.getZ(), 0},
+			{ -v.getX(), -v.getY(), -v.getZ(), 0},
+			{ 0,         0,		    0,        1}
+		});
+
 	Matrix4 trans(new float[4][4]{
-			{1, 0, 0, -eye.getX()},
-			{0, 1, 0, -eye.getY()},
-			{0, 0, 1, -eye.getZ()},
-			{0,0,0,1} }
-	);
+			{ 1, 0, 0, -eye.getX()},
+			{ 0, 1, 0, -eye.getY()},
+			{ 0, 0, 1, -eye.getZ()},
+			{ 0, 0, 0,	1		  }
+		});
 
-	ViewM = rot;
-	ViewT = trans;
-	ViewMatrix = rot * trans;
+	view = axis * trans;
 }
 
-void Camera::createOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far)
+void Camera::setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far)
 {
-	Matrix4 proj_orth(new float[4][4]{
-		{2/(right-left), 0, 0, (left+right)/(left-right)},
-		{0, 2/(top-bottom), 0, (bottom+top) / (bottom-top)},
-		{0, 0, 2/(near-far), (near + far) / (near - far)},
-		{0, 0, 0, 1},
+	orthoProj = Matrix4(new float[4][4]{
+		{2 / (right - left), 0                 , 0               , (left + right) / (left - right)},
+		{0                 , 2 / (top - bottom), 0               , (bottom + top) / (bottom - top)},
+		{0                 , 0                 , 2 / (near - far), (near + far) / (near - far)},
+		{0                 , 0                 , 0               , 1},
 		}
 	);
-	OrthProjMatrix = proj_orth;
 }
 
-void Camera::createPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ)
+void Camera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ)
 {
-	GLfloat ang_rad = (fovy/2) * PI / 180.0f;
+	GLfloat ang_rad = (fovy / 2) * PI / 180.0f;
 	GLfloat d = 1 / tan(ang_rad);
 
-	Matrix4 proj_presp(new float[4][4]{
-			{(d/aspect), 0, 0, 0},
-			{0, d, 0, 0},
-			{0, 0, ((nearZ+farZ)/(nearZ - farZ)), 2*(nearZ * farZ) / (nearZ - farZ)},
-			{0,0,-1, 0} }
+	perspProj = Matrix4(new float[4][4]{
+			{(d / aspect), 0,  0                                , 0                                  },
+			{0           , d,  0                                , 0                                  },
+			{0           , 0,  ((nearZ + farZ) / (nearZ - farZ)), 2 * (nearZ * farZ) / (nearZ - farZ)},
+			{0           , 0, -1                                , 0                                  }
+		}
 	);
-	PrespProjMatrix = proj_presp;
 }
 
-const Matrix4 Camera::getVP_orth()
+void Camera::setDirectionVector(float xoffset, float yoffset)
 {
-	return OrthProjMatrix * ViewMatrix;
+	yaw += xoffset;
+	pitch += yoffset;
+	std::cout << "yaw: " << yaw << "\n";
+	std::cout << "pitch: " << pitch << "\n";
+
+	// Convert degrees to radians
+	float yawR = yaw; float pitchR = pitch;
+	yawR = yaw * PI / 180.0;
+	pitchR = pitch * PI / 180.0;
+	
+	// Round - Useful for angles like PI/2 
+	float cosYaw = cos(yawR);
+	float cosPitch = cos(pitchR);
+	float sinPitch = sin(pitchR);
+	float sinYaw = sin(yawR);
+
+	cosYaw = roundf(cosYaw * 10000000) / 10000000;
+	cosPitch = roundf(cosPitch * 10000000) / 10000000;
+	sinPitch = roundf(sinPitch * 10000000) / 10000000;
+	sinYaw = roundf(sinYaw * 10000000) / 10000000;
+
+
+	cameraDirection.setX(cosYaw * cosPitch);
+	cameraDirection.setY(sinPitch);
+	cameraDirection.setZ(sinYaw * cosPitch);
+
+	cameraDirection.normalize();
 }
 
-const Matrix4 Camera::getVP_presp()
-{
-	return PrespProjMatrix * ViewMatrix;
+const Matrix4 Camera::getViewMatrix() {
+	return view;
 }
 
 const Matrix4 Camera::getOrthProj() {
-	return OrthProjMatrix;
-}
-
-const Matrix4 Camera::getView() {
-	return ViewMatrix;
+	return orthoProj;
 }
 
 const Matrix4 Camera::getPerspProj() {
-	return PrespProjMatrix;
+	return perspProj;
 }
 
-void Camera::moveCamera(Vector3 move, float speed) {
-	ViewT[0][3] = ViewT[0][3] + move.getX() * speed;
-	ViewT[1][3] = ViewT[1][3] + move.getY() * speed;
-	ViewT[2][3] = ViewT[2][3] + move.getZ() * speed;
+const Matrix4 Camera::getOrthVP()
+{
+	return orthoProj * view;
+}
 
-	ViewMatrix = ViewM * ViewT;
+const Matrix4 Camera::getPerspVP()
+{
+	return perspProj * view;
+}
+
+
+void Camera::moveCamera(int move, float speed)
+{
+	
+	switch (move) {
+		case 0:
+			cameraEye += speed * cameraDirection;
+			break;
+		case 1:
+			cameraEye -= speed * cameraDirection;
+			break;
+		case 2:
+			cameraEye -= cameraUp.crossProd(cameraDirection).normalize() * speed;
+			break;
+		case 3:
+			cameraEye += cameraUp.crossProd(cameraDirection).normalize() * speed;
+			break;
+	}
+
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+
+	
 }

@@ -14,9 +14,10 @@
 
 int window_width;
 int window_height;
+float cursorX, cursorY;
 
 SceneManager sceneManager;
-Camera camera;
+Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
 bool ortho = true;
 
 // KEY PRESSED
@@ -24,6 +25,9 @@ bool upKeyPressed = false;
 bool leftKeyPressed = false;
 bool rightKeyPressed = false;
 bool downKeyPressed = false;
+
+bool lockMouse = true;
+bool firstMouse = true;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
@@ -33,30 +37,24 @@ void drawScene_Tetramino()
 	const float radius = 5.0f;
 	float camX = sin(glfwGetTime()) * radius;
 	float camZ = cos(glfwGetTime()) * radius;
-	//camera.createViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	//camera.setViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
 
-	if (leftKeyPressed) {
-		camera.moveCamera(Vector3(-1, 0, 0), 0.01);
-	}
-	if (rightKeyPressed) {
-		camera.moveCamera(Vector3(1, 0, 0), 0.01);
-	}
 	if (upKeyPressed) {
-		if (ortho)
-			camera.moveCamera(Vector3(0, 1, 0), 0.01);
-		else
-			camera.moveCamera(Vector3(1, 0, 1), 0.01);
+		camera.moveCamera(0, 0.01);
 	}
 	if (downKeyPressed) {
-		if (ortho)
-			camera.moveCamera(Vector3(0, -1, 0), 0.01);
-		else
-			camera.moveCamera(Vector3(-1, 0, -1), 0.01);
+		camera.moveCamera(1, 0.01);
+	}
+	if (leftKeyPressed) {
+		camera.moveCamera(2, 0.01);
+	}
+	if (rightKeyPressed) {
+		camera.moveCamera(3, 0.01);
 	}
 	///////////////////////////////////////////////////////////////////////
 
 	float view[16];
-	Matrix4 viewM = camera.getView();
+	Matrix4 viewM = camera.getViewMatrix();
 	viewM.getRowMajor(view);
 
 	float proj[16];
@@ -157,6 +155,9 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	window_width = winx;
 	window_height = winy;
 
+	cursorX = window_width / 2;
+	cursorY = window_height / 2;
+
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
 	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
 
@@ -202,6 +203,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			case GLFW_KEY_S:
 				downKeyPressed = true;
 				break;
+			case GLFW_KEY_F:
+				lockMouse = !lockMouse;
+				if (lockMouse) {
+					firstMouse = true;
+				}
+				break;
 			}
 	}
 	else if (action == GLFW_RELEASE) {
@@ -223,9 +230,38 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 
 }
 
+void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
+	/*
+		1. Calculate the mouse's offset since the last frame.
+		2. Add the offset values to the camera's yaw and pitch values.
+		3. Add some constraints to the minimum/maximum pitch values.
+		4. Calculate the direction vector.
+	*/
+
+
+	if (firstMouse) // initially set to true
+	{
+		cursorX = xPos;
+		cursorY = yPos;
+		firstMouse = false;
+	}
+
+	float xOffset = xPos - cursorX;
+	float yOffset = cursorY - yPos; // reversed since y-coordinates range from bottom to top
+	cursorX = xPos;
+	cursorY = yPos;
+
+	const float sensitivity = 0.01f;
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+
+	camera.setDirectionVector(xOffset, yOffset);
+}
+
 void setupCallbacks(GLFWwindow* win)
 {
 	glfwSetKeyCallback(win, key_callback);
+	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 	glfwSetWindowCloseCallback(win, window_close_callback);
 }
@@ -294,6 +330,16 @@ void setupOpenGL(int winx, int winy)
 	glViewport(0, 0, winx, winy);
 }
 
+void setupCamera() {
+	// CAMERA SETUP //
+	camera.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
+	camera.setPrespProjectionMatrix(15, window_width / window_height, 1, 10);
+
+	//Set initial cursor position to be the middle of the screen
+	cursorX = window_width / 2;
+	cursorY = window_height / 2;
+}
+
 GLFWwindow* setup(int major, int minor,
 	int winx, int winy, const char* title, int is_fullscreen, int is_vsync)
 {
@@ -301,6 +347,9 @@ GLFWwindow* setup(int major, int minor,
 		setupGLFW(major, minor, winx, winy, title, is_fullscreen, is_vsync);
 	setupGLEW();
 	setupOpenGL(winx, winy);
+
+	setupCamera();
+
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
@@ -322,6 +371,12 @@ void run(GLFWwindow* win)
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		if (lockMouse) {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Tell GLFW that it should hide the cursorand capture it.Capturing a cursor means that, once the application has focus, the mouse cursor stays within the center of the window(unless the application loses focus or quits)
+		}
+		else {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 
 		drawScene_Tetramino();
 
@@ -340,13 +395,6 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	// CAMERA SETUP //
-	camera.createViewMatrix(Vector3(5, 0, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
-	camera.createOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
-	camera.createPrespProjectionMatrix(15, 920 / 920, 1, 10);
-
-	/////////////////////////////////////////////////////////////////////
-
 	// DRAW SCENE //
 	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
 	//int debugPiece = sceneManager.createDebugPiece();

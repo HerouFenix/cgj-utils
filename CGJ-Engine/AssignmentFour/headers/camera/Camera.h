@@ -6,32 +6,35 @@
 class Camera
 {
 private:
-	Vector3 eye;
-	Vector3 center;
-	Vector3 up;
+	Vector3 cameraEye; // The camera position is a vector in world space that points to the camera's position.
+	Vector3 cameraCenter; // The camera's target (i.e what it is looking at)
+	Vector3 cameraUp; // The up vector that points upwards (in world space)
 
-	Matrix4 ViewM;
-	Matrix4 ViewT;
-	Matrix4 ViewMatrix;
+	Vector3 cameraDirection; // What constitutes as "moving forward"
+	float pitch = 0;
+	float yaw = 0;
 
-	Matrix4 OrthProjMatrix;
-	Matrix4 PrespProjMatrix;
+	Matrix4 view;
+	Matrix4 orthoProj;
+	Matrix4 perspProj;
 
 public:
-	Camera();
+	Camera(Vector3 eye, Vector3 center, Vector3 up);
 	~Camera();
 
-	void createViewMatrix(Vector3 eye, Vector3 center, Vector3 up);
-	void createOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far);
-	void createPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ);
+	void setViewMatrix(Vector3 eye, Vector3 center, Vector3 up);
+	void setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far);
+	void setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ);
 
-	const Matrix4 getVP_orth();
-	const Matrix4 getVP_presp();
+	void setDirectionVector(float xOffset, float yOffset);
+
+	const Matrix4 getOrthVP();
+	const Matrix4 getPerspVP();
 
 	const Matrix4 getOrthProj();
-	const Matrix4 getView();
 	const Matrix4 getPerspProj();
+	const Matrix4 getViewMatrix();
 
-	void moveCamera(Vector3 move, float speed=0.05);
+	void moveCamera(int move, float speed = 0.1);
+
 };
-
