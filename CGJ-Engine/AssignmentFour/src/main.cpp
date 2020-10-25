@@ -15,41 +15,59 @@
 int window_width;
 int window_height;
 float cursorX, cursorY;
+float xOffset, yOffset;
 
 SceneManager sceneManager;
 Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
 bool ortho = true;
 
 // KEY PRESSED
-bool upKeyPressed = false;
+bool forwardKeyPressed = false;
 bool leftKeyPressed = false;
 bool rightKeyPressed = false;
+bool backwardKeyPressed = false;
+
+bool upKeyPressed = false;
 bool downKeyPressed = false;
 
 bool lockMouse = true;
 bool firstMouse = true;
+bool mouseMoved = false;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void drawScene_Tetramino()
 {
 	// CAMERA MOVEMENT //
-	const float radius = 5.0f;
-	float camX = sin(glfwGetTime()) * radius;
-	float camZ = cos(glfwGetTime()) * radius;
+	//const float radius = 5.0f;
+	//float camX = sin(glfwGetTime()) * radius;
+	//float camZ = cos(glfwGetTime()) * radius;
 	//camera.setViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
 
-	if (upKeyPressed) {
-		camera.moveCamera(0, 0.1);
+	if (mouseMoved) {
+		camera.rotateCamera(xOffset, yOffset);
+		mouseMoved = false;
 	}
-	if (downKeyPressed) {
-		camera.moveCamera(1, 0.1);
+
+	if (forwardKeyPressed) {
+		camera.moveCameraForward(0.05);
+	}
+	if (backwardKeyPressed) {
+		camera.moveCameraBackward(0.05);
 	}
 	if (leftKeyPressed) {
-		camera.moveCamera(2, 0.1);
+		camera.moveCameraLeft(0.05);
 	}
 	if (rightKeyPressed) {
-		camera.moveCamera(3, 0.1);
+		camera.moveCameraRight(0.05);
+	}
+
+	if (upKeyPressed) {
+		camera.moveCameraUp(0.05);
+	}
+
+	if (downKeyPressed) {
+		camera.moveCameraDown(0.05);
 	}
 	///////////////////////////////////////////////////////////////////////
 
@@ -198,9 +216,15 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 				rightKeyPressed = true;
 				break;
 			case GLFW_KEY_W:
-				upKeyPressed = true;
+				forwardKeyPressed = true;
 				break;
 			case GLFW_KEY_S:
+				backwardKeyPressed = true;
+				break;
+			case GLFW_KEY_SPACE:
+				upKeyPressed = true;
+				break;
+			case GLFW_KEY_LEFT_CONTROL:
 				downKeyPressed = true;
 				break;
 			case GLFW_KEY_F:
@@ -220,9 +244,15 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 				rightKeyPressed = false;
 				break;
 			case GLFW_KEY_W:
-				upKeyPressed = false;
+				forwardKeyPressed = false;
 				break;
 			case GLFW_KEY_S:
+				backwardKeyPressed = false;
+				break;
+			case GLFW_KEY_SPACE:
+				upKeyPressed = false;
+				break;
+			case GLFW_KEY_LEFT_CONTROL:
 				downKeyPressed = false;
 				break;
 			}
@@ -245,12 +275,13 @@ void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 		firstMouse = false;
 	}
 
-	float xOffset = xPos - cursorX;
-	float yOffset = cursorY - yPos; // reversed since y-coordinates range from bottom to top
+	xOffset = xPos - cursorX;
+	yOffset = cursorY - yPos; // reversed since y-coordinates range from bottom to top
+	
 	cursorX = xPos;
 	cursorY = yPos;
 
-	camera.rotateCamera(xOffset, yOffset);
+	mouseMoved = true;
 }
 
 void setupCallbacks(GLFWwindow* win)

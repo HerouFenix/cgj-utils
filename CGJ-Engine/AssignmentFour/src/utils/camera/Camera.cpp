@@ -139,8 +139,36 @@ void Camera::moveCamera(int move, float speed)
 	}
 
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
 
-	
+void Camera::moveCameraForward(float speed) {
+	cameraEye += speed * cameraDirection;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraBackward(float speed) {
+	cameraEye -= speed * cameraDirection;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraLeft(float speed) {
+	cameraEye -= cameraDirection.crossProd(cameraUp).normalize() * speed;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraRight(float speed) {
+	cameraEye += cameraDirection.crossProd(cameraUp).normalize() * speed;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraUp(float speed) {
+	cameraEye += speed * cameraUp;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraDown(float speed) {
+	cameraEye -= speed * cameraUp;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
 
 void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
