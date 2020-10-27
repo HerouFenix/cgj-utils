@@ -233,6 +233,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 					firstMouse = true;
 				}
 				break;
+			case GLFW_KEY_I:
+				camera.invertCamera();
+				break;
+			case GLFW_KEY_R:
+				camera.resetCamera();
+				break;
 			}
 	}
 	else if (action == GLFW_RELEASE) {

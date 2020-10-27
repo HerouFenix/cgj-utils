@@ -14,6 +14,10 @@ private:
 	Vector3 cameraCenter; // The camera's target (i.e what it is looking at)
 	Vector3 cameraUp; // The up vector that points upwards (in world space)
 
+	Vector3 initialEye;
+	Vector3 initialCenter;
+	Vector3 initialUp;
+
 	Vector3 cameraDirection; // What constitutes as "moving forward"
 	float pitch = 0;
 	float yaw = 0;
@@ -68,7 +72,7 @@ public:
 
 	/********************************************/ /**
 	 * Changes the camera's direction, i.e, where it is looking at.
-	 * @param xOffset - How much to move the camera's direction left/right 
+	 * @param xOffset - How much to move the camera's direction left/right
 	 * @param yOffset - How much to move the camera's direction up/down
 	 ***********************************************/
 	void setDirection(float xOffset, float yOffset);
@@ -106,7 +110,7 @@ public:
 
 	/********************************************/ /**
 	 * Moves the camera in the specified direction with the specified speed. Does this by altering the view matrix
-	 * @param move - The type of movement. 0-Forward, 1-Backward, 2-Left, 3-Right, 4-Up, 5-Down
+	 * @param move - The type of movement. 0-Forward, 1-Backward, 2-Left, 3-Right
 	 * @param speed - How much we want to move the camera. Default is 0.1
 	 ***********************************************/
 	void moveCamera(int move, float speed = 0.1f);
@@ -156,4 +160,13 @@ public:
 	 ***********************************************/
 	void rotateCamera(float xOffset, float yOffset, float sensitivity = 0.1f);
 
+	/********************************************/ /**
+	 * Inverts the camera by inverting the signs of all of the eye's coordinates
+	 ***********************************************/
+	void invertCamera();
+
+	/********************************************/ /**
+	 * Resets the camera to the values set when constructing the object
+	 ***********************************************/
+	void resetCamera();
 };

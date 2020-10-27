@@ -58,7 +58,8 @@ void drawScene_Tetramino()
 }
 
 // All pieces share the same "main" or "central" square
-/*void drawScene_Tetramino()
+/*
+void drawScene_Tetramino()
 {
 	Renderer renderer;
 
