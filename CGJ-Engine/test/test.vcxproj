@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a4f61275-aca1-414a-af9c-bff3add69d8a}</ProjectGuid>
-    <RootNamespace>My5AssignmentFive</RootNamespace>
+    <ProjectGuid>{d30b7983-f906-4d3e-bf79-be790aa16cd0}</ProjectGuid>
+    <RootNamespace>test</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -116,13 +116,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(ProjectDir)src/vender;$(SolutionDir)Dependencies\glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\lib\Release\x64;$(SolutionDir)Dependencies\glfw\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,67 +130,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(ProjectDir)src/vender;$(SolutionDir)Dependencies\glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\lib\Release\x64;$(SolutionDir)Dependencies\glfw\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="headers\camera\Camera.h" />
-    <ClInclude Include="headers\drawing\IndexBuffer.h" />
-    <ClInclude Include="headers\drawing\Renderer.h" />
-    <ClInclude Include="headers\drawing\Shader.h" />
-    <ClInclude Include="headers\drawing\VertexArray.h" />
-    <ClInclude Include="headers\drawing\VertexBuffer.h" />
-    <ClInclude Include="headers\drawing\VertexBufferLayout.h" />
-    <ClInclude Include="headers\matrices\Matrix2.h" />
-    <ClInclude Include="headers\matrices\Matrix3.h" />
-    <ClInclude Include="headers\matrices\Matrix4.h" />
-    <ClInclude Include="headers\scene\SceneManager.h" />
-    <ClInclude Include="headers\shapes\Tetromino.h" />
-    <ClInclude Include="headers\vectors\Vector2.h" />
-    <ClInclude Include="headers\vectors\Vector3.h" />
-    <ClInclude Include="headers\vectors\Vector4.h" />
-    <ClInclude Include="headers\vertex\Vertex.h" />
-    <ClInclude Include="headers\camera\Quaternion.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resources\shaders\Basic.shader" />
-    <None Include="resources\shaders\Fragment.shader" />
-    <None Include="resources\shaders\Vertex.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\utils\camera\Quaternion.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\utils\camera\Camera.cpp" />
-    <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
-    <ClCompile Include="src\utils\drawing\Renderer.cpp" />
-    <ClCompile Include="src\utils\drawing\Shader.cpp" />
-    <ClCompile Include="src\utils\drawing\VertexArray.cpp" />
-    <ClCompile Include="src\utils\drawing\VertexBuffer.cpp" />
-    <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp" />
-    <ClCompile Include="src\utils\matrices\Matrix2.cpp" />
-    <ClCompile Include="src\utils\matrices\Matrix3.cpp" />
-    <ClCompile Include="src\utils\matrices\Matrix4.cpp" />
-    <ClCompile Include="src\utils\scene\SceneManager.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_DEBUG.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_I.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_L.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_RL.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_RS.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_S.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_SQ.cpp" />
-    <ClCompile Include="src\utils\shapes\Tetromino_T.cpp" />
-    <ClCompile Include="src\utils\vectors\Vector2.cpp" />
-    <ClCompile Include="src\utils\vectors\Vector3.cpp" />
-    <ClCompile Include="src\utils\vectors\Vector4.cpp" />
+    <ClCompile Include="4-Quaternions.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

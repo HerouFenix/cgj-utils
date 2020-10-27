@@ -11,6 +11,10 @@
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
+#include "../headers/camera/Quaternion.h"
+#include <cassert>
+
+const float Threshold = (float)1.0e-5;
 
 int window_width;
 int window_height;
@@ -38,16 +42,10 @@ bool mouseMoved = false;
 
 void drawScene_Tetramino()
 {
-	// CAMERA MOVEMENT //
-	//const float radius = 5.0f;
-	//float camX = sin(glfwGetTime()) * radius;
-	//float camZ = cos(glfwGetTime()) * radius;
-	//camera.setViewMatrix(Vector3(camX, 0, camZ), Vector3(0, 0, 0), Vector3(0, 1, 0));
-
-	if (mouseMoved) {
-		camera.rotateCamera(xOffset, yOffset);
-		mouseMoved = false;
-	}
+	const float radius = 20.0f;
+	float camX = sin(glfwGetTime()) * radius;
+	float camZ = cos(glfwGetTime()) * radius;
+	camera.setViewMatrix(Vector3(camX, 0.0, camZ), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 1.0, 0.0));
 
 	if (forwardKeyPressed) {
 		camera.moveCameraForward(0.05);
@@ -55,20 +53,7 @@ void drawScene_Tetramino()
 	if (backwardKeyPressed) {
 		camera.moveCameraBackward(0.05);
 	}
-	if (leftKeyPressed) {
-		camera.moveCameraLeft(0.05);
-	}
-	if (rightKeyPressed) {
-		camera.moveCameraRight(0.05);
-	}
 
-	if (upKeyPressed) {
-		camera.moveCameraUp(0.05);
-	}
-
-	if (downKeyPressed) {
-		camera.moveCameraDown(0.05);
-	}
 	///////////////////////////////////////////////////////////////////////
 
 	float view[16];
@@ -421,6 +406,175 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+	int gl_major = 4, gl_minor = 3;
+	int is_fullscreen = 0;
+	int is_vsync = 1;
+	GLFWwindow* win = setup(gl_major, gl_minor,
+		920, 920, "Tetromino", is_fullscreen, is_vsync);
+	run(win);
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST QUATERNIONS////////////////////" << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST #1////////////////////" << std::endl;
+	Vector4 axis ( 0.0f, 1.0f, 0.0f, 1.0f );
+	Quaternion q  = Quaternion::fromAngleAxis(90.0f, axis);
+	std::cout << "q" << q;
+
+	Quaternion qi (0.0f, 7.0f, 0.0f, 0.0f);
+	std::cout << "vi" << qi;
+
+	Quaternion qe (0.0f, 0.0f, 0.0f, -7.0f);
+	std::cout << "qe" << qe;
+
+	Quaternion qinv = q.Inverse();
+	qinv.clean(); 
+	std::cout << "qinv" << qinv;
+
+	Quaternion qf1 = (q * qi) * qinv;
+	std::cout << "qf1" << qf1;
+
+	assert(qf1 == qe);
+
+
+	Quaternion qconj = q.Conjugate();
+	std::cout << "qconj" << qconj;
+
+	Quaternion qf2 = (q * qi) * qconj;
+	std::cout << "qf2" << qf2;
+
+	assert(qf2 == qe);
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST #2////////////////////" << std::endl;
+
+	Vector4 axis2 = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Quaternion q2 = Quaternion::fromAngleAxis(90.0f, axis2);
+	std::cout << "q" << q2;
+
+	Vector4 vi2 = { 7.0f, 0.0f, 0.0f, 1.0f };
+	std::cout << "vi" << vi2 << std::endl;
+
+	Vector4 ve2 = { 0.0f, 0.0f, -7.0f, 1.0f };
+	std::cout << "ve" << ve2 << std::endl;
+
+	Matrix4 m2 = q2.GLRotationMatrix();
+	m2.clean();
+	std::cout << "M =" << m2;
+
+	Vector4 vf2 = m2 * vi2;
+	std::cout << "vf" << vf2 << std::endl;
+
+	assert(vf2 == ve2);
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST #3////////////////////" << std::endl;
+	Vector4 axis_x = { 1.0f, 0.0f, 0.0f, 1.0f };
+	Vector4 axis_y = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Vector4 axis_z = { 0.0f, 0.0f, 1.0f, 1.0f };
+
+	Quaternion qyaw900 = Quaternion::fromAngleAxis(900.0f, axis_y);
+	std::cout << "qyaw900" << qyaw900;
+	Quaternion qroll180 = Quaternion::fromAngleAxis(180.0f, axis_x);
+	std::cout << "qroll180" << qroll180;
+	Quaternion qpitch180 = Quaternion::fromAngleAxis(180.0f, axis_z);
+	std::cout << "qpitch180" << qpitch180;
+	Quaternion qrp = qpitch180 * qroll180;
+	std::cout << "qrp" << qrp;
+	Quaternion qpr = qroll180 * qpitch180;
+	std::cout << "qpr" << qpr;
+
+	Quaternion qi3 = { 0.0f, 1.0f, 0.0f, 0.0f }; // x-axis
+	std::cout << "qi" << qi3;
+	Quaternion qe3 = { 0.0f, -1.0f, 0.0f, 0.0f };
+	std::cout << "qe" << qe3;
+
+	Quaternion qfy = (qyaw900 * qi3) * (qyaw900.Inverse());
+	std::cout << "qy" << qfy;
+	assert(qe3 == qfy);
+
+	Quaternion qfrp = (qrp * qi3) * (qrp.Inverse());
+	std::cout << "qfrp" << qfrp;
+	assert(qe3 == qfrp);
+
+	Quaternion qfpr = (qpr * qi3) * (qpr.Inverse());
+	std::cout << "qfpr" << qfpr;
+	assert(qe3 == qfpr);
+
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST #4////////////////////" << std::endl;
+
+	float thetai = 45.0f;
+	Vector4 axis_i = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Quaternion q4 = Quaternion::fromAngleAxis(thetai, axis_i);
+	std::cout << thetai << " ";
+	std::cout << "axis_i" << axis_i << std::endl;
+
+	float thetaf;
+	Vector4 axis_f;
+	q4.toAngleAxis(thetaf, axis_f);
+	std::cout << thetaf << " ";
+	std::cout << "axis_f" << axis_f << std::endl;
+
+	assert(fabs(thetai - thetaf) < Threshold && axis_i == axis_f);
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST #5////////////////////" << std::endl;
+
+	Vector4 axis5 = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Quaternion q5 = Quaternion::fromAngleAxis(0.0f, axis5);
+	std::cout << "q0" << q5;
+	Quaternion q52 = Quaternion::fromAngleAxis(90.0f, axis5);
+	std::cout << "q1" << q52;
+	Quaternion qe5 = Quaternion::fromAngleAxis(30.0f, axis5);
+	std::cout << "qe" << qe5;
+
+	Quaternion qLerp0 = q5.Lerp(q52, 0.0f);
+	std::cout << "lerp(0)" << qLerp0;
+	assert(qLerp0 == q5);
+
+	Quaternion qLerp1 = q5.Lerp(q52, 1.0f);
+	std::cout << "lerp(1)" << qLerp1;
+	assert(qLerp1 == q52);
+
+	Quaternion qlerp = q5.Lerp(q2, 1 / 3.0f);
+	std::cout << "lerp(1/3)" << qlerp;
+
+	assert(!(qlerp == qe));
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "///////////TEST #6////////////////////" << std::endl;
+
+	Vector4 axis6 = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Quaternion q6 = Quaternion::fromAngleAxis(0.0f, axis6);
+	std::cout << "q0" << q6;
+	Quaternion q62 = Quaternion::fromAngleAxis(90.0f, axis6);
+	std::cout << "q1" << q62;
+	Quaternion qe6 = Quaternion::fromAngleAxis(30.0f, axis6);
+	std::cout << "qe" << q6;
+
+	Quaternion qSlerp0 = q6.Slerp(q62, 0.0f);
+	std::cout << "slerp(0)" << qSlerp0;
+	assert(qSlerp0 == q6);
+
+	Quaternion qSlerp1 = q6.Slerp(q62, 1.0f);
+	std::cout << "slerp(1)" << qSlerp1;
+	assert(qSlerp1 == q62);
+
+	Quaternion qslerp = q6.Slerp(q62, 1 / 3.0f);
+	std::cout << "slerp(1/3)" << qslerp;
+	assert(qslerp == qe6);
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
 	// DRAW SCENE //
 	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
 	//int debugPiece = sceneManager.createDebugPiece();
@@ -458,12 +612,7 @@ int main(int argc, char* argv[])
 	*/
 
 
-	int gl_major = 4, gl_minor = 3;
-	int is_fullscreen = 0;
-	int is_vsync = 1;
-	GLFWwindow* win = setup(gl_major, gl_minor,
-		920, 920, "Tetromino", is_fullscreen, is_vsync);
-	run(win);
+	
 	exit(EXIT_SUCCESS);
 }
 

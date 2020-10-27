@@ -1,3 +1,6 @@
+#include "..\..\..\..\AssignmentTwo\headers\matrices\Matrix4.h"
+#include "..\..\..\..\AssignmentTwo\headers\matrices\Matrix4.h"
+#include "..\..\..\..\AssignmentTwo\headers\matrices\Matrix4.h"
 #include "../../../headers/matrices/Matrix4.h"
 #include "../../../headers/matrices/Matrix2.h"
 #include "../../../headers/matrices/Matrix3.h"
@@ -9,6 +12,8 @@
 #include <cassert>
 
 # define PI atan(1)*4
+
+const float Threshold = (float)1.0e-5;
 
 // Matrix 4 Constructors
 Matrix4::Matrix4() {
@@ -572,4 +577,15 @@ Matrix4 Matrix4::rotationZ(float ang, bool radians, bool round) {
 			{0,0,0,1}
 		}
 	);
+}
+
+//Clean
+void Matrix4::clean()
+{
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			if (fabs(matrix[i][j]) < Threshold)
+				matrix[i][j] = 0.0f;
+		}
+	}
 }

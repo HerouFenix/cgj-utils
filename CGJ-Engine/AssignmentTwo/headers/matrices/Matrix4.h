@@ -417,6 +417,7 @@ public:
 	 * @return mat The 4x4 translation matrix
 	 ***********************************************/
 	static Matrix4 translation(Vector3& vec);
+	void clean();
 };
 
 

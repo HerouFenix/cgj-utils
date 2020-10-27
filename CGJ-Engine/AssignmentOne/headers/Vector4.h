@@ -340,6 +340,7 @@ class Vector4 {
 		 * @return ang The shortest angle between this vector and the given one in radians
 		 ***********************************************/
 		float angle(Vector4& vec);
+		Vector4 Normalize_Quaternions();
 };
 
 

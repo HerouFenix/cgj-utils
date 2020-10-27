@@ -105,13 +105,6 @@ public:
 	const Matrix4 getViewMatrix();
 
 	/********************************************/ /**
-	 * Moves the camera in the specified direction with the specified speed. Does this by altering the view matrix
-	 * @param move - The type of movement. 0-Forward, 1-Backward, 2-Left, 3-Right, 4-Up, 5-Down
-	 * @param speed - How much we want to move the camera. Default is 0.1
-	 ***********************************************/
-	void moveCamera(int move, float speed = 0.1f);
-
-	/********************************************/ /**
 	 * Moves the camera forward with the specified speed. Does this by altering the view matrix
 	 * @param speed - How much we want to move the camera. Default is 0.1
 	 ***********************************************/
@@ -124,36 +117,13 @@ public:
 	void moveCameraBackward(float speed = 0.1f);
 
 	/********************************************/ /**
-	 * Moves the camera left with the specified speed. Does this by altering the view matrix
-	 * @param speed - How much we want to move the camera. Default is 0.1
-	 ***********************************************/
-	void moveCameraLeft(float speed = 0.1f);
-
-	/********************************************/ /**
-	 * Moves the camera right with the specified speed. Does this by altering the view matrix
-	 * @param speed - How much we want to move the camera. Default is 0.1
-	 ***********************************************/
-	void moveCameraRight(float speed = 0.1f);
-
-	/********************************************/ /**
-	 * Moves the camera upward with the specified speed. Does this by altering the view matrix
-	 * @param speed - How much we want to move the camera. Default is 0.1
-	 ***********************************************/
-	void moveCameraUp(float speed = 0.1f);
-
-	/********************************************/ /**
-	 * Moves the camera downard with the specified speed. Does this by altering the view matrix
-	 * @param speed - How much we want to move the camera. Default is 0.1
-	 ***********************************************/
-	void moveCameraDown(float speed = 0.1f);
-
-
-	/********************************************/ /**
 	 * Rotates the camera.
 	 * @param xOffset - How much we want to move the camera from left to right
 	 * @param xOffset - How much we want to move the camera from down to up
 	 * @param sensitivity - How much we want to rotate the camera
 	 ***********************************************/
 	void rotateCamera(float xOffset, float yOffset, float sensitivity = 0.1f);
+
+	void rotateCameraY(float xOffset, float zOffset, float sensitivity);
 
 };

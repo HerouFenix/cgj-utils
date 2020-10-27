@@ -1,8 +1,11 @@
+#include "..\..\..\..\AssignmentOne\headers\Vector4.h"
 #include "../../../headers/vectors/Vector2.h"
 #include "../../../headers/vectors/Vector3.h"
 #include "../../../headers/vectors/Vector4.h"
 
 #include <cassert>
+
+const float Threshold = (float)1.0e-5;
 
 // Vector 4 Constructors
 Vector4::Vector4() {
@@ -207,18 +210,14 @@ Vector4& Vector4::operator/=(float operand)
 }
 
 //Vector4 Comparators
-bool Vector4::operator==(const Vector4& vec) {
-	if (x == vec.x && y == vec.y && z == vec.z && w == vec.w) {
-		return true;
-	}
-	return false;
+bool Vector4::operator==(const Vector4& v1) {
+	return (fabs(x - v1.x) < Threshold && fabs(y - v1.y) < Threshold &&
+		fabs(z - v1.z) < Threshold && fabs(w - v1.w) < Threshold);
 }
 
 bool Vector4::operator!=(const Vector4& vec) {
-	if (x == vec.x && y == vec.y && z == vec.z && w == vec.w) {
-		return false;
-	}
-	return true;
+
+	return !(*this==vec);
 }
 
 int Vector4::compareMag(Vector4& vec) {
@@ -271,6 +270,17 @@ Vector4 Vector4::normalized()
 	assert(magn != 0);
 
 	return *this / magn;
+}
+
+Vector4 Vector4::Normalize_Quaternions()
+{
+	Vector4 vn;
+	float s = 1 / (w * sqrt(x * x + y * y + z * z));
+	vn.x = x * s;
+	vn.y = y * s;
+	vn.z = z * s;
+	vn.w = 1.0f;
+	return vn;
 }
 
 //Dot product

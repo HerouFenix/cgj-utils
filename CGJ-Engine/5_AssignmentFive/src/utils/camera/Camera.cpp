@@ -119,28 +119,6 @@ const Matrix4 Camera::getPerspVP()
 	return perspProj * view;
 }
 
-
-void Camera::moveCamera(int move, float speed)
-{
-	
-	switch (move) {
-		case 0:
-			cameraEye += speed * cameraDirection;
-			break;
-		case 1:
-			cameraEye -= speed * cameraDirection;
-			break;
-		case 2:
-			cameraEye -= cameraDirection.crossProd(cameraUp).normalize() * speed;
-			break;
-		case 3:
-			cameraEye += cameraDirection.crossProd(cameraUp).normalize() * speed;
-			break;
-	}
-
-	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
-}
-
 void Camera::moveCameraForward(float speed) {
 	cameraEye += speed * cameraDirection;
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
@@ -148,26 +126,6 @@ void Camera::moveCameraForward(float speed) {
 
 void Camera::moveCameraBackward(float speed) {
 	cameraEye -= speed * cameraDirection;
-	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
-}
-
-void Camera::moveCameraLeft(float speed) {
-	cameraEye -= cameraDirection.crossProd(cameraUp).normalize() * speed;
-	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
-}
-
-void Camera::moveCameraRight(float speed) {
-	cameraEye += cameraDirection.crossProd(cameraUp).normalize() * speed;
-	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
-}
-
-void Camera::moveCameraUp(float speed) {
-	cameraEye += speed * cameraUp;
-	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
-}
-
-void Camera::moveCameraDown(float speed) {
-	cameraEye -= speed * cameraUp;
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
 
@@ -179,3 +137,15 @@ void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 	setDirection(xOffset, yOffset);
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
+
+void Camera::rotateCameraY(float xOffset, float zOffset, float sensitivity)
+{
+	xOffset *= sensitivity;
+	zOffset *= sensitivity;
+
+	cameraEye.setX(xOffset);
+	cameraEye.setZ(zOffset);
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+
