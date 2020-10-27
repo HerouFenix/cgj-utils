@@ -1,7 +1,8 @@
 #pragma once
-#include "../../../AssignmentOne/headers/Vector3.h"
-#include "../../../AssignmentTwo/headers/matrices/Matrix4.h"
-#include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
+#include "../vectors/Vector3.h"
+#include "../camera/Quaternion.h"
+#include "../matrices/Matrix4.h"
+#include "GL/glew.h"
 
 // CAMERA CLASS HEADER
 
@@ -124,6 +125,5 @@ public:
 	 ***********************************************/
 	void rotateCamera(float xOffset, float yOffset, float sensitivity = 0.1f);
 
-	void rotateCameraY(float xOffset, float zOffset, float sensitivity);
-
+	void rotateCamera(Quaternion& q);
 };

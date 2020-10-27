@@ -1,4 +1,5 @@
 #include "../../../headers/camera/Camera.h"
+#include "../../../headers/camera/Quaternion.h"
 # define PI atan(1)*4
 
 Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
@@ -137,15 +138,13 @@ void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 	setDirection(xOffset, yOffset);
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
-
-void Camera::rotateCameraY(float xOffset, float zOffset, float sensitivity)
+void Camera::rotateCamera(Quaternion& q)
 {
-	xOffset *= sensitivity;
-	zOffset *= sensitivity;
-
-	cameraEye.setX(xOffset);
-	cameraEye.setZ(zOffset);
+	Vector4 vec4(cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), 1.0f);
+	Vector4 rot = q.GLRotationMatrix() * vec4;
+	Vector3 eye_rot(rot.getX(), rot.getY(), rot.getZ());
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
+
 
 

@@ -45,7 +45,9 @@ void drawScene_Tetramino()
 	const float radius = 20.0f;
 	float camX = sin(glfwGetTime()) * radius;
 	float camZ = cos(glfwGetTime()) * radius;
-	camera.setViewMatrix(Vector3(camX, 0.0, camZ), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 1.0, 0.0));
+	Vector4 axis(0.0f, 1.0f, 0.0f, 0.0f);
+	Quaternion qtr(-90.0f, axis);
+	camera.rotateCamera(qtr);
 
 	if (forwardKeyPressed) {
 		camera.moveCameraForward(0.05);
@@ -411,7 +413,7 @@ int main(int argc, char* argv[])
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		920, 920, "Tetromino", is_fullscreen, is_vsync);
-	run(win);
+
 
 	std::cout << std::endl;
 	std::cout << std::endl;
@@ -611,7 +613,7 @@ int main(int argc, char* argv[])
 	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
 	*/
 
-
+	run(win);
 	
 	exit(EXIT_SUCCESS);
 }
