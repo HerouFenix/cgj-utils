@@ -304,6 +304,8 @@ class Vector4 {
 		 ***********************************************/
 		Vector4& normalize();
 
+		Vector4 Normalize_Quaternions();
+
 		/********************************************/ /**
 		 * Returns the Dot product of two vectors
 		 *
