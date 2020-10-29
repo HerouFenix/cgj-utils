@@ -399,3 +399,6 @@ Debug.
 
 # Include the dependencies folder
 !*/Dependencies/**
+
+# Include the glew DLL
+!*/glew32.dll
