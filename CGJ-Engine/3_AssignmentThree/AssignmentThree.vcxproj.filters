@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{2de5e633-7bf8-48b2-a94d-3beddde15fd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\pieces">
+      <UniqueIdentifier>{aa431c4b-e2e4-45ce-8b85-ebe6d633e5d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\opengl">
+      <UniqueIdentifier>{e61be8b3-c565-49ab-b471-f8cf15de942b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\math">
+      <UniqueIdentifier>{dc6d8811-997b-4927-8b32-68d2ab0cdd46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\math">
+      <UniqueIdentifier>{d81bdc4a-375d-447f-a2c1-7156c148dd19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\opengl">
+      <UniqueIdentifier>{3e6d7ecc-8cde-41a2-8499-ca2e3d5c1310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\pieces">
+      <UniqueIdentifier>{8f9c3154-eeaa-4786-b521-4cb89a47726d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{3527ac90-6043-44b8-88a7-0b2a5e28bafa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\Renderer.cpp">
+      <Filter>src\utils\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\Shader.cpp">
+      <Filter>src\utils\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\IndexBuffer.cpp">
+      <Filter>src\utils\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_T.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_I.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_L.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_RL.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_RS.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_S.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_SQ.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\scene\SceneManager.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp">
+      <Filter>src\utils\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\VertexArray.cpp">
+      <Filter>src\utils\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\VertexBuffer.cpp">
+      <Filter>src\utils\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix2.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix3.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix4.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector2.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector3.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector4.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="headers\vectors\Vector4.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector2.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector3.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\matrices\Matrix4.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\matrices\Matrix3.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\matrices\Matrix2.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\IndexBuffer.h">
+      <Filter>headers\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\Renderer.h">
+      <Filter>headers\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\VertexArray.h">
+      <Filter>headers\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\VertexBuffer.h">
+      <Filter>headers\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\VertexBufferLayout.h">
+      <Filter>headers\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\shapes\Tetromino.h">
+      <Filter>headers\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\scene\SceneManager.h">
+      <Filter>headers\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vertex\Vertex.h">
+      <Filter>headers\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\Shader.h">
+      <Filter>headers\opengl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Vertex.shader">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\shaders\Basic.shader">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\shaders\Fragment.shader">
+      <Filter>resources</Filter>
+    </None>
+  </ItemGroup>
+</Project>

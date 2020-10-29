@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\utils\shapes\Tetromino_T.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_DEBUG.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_I.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_L.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_RL.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_RS.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_S.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\shapes\Tetromino_SQ.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix2.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix3.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\matrices\Matrix4.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector2.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector3.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vectors\Vector4.cpp">
+      <Filter>src\utils\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\scene\SceneManager.cpp">
+      <Filter>src\utils\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\camera\Camera.cpp">
+      <Filter>src\utils\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
+    <ClCompile Include="src\utils\drawing\Renderer.cpp" />
+    <ClCompile Include="src\utils\drawing\Shader.cpp" />
+    <ClCompile Include="src\utils\drawing\VertexArray.cpp" />
+    <ClCompile Include="src\utils\drawing\VertexBuffer.cpp" />
+    <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="headers\matrices\Matrix2.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\matrices\Matrix3.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\matrices\Matrix4.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector2.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector3.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vectors\Vector4.h">
+      <Filter>headers\math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\camera\Camera.h">
+      <Filter>headers\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\scene\SceneManager.h">
+      <Filter>headers\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\shapes\Tetromino.h">
+      <Filter>headers\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vertex\Vertex.h">
+      <Filter>headers\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\drawing\IndexBuffer.h" />
+    <ClInclude Include="headers\drawing\Renderer.h" />
+    <ClInclude Include="headers\drawing\Shader.h" />
+    <ClInclude Include="headers\drawing\VertexArray.h" />
+    <ClInclude Include="headers\drawing\VertexBuffer.h" />
+    <ClInclude Include="headers\drawing\VertexBufferLayout.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Basic.shader">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\shaders\Fragment.shader">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\shaders\Vertex.shader">
+      <Filter>resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{18e13611-c810-4d1a-95b8-9a3a654dbc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers">
+      <UniqueIdentifier>{3171af78-c1f8-4044-b1db-efb0cdd36266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{47d37f45-2c5b-4256-b08d-8b8e846bebd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\math">
+      <UniqueIdentifier>{359179dc-ffac-4057-8990-86aa5c1a8223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\opengl">
+      <UniqueIdentifier>{2d255101-78ef-49f3-9a74-93f701dd2c6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\camera">
+      <UniqueIdentifier>{3f17a7fe-71eb-4f62-90fd-dd1a06f68860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\pieces">
+      <UniqueIdentifier>{e85594f4-9cbb-4da1-8e73-877556b7eba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{f4065aa0-b0d4-4177-a8fe-51c34512b516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\pieces">
+      <UniqueIdentifier>{24749411-f1ad-4607-b654-5e199f3982fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\math">
+      <UniqueIdentifier>{1694cfac-6250-4e66-85b1-8aa4479ba048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\opengl">
+      <UniqueIdentifier>{4030e6ff-d79d-441f-9ae1-8c4c24c85d7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\camera">
+      <UniqueIdentifier>{9d15c3cd-41b2-49ec-8431-1a99bdaca130}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
