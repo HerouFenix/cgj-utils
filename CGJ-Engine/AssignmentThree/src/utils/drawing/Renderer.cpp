@@ -16,7 +16,7 @@ bool GLLogCall(const char* function, const char* file, int line)
 	return true;
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, GLenum mode) const
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, GLenum mode)
 {
 	shader.Bind();
 	va.Bind();
@@ -25,7 +25,7 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 
 }
 
-void Renderer::clear() const
+void Renderer::clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 

@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # Debug
 Debug.
+
+# Include the dependencies folder
+!*/Dependencies/**

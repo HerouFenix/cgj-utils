@@ -15,82 +15,17 @@ int window_width;
 int window_height;
 
 SceneManager sceneManager;
-
+VertexArray va;
+IndexBuffer ib;
+Shader shader("resources/shaders/Basic.shader");
 /////////////////////////////////////////////////////////////////////// SCENE
 
-// Each piece has its own "main" or "central" square
-void drawScene_Tetramino()
-{
-	Renderer renderer;
-
-	Shader shader("resources/shaders/Basic.shader");
-
-	VertexBufferLayout layout;
-	layout.Push<float>(4);
-	layout.Push<float>(4);
-
-	VertexArray va;
-	VertexBuffer vb(0, 4 * 8 * sizeof(float));
-	for (int i = 0; i < sceneManager.getSize(); i++) {
-		Vertex vertices[4];
-
-		sceneManager.getPieceAt(i).getVertices(vertices);
-
-		GLuint indices[4];
-		sceneManager.getPieceAt(i).getIndices(indices);
-		IndexBuffer ib(indices, 6);
-
-		vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
-
-		shader.Bind();
-		va.Bind();
-		ib.Bind();
-		va.AddBuffer(vb, layout);
-
-		//Draw each square that makes up the piece using the transform matrices
-		for (int j = 0; j < 4; j++) {
-			float matrix[16];
-			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
-			shader.SetUniform4fv("Matrix", matrix);
-			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
-		}
-	}
-}
-
 // All pieces share the same "main" or "central" square
-/*
 void drawScene_Tetramino()
 {
-	Renderer renderer;
-
-	Shader shader("resources/shaders/Basic.shader");
-
-	VertexBufferLayout layout;
-	layout.Push<float>(4);
-	layout.Push<float>(4);
-
-	VertexArray va;
-	VertexBuffer vb(0, 4 * 8 * sizeof(float));
-
-	Vertex vertices[4];
-
-	//sceneManager.getPieceAt(i).getVertices(vertices);
-	vertices[0].positions = Vector4(0 - 0.05f, 0 - 0.05f, 0, 1.0f);
-	vertices[1].positions = Vector4(0 + 0.05f, 0 - 0.05f, 0, 1.0f);
-	vertices[2].positions = Vector4(0 + 0.05f, 0 + 0.05f, 0, 1.0f);
-	vertices[3].positions = Vector4(0 - 0.05f, 0 + 0.05f, 0, 1.0f);
-
-
-	GLuint indices[4] = { 0,1,2,3 };
-	//sceneManager.getPieceAt(i).getIndices(indices);
-	IndexBuffer ib(indices, 6);
-
-	vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
-
 	shader.Bind();
 	va.Bind();
 	ib.Bind();
-	va.AddBuffer(vb, layout);
 
 	float colours[4];
 	shader.SetUniform1i("isUniformColour", 1);
@@ -98,16 +33,16 @@ void drawScene_Tetramino()
 	for (int i = 0; i < sceneManager.getSize(); i++) {
 		sceneManager.getPieceAt(i).getColours(colours);
 		shader.SetUniform4fvec("uniformColour", colours);
+
 		//Draw each square that makes up the piece using the transform matrices
 		for (int j = 0; j < 4; j++) {
 			float matrix[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(matrix);
 			shader.SetUniform4fv("Matrix", matrix);
-			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
+			Renderer::Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 		}
 	}
 }
-*/
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
 
@@ -213,6 +148,32 @@ void setupOpenGL(int winx, int winy)
 	glViewport(0, 0, winx, winy);
 }
 
+
+void setupShaderProgram() {
+	shader.SetupShader();
+}
+
+void setupBufferObjects() {
+	va.CreateVertexArray();
+
+	Vector4 vertices[4];
+
+	vertices[0] = Vector4(0 - 0.05f, 0 - 0.05f, 0, 1.0f);
+	vertices[1] = Vector4(0 + 0.05f, 0 - 0.05f, 0, 1.0f);
+	vertices[2] = Vector4(0 + 0.05f, 0 + 0.05f, 0, 1.0f);
+	vertices[3] = Vector4(0 - 0.05f, 0 + 0.05f, 0, 1.0f);
+
+	VertexBufferLayout layout;
+	layout.Push<Vector4>(1); // One Vector 4 for each vertex's position
+
+	VertexBuffer vb(vertices, sizeof(vertices));
+	va.AddBuffer(vb, layout);
+
+	GLuint indices[4] = { 0,1,2,3 };
+	ib.BuildIndexBuffer(indices, 4);
+}
+
+
 GLFWwindow* setup(int major, int minor,
 	int winx, int winy, const char* title, int is_fullscreen, int is_vsync)
 {
@@ -220,13 +181,32 @@ GLFWwindow* setup(int major, int minor,
 		setupGLFW(major, minor, winx, winy, title, is_fullscreen, is_vsync);
 	setupGLEW();
 	setupOpenGL(winx, winy);
+
+	//setupBufferObjects();	//Create buffer objects
+
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
-	//createShaderProgram();
+	setupBufferObjects();
+	setupShaderProgram();
 	return win;
 }
 
+
+void destroyBufferObjects()
+{
+	va.~VertexArray();
+}
+void destroyShaderProgram()
+{
+	shader.~Shader();
+}
+
+void window_close_callback(GLFWwindow* win)
+{
+	destroyShaderProgram();
+	destroyBufferObjects();
+}
 ////////////////////////////////////////////////////////////////////////// RUN
 
 void run(GLFWwindow* win)
@@ -281,20 +261,6 @@ int main(int argc, char* argv[])
 	sceneManager.transformPiece(iPiece, Matrix4::translation(squareDiagonal + squareDiagonal/2, squareDiagonal/2, 0));
 
 	/////////////////////////////////////////////////////////////////////
-
-	/*int tPiece = sceneManager.createTPiece();
-	sceneManager.transformPiece(tPiece, Matrix4::translation(0.55, 0.11, 0));
-	sceneManager.transformPiece(tPiece, Matrix4::rotationZ(45, false, true));
-
-	int sPiece = sceneManager.createSPiece();
-	sceneManager.transformPiece(sPiece, Matrix4::translation(0.44, 0.0, 0));
-	sceneManager.transformPiece(sPiece, Matrix4::rotationZ(45, false, true));
-
-	int rsPiece = sceneManager.createRSPiece();
-	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
-	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
-	*/
-
 
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;

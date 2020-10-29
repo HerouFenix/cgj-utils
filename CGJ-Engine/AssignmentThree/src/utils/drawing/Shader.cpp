@@ -8,14 +8,24 @@
 Shader::Shader(const std::string& path)
 	:m_path(path), m_RendererID(0)
 {
-	ShaderProgramSource source = ParseShader(path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
-	
 }
 
 Shader::~Shader()
 {
 	GLCall(glDeleteProgram(m_RendererID));
+}
+
+void Shader::SetupShader()
+{
+	ShaderProgramSource source = ParseShader(m_path);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+}
+
+void Shader::SetupShader(const std::string& path)
+{
+	m_path = path;
+	ShaderProgramSource source = ParseShader(m_path);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& path)

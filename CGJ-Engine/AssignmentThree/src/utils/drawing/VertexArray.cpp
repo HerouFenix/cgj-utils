@@ -5,13 +5,17 @@
 
 VertexArray::VertexArray()
 {
-	GLCall(glGenVertexArrays(1, &m_RendererID));
-	GLCall(glBindVertexArray(m_RendererID));
+	m_VaoID = -1;
+}
+
+GLuint VertexArray::CreateVertexArray() {
+	GLCall(glGenVertexArrays(1, &m_VaoID));
+	return m_VaoID;
 }
 
 VertexArray::~VertexArray()
 {
-	GLCall(glDeleteVertexArrays(1, &m_RendererID));
+	GLCall(glDeleteVertexArrays(1, &m_VaoID));
 }
 
 void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
@@ -26,15 +30,22 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), (const void*)offset));
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
+	vb.Unbind();
+	UnBind();
 }
 
 void VertexArray::Bind() const
 {
-	GLCall(glBindVertexArray(m_RendererID));
+	GLCall(glBindVertexArray(m_VaoID));
 }
 
 void VertexArray::UnBind() const
 {
 	GLCall(glBindVertexArray(0));
+}
+
+GLuint VertexArray::getID() const
+{
+	return m_VaoID;
 }
 

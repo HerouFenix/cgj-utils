@@ -3,7 +3,7 @@
 class VertexBuffer
 {
 private:
-	GLuint m_RendererID;
+	GLuint m_VboID;
 public:
 	VertexBuffer(const void* data, GLuint size);
 	~VertexBuffer();
@@ -13,5 +13,6 @@ public:
 
 	void SubBufferData(GLintptr offset, GLuint size, const void* data);
 
+	GLuint getID() const;
 };
 

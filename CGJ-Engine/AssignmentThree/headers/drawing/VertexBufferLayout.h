@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "Renderer.h"
-
+#include "../vectors/Vector4.h"
 struct VertexBufferElement
 {
 	GLuint type;
@@ -53,6 +53,12 @@ public:
 	{
 		m_Elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
 		m_Stride += VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE) * count;
+	}
+	template<>
+	void Push <Vector4>(GLuint count)
+	{
+		m_Elements.push_back({ GL_FLOAT, count*4, GL_FALSE });
+		m_Stride += sizeof(Vector4);
 	}
 
 	inline const std::vector<VertexBufferElement> GetElements() const { return m_Elements; }
