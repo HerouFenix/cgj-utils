@@ -401,4 +401,4 @@ Debug.
 !*/Dependencies/**
 
 # Include the glew DLL
-!*/glew32.dll
+*/!glew32.dll
