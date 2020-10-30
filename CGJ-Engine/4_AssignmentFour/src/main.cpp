@@ -55,24 +55,24 @@ void moveCamera() {
 	}
 
 	if (forwardKeyPressed) {
-		camera.moveCameraForward(0.05);
+		camera.moveCameraForward(0.05f);
 	}
 	if (backwardKeyPressed) {
-		camera.moveCameraBackward(0.05);
+		camera.moveCameraBackward(0.05f);
 	}
 	if (leftKeyPressed) {
-		camera.moveCameraLeft(0.05);
+		camera.moveCameraLeft(0.05f);
 	}
 	if (rightKeyPressed) {
-		camera.moveCameraRight(0.05);
+		camera.moveCameraRight(0.05f);
 	}
 
 	if (upKeyPressed) {
-		camera.moveCameraUp(0.05);
+		camera.moveCameraUp(0.05f);
 	}
 
 	if (downKeyPressed) {
-		camera.moveCameraDown(0.05);
+		camera.moveCameraDown(0.05f);
 	}
 
 
@@ -245,16 +245,16 @@ void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 
 	if (firstMouse) // initially set to true
 	{
-		cursorX = xPos;
-		cursorY = yPos;
+		cursorX = (float)xPos;
+		cursorY = (float)yPos;
 		firstMouse = false;
 	}
 
-	xOffset = xPos - cursorX;
-	yOffset = cursorY - yPos; // reversed since y-coordinates range from bottom to top
+	xOffset = (float)xPos - cursorX;
+	yOffset = cursorY - (float)yPos; // reversed since y-coordinates range from bottom to top
 
-	cursorX = xPos;
-	cursorY = yPos;
+	cursorX = (float)xPos;
+	cursorY = (float)yPos;
 
 	mouseMoved = true;
 }
@@ -275,8 +275,8 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	window_width = winx;
 	window_height = winy;
 
-	cursorX = window_width / 2;
-	cursorY = window_height / 2;
+	cursorX = (float)window_width / 2;
+	cursorY = (float)window_height / 2;
 
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
 	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
@@ -376,21 +376,21 @@ void setupBufferObjects() {
 	VertexBuffer vb(vertices, sizeof(vertices));
 	va.AddBuffer(vb, layout);
 
-	GLuint indices[4] = { 0,1,2,3 };
-	ib.BuildIndexBuffer(indices, 4);
+	GLuint indices[6] = { 0,1,2,2,3,0 };
+	ib.BuildIndexBuffer(indices, 6);
 
-	GLuint backIndices[4] = { 0,3,2,1 };
-	ibBack.BuildIndexBuffer(backIndices, 4);
+	GLuint backIndices[6] = { 0,3,2,2,1,0 };
+	ibBack.BuildIndexBuffer(backIndices, 6);
 }
 
 void setupCamera() {
 	// CAMERA SETUP //
 	camera.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
-	camera.setPrespProjectionMatrix(15, window_width / window_height, 1, 10);
+	camera.setPrespProjectionMatrix(15, (GLfloat)window_width / (GLfloat)window_height, 1, 10);
 
 	//Set initial cursor position to be the middle of the screen
-	cursorX = window_width / 2;
-	cursorY = window_height / 2;
+	cursorX = (float)window_width / 2;
+	cursorY = (float)window_height / 2;
 
 	Matrix4 viewM = camera.getViewMatrix();
 	viewM.getRowMajor(view);
@@ -464,7 +464,7 @@ void run(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	// DRAW SCENE //
-	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
+	float squareDiagonal = sqrt(0.11f * 0.11f + 0.11f * 0.11f);
 	//int debugPiece = sceneManager.createDebugPiece();
 	int sqPiece = sceneManager.createSQPiece();
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));

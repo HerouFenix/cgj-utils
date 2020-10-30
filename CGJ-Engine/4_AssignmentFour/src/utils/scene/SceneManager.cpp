@@ -4,7 +4,7 @@
 
 SceneManager::SceneManager()
 {
-	srand(time(0));
+	srand((unsigned int)time(0));
 }
 
 std::vector<Tetromino> SceneManager::getPieces()

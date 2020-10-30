@@ -1,5 +1,5 @@
 #include "../../../headers/camera/Camera.h"
-# define PI atan(1)*4
+# define PI (float)atan(1)*4
 
 Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
 {
@@ -71,7 +71,7 @@ void Camera::setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat botto
 
 void Camera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ)
 {
-	GLfloat ang_rad = (fovy / 2) * PI / 180.0f;
+	GLfloat ang_rad = (fovy / 2.0f) * PI / 180.0f;
 	GLfloat d = 1 / tan(ang_rad);
 
 	perspProj = Matrix4(new float[4][4]{
@@ -86,8 +86,8 @@ void Camera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat near
 void Camera::setDirection(float xOffset, float yOffset)
 {
 	// Convert degrees to radians
-	xOffset = xOffset * PI / 180.0;
-	yOffset = yOffset * PI / 180.0;
+	xOffset = xOffset * PI / 180.0f;
+	yOffset = yOffset * PI / 180.0f;
 
 	yaw -= xOffset;
 	pitch += yOffset;

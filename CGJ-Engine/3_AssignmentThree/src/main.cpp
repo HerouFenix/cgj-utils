@@ -169,8 +169,8 @@ void setupBufferObjects() {
 	VertexBuffer vb(vertices, sizeof(vertices));
 	va.AddBuffer(vb, layout);
 
-	GLuint indices[4] = { 0,1,2,3 };
-	ib.BuildIndexBuffer(indices, 4);
+	GLuint indices[6] = { 0,1,2,2,3,0 };
+	ib.BuildIndexBuffer(indices, 6);
 }
 
 

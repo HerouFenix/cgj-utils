@@ -27,7 +27,7 @@ Tetromino_SQ::Tetromino_SQ(float colour[4], Vector4 center) : Tetromino(colour, 
 	Matrix4 identity = Matrix4::identity();
 	transforms[0] = identity;
 
-	identity[1][3] = 0.11;
+	identity[1][3] = 0.11f;
 	transforms[1] = identity;
 
 	identity[0][3] = 0.11f;
@@ -43,7 +43,7 @@ Tetromino_SQ::Tetromino_SQ(Vector4 center) :Tetromino(center)
 	Matrix4 identity = Matrix4::identity();
 	transforms[0] = identity;
 
-	identity[1][3] = 0.11;
+	identity[1][3] = 0.11f;
 	transforms[1] = identity;
 
 	identity[0][3] = 0.11f;
@@ -58,7 +58,7 @@ void Tetromino_SQ::reset()
 	Matrix4 identity = Matrix4::identity();
 	transforms[0] = identity;
 
-	identity[1][3] = 0.11;
+	identity[1][3] = 0.11f;
 	transforms[1] = identity;
 
 	identity[0][3] = 0.11f;

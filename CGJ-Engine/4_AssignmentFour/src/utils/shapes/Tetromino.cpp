@@ -94,12 +94,6 @@ void Tetromino::getIndices(GLuint arr[4])
 	arr[3] = indices[3];
 }
 
-GLuint* Tetromino::getReverseIndices()
-{
-	GLuint reverseIndices[4] = { 0,3,2,1 };
-	return reverseIndices;
-}
-
 void Tetromino::getReverseIndices(GLuint arr[4])
 {
 	arr[0] = indices[0];

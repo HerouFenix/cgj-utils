@@ -21,7 +21,7 @@ protected:
 	Vertex vertices[4];	// Vertices of the base square
 	Matrix4 transforms[4];	// Transform matrices used to draw entire shape
 	GLuint indices[4] = { 0,1,2,3 };
-	GLenum mode = GL_TRIANGLE_FAN;
+	GLenum mode = GL_TRIANGLES;
 	bool rendered;
 public: 
 	// FUNCTION DECLARATIONS
