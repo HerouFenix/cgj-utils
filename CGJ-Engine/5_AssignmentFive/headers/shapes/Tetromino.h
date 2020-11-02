@@ -21,7 +21,7 @@ protected:
 	Vertex vertices[4];	// Vertices of the base square
 	Matrix4 transforms[4];	// Transform matrices used to draw entire shape
 	GLuint indices[4] = { 0,1,2,3 };
-	GLenum mode = GL_TRIANGLE_FAN;
+	GLenum mode = GL_TRIANGLES;
 	bool rendered;
 public: 
 	// FUNCTION DECLARATIONS
@@ -48,6 +48,11 @@ public:
 	* Copies this shape's vertices information into the passed array
 	***********************************************/
 	void getVertices(Vertex arr[4]);
+
+	/********************************************/ /**
+	* Get Colours
+	***********************************************/
+	void getColours(float arr[4]);
 
 	/********************************************/ /**
 	* Returns this shape's index buffer

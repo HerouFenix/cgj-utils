@@ -1,6 +1,6 @@
 #include "../../../headers/camera/Camera.h"
-#include "../../../headers/camera/Quaternion.h"
-# define PI atan(1)*4
+# define PI (float)atan(1)*4
+#include <GLFW/glfw3.h>
 
 Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
 {
@@ -14,7 +14,13 @@ Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
 	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
 	yaw = acos(cameraDirection.getX() / cos(pitch));
 
-	setDirection(0.0f, 0.0f);
+	if (eye.getZ() < 0 && yaw > 0) {
+		yaw = -yaw;
+	}
+
+	initialEye = eye;
+	initialCenter = center;
+	initialUp = up;
 
 	setViewMatrix(eye, eye + cameraDirection, up);
 }
@@ -23,13 +29,14 @@ Camera::~Camera()
 {
 }
 
+
 void Camera::setViewMatrix(Vector3 eye, Vector3 center, Vector3 up)
 {
 	cameraEye = eye;
 	cameraCenter = center;
 	cameraUp = up;
 
-	Vector3 v = (center-eye).normalize(); // CameraDirection
+	Vector3 v = (center - eye).normalize(); // CameraDirection
 
 	Vector3 s = v.crossProd(up).normalize(); // CameraRight
 
@@ -65,7 +72,7 @@ void Camera::setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat botto
 
 void Camera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ)
 {
-	GLfloat ang_rad = (fovy / 2) * PI / 180.0f;
+	GLfloat ang_rad = (fovy / 2.0f) * PI / 180.0f;
 	GLfloat d = 1 / tan(ang_rad);
 
 	perspProj = Matrix4(new float[4][4]{
@@ -80,12 +87,12 @@ void Camera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat near
 void Camera::setDirection(float xOffset, float yOffset)
 {
 	// Convert degrees to radians
-	xOffset = xOffset * PI / 180.0;
-	yOffset = yOffset * PI / 180.0;
+	xOffset = xOffset * PI / 180.0f;
+	yOffset = yOffset * PI / 180.0f;
 
 	yaw -= xOffset;
 	pitch += yOffset;
-	 
+
 	float cosYaw = cos(yaw);
 	float cosPitch = cos(pitch);
 	float sinPitch = sin(pitch);
@@ -97,6 +104,7 @@ void Camera::setDirection(float xOffset, float yOffset)
 
 	cameraDirection.normalize();
 }
+
 
 const Matrix4 Camera::getViewMatrix() {
 	return view;
@@ -120,6 +128,28 @@ const Matrix4 Camera::getPerspVP()
 	return perspProj * view;
 }
 
+
+void Camera::moveCamera(int move, float speed)
+{
+
+	switch (move) {
+	case 0:
+		cameraEye += speed * cameraDirection;
+		break;
+	case 1:
+		cameraEye -= speed * cameraDirection;
+		break;
+	case 2:
+		cameraEye -= cameraDirection.crossProd(cameraUp).normalize() * speed;
+		break;
+	case 3:
+		cameraEye += cameraDirection.crossProd(cameraUp).normalize() * speed;
+		break;
+	}
+
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
 void Camera::moveCameraForward(float speed) {
 	cameraEye += speed * cameraDirection;
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
@@ -130,6 +160,26 @@ void Camera::moveCameraBackward(float speed) {
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
 
+void Camera::moveCameraLeft(float speed) {
+	cameraEye -= cameraDirection.crossProd(cameraUp).normalize() * speed;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraRight(float speed) {
+	cameraEye += cameraDirection.crossProd(cameraUp).normalize() * speed;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraUp(float speed) {
+	cameraEye += speed * cameraUp;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::moveCameraDown(float speed) {
+	cameraEye -= speed * cameraUp;
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
 void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 {
 	xOffset *= sensitivity;
@@ -137,14 +187,131 @@ void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 
 	setDirection(xOffset, yOffset);
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+
 }
-void Camera::rotateCamera(Quaternion& q)
+
+void Camera::rotateCameraAround(Vector3 point)
 {
-	Vector4 vec4(cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), 1.0f);
-	Vector4 rot = q.GLRotationMatrix() * vec4;
-	Vector3 eye_rot(rot.getX(), rot.getY(), rot.getZ());
+	float camX = sin(glfwGetTime()) * 5 + point.getX();
+	float camZ = cos(glfwGetTime()) * 5 + point.getZ();
+
+	cameraEye.setX(camX);
+	cameraEye.setZ(camZ);
+
+	// Set direction to look at point
+	cameraDirection = (point - cameraEye).normalize();
+
+
+	// cameraDirection.Y = sinPitch => pitch = aSin(cameraDirection.Y)
+	pitch = asin(cameraDirection.getY());
+
+	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
+	yaw = acos(cameraDirection.getX() / cos(pitch));
+
+	if (cameraEye.getZ() < 0 && yaw > 0) {
+		yaw = -yaw;
+	}
+	
+
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
 
+void Camera::rotateCameraAround(float rotationDegree, Vector3 point)
+{
+	float rotationRads = rotationDegree * PI / 180.0f;
 
+	Vector3 neg = -point;
+	Vector4 standIn = cameraEye;
+	standIn = Matrix4::translation(neg) * standIn;
+	standIn = Matrix4::rotationY(rotationRads) * standIn;
+	standIn = Matrix4::translation(point) * standIn;
+
+	cameraEye = standIn;
+
+	// Set direction to look at point
+	cameraDirection = (point - cameraEye).normalize();
+
+
+	// cameraDirection.Y = sinPitch => pitch = aSin(cameraDirection.Y)
+	pitch = asin(cameraDirection.getY());
+
+	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
+	yaw = acos(cameraDirection.getX() / cos(pitch));
+
+	if (cameraEye.getZ() < 0 && yaw > 0) {
+		yaw = -yaw;
+	}
+
+
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::rotateCameraAroundQuaternion(float rotationDegree, Vector3 point)
+{
+	float thetai = 45.0f;
+	Vector4 axis_i = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Quaternion qtr(rotationDegree, axis_i);
+
+	Vector4 vec4(cameraEye.getX(), cameraEye.getY(), cameraEye.getZ(), 1.0f);
+	Vector4 rot = qtr.GLRotationMatrix() * vec4;
+	Vector3 eye_rot(rot.getX(), rot.getY(), rot.getZ());
+
+	cameraEye = eye_rot;
+
+	// Set direction to look at point
+	cameraDirection = (point - cameraEye).normalize();
+
+
+	// cameraDirection.Y = sinPitch => pitch = aSin(cameraDirection.Y)
+	pitch = asin(cameraDirection.getY());
+
+	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
+	yaw = acos(cameraDirection.getX() / cos(pitch));
+
+	if (cameraEye.getZ() < 0 && yaw > 0) {
+		yaw = -yaw;
+	}
+
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::invertCamera()
+{
+	cameraEye = -cameraEye;
+
+	cameraDirection = -cameraDirection;
+
+	// Set initial pitch and yaw
+
+	// cameraDirection.Y = sinPitch => pitch = aSin(cameraDirection.Y)
+	pitch = asin(cameraDirection.getY());
+
+	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
+	yaw = acos(cameraDirection.getX() / cos(pitch));
+
+	if (cameraEye.getZ() < 0 && yaw > 0) {
+		yaw = -yaw;
+	}
+
+	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+}
+
+void Camera::resetCamera()
+{
+	cameraDirection = (initialCenter - initialEye).normalize();
+
+	// Set initial pitch and yaw
+
+	// cameraDirection.Y = sinPitch => pitch = aSin(cameraDirection.Y)
+	pitch = asin(cameraDirection.getY());
+
+	// cameraDirection.X = cosYaw * cosPitch => cosYaw = cameraDirection.X/cosPitch => Yaw = aCos(cameraDirection.X/cosPitch)
+	yaw = acos(cameraDirection.getX() / cos(pitch));
+
+	if (initialEye.getZ() < 0 && yaw > 0) {
+		yaw = -yaw;
+	}
+
+	setViewMatrix(initialEye, initialEye + cameraDirection, initialUp);
+}
 

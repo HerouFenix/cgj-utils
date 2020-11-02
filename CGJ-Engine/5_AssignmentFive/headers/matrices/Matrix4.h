@@ -418,9 +418,7 @@ public:
 	 ***********************************************/
 	static Matrix4 translation(Vector3& vec);
 
-
 	void clean();
-
 };
 
 

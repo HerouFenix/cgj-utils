@@ -1,6 +1,3 @@
-#include "..\..\..\..\AssignmentTwo\headers\matrices\Matrix4.h"
-#include "..\..\..\..\AssignmentTwo\headers\matrices\Matrix4.h"
-#include "..\..\..\..\AssignmentTwo\headers\matrices\Matrix4.h"
 #include "../../../headers/matrices/Matrix4.h"
 #include "../../../headers/matrices/Matrix2.h"
 #include "../../../headers/matrices/Matrix3.h"
@@ -11,9 +8,8 @@
 #include <math.h>
 #include <cassert>
 
-# define PI atan(1)*4
-
-const float Threshold = (float)1.0e-5;
+# define PI (float)atan(1)*4
+# define THRESHOLD (float)1.0e-5
 
 // Matrix 4 Constructors
 Matrix4::Matrix4() {
@@ -91,10 +87,6 @@ float Matrix4::get(int row, int col) {
 	return matrix[row][col];
 }
 
-float* Matrix4::getMatrix() {
-	float arr[16] = { matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3], matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3], matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3], matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3] };
-	return arr;
-}
 
 void Matrix4::getRowMajor(float* arr) {
 	int index = 0;
@@ -466,9 +458,9 @@ Matrix4 Matrix4::translation(Vector3& vec) {
 
 Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians, bool round) {
 	if (!radians) { // Convert to radians
-		sx = sx * PI / 180.0;
-		sy = sy * PI / 180.0;
-		sz = sz * PI / 180.0;
+		sx = sx * PI / 180.0f;
+		sy = sy * PI / 180.0f;
+		sz = sz * PI / 180.0f;
 	}
 
 	float cosG = cos(sx);
@@ -510,7 +502,7 @@ Matrix4 Matrix4::rotation(Vector3& vec, bool radians, bool round) {
 
 Matrix4 Matrix4::rotationX(float ang, bool radians, bool round) {
 	if (!radians) { // Convert to radians
-		ang = ang * PI / 180.0;
+		ang = ang * PI / 180.0f;
 	}
 
 	float cosAng = cos(ang);
@@ -534,7 +526,7 @@ Matrix4 Matrix4::rotationX(float ang, bool radians, bool round) {
 
 Matrix4 Matrix4::rotationY(float ang, bool radians, bool round) {
 	if (!radians) { // Convert to radians
-		ang = ang * PI / 180.0;
+		ang = ang * PI / 180.0f;
 	}
 
 	float cosAng = cos(ang);
@@ -558,7 +550,7 @@ Matrix4 Matrix4::rotationY(float ang, bool radians, bool round) {
 
 Matrix4 Matrix4::rotationZ(float ang, bool radians, bool round) {
 	if (!radians) { // Convert to radians
-		ang = ang * PI / 180.0;
+		ang = ang * PI / 180.0f;
 	}
 	float cosAng = cos(ang);
 	float sinAng = sin(ang);
@@ -579,12 +571,11 @@ Matrix4 Matrix4::rotationZ(float ang, bool radians, bool round) {
 	);
 }
 
-//Clean
 void Matrix4::clean()
 {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (fabs(matrix[i][j]) < Threshold)
+			if (fabs(matrix[i][j]) < THRESHOLD)
 				matrix[i][j] = 0.0f;
 		}
 	}

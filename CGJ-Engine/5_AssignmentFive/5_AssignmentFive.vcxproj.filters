@@ -18,6 +18,9 @@
     <ClInclude Include="headers\camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\camera\Quaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="headers\drawing\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -63,9 +66,6 @@
     <ClInclude Include="headers\vertex\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\camera\Quaternion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader" />
@@ -74,6 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\utils\camera\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\camera\Quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp">
@@ -103,9 +109,6 @@
     <ClCompile Include="src\utils\matrices\Matrix4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\scene\SceneManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\utils\shapes\Tetromino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -133,6 +136,9 @@
     <ClCompile Include="src\utils\shapes\Tetromino_T.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\scene\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\utils\vectors\Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -140,12 +146,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\vectors\Vector4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\camera\Quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

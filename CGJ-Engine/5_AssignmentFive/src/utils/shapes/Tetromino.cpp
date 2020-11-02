@@ -72,6 +72,15 @@ void Tetromino::getVertices(Vertex arr[4])
 	arr[3] = vertices[3];
 }
 
+
+void Tetromino::getColours(float arr[4])
+{
+	arr[0] = vertices[0].colour[0];
+	arr[1] = vertices[1].colour[1];
+	arr[2] = vertices[2].colour[2];
+	arr[3] = vertices[3].colour[3];
+}
+
 GLuint* Tetromino::getIndices()
 {
 	return indices;
@@ -83,12 +92,6 @@ void Tetromino::getIndices(GLuint arr[4])
 	arr[1] = indices[1];
 	arr[2] = indices[2];
 	arr[3] = indices[3];
-}
-
-GLuint* Tetromino::getReverseIndices()
-{
-	GLuint reverseIndices[4] = { 0,3,2,1 };
-	return reverseIndices;
 }
 
 void Tetromino::getReverseIndices(GLuint arr[4])

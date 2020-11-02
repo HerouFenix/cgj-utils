@@ -7,6 +7,8 @@ private:
 	GLuint m_Count;
 public:
 	IndexBuffer(const GLuint* data, GLuint count);
+	IndexBuffer();
+	void BuildIndexBuffer(const GLuint* data, GLuint count);
 	~IndexBuffer();
 
 	void Bind() const;

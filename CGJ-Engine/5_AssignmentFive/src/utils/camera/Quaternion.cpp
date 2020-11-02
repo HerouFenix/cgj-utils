@@ -4,12 +4,29 @@
 #define RADIANS_TO_DEGREES 57.29577951308232185913
 const float qThreshold = (float)1.0e-5;
 
+Quaternion::Quaternion()
+{
+}
+
 Quaternion::Quaternion(float angle, float xx, float yy, float zz)
 {
 	a = angle;
 	x = xx;
 	y = yy;
 	z = zz;
+}
+
+Quaternion::Quaternion(float theta, Vector4 axis)
+{
+	Vector4 axisn = axis.Normalize_Quaternions();
+	float aT = theta * (float)DEGREES_TO_RADIANS;
+	a = cos(aT / 2.0f);
+	float s = sin(aT / 2.0f);
+	x = axisn.getX() * s;
+	y = axisn.getY() * s;
+	z = axisn.getZ() * s;
+	clean();
+	Normalize();
 }
 
 float Quaternion::getA()

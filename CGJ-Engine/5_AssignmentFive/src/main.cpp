@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-
+#include <cassert>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -11,136 +11,141 @@
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
-#include "../headers/camera/Quaternion.h"
-#include <cassert>
 
-const float Threshold = (float)1.0e-5;
+#include "../headers/camera/Quaternion.h"
 
 int window_width;
 int window_height;
 float cursorX, cursorY;
 float xOffset, yOffset;
 
+const float Threshold = (float)1.0e-5;
+
 SceneManager sceneManager;
+VertexArray va;
+IndexBuffer ib;
+IndexBuffer ibBack;
+
+Shader shader("resources/shaders/Basic.shader");
+
 Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
-bool ortho = true;
+float view[16];
+float proj[16];
+bool ortho = false;
+bool projChanged;
 
-// KEY PRESSED
+bool quaternionRotation = false;
+
+// KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
-bool leftKeyPressed = false;
-bool rightKeyPressed = false;
 bool backwardKeyPressed = false;
-
-bool upKeyPressed = false;
-bool downKeyPressed = false;
-
 bool lockMouse = true;
 bool firstMouse = true;
 bool mouseMoved = false;
 
+bool cameraReset = false;
+bool stopRotating = false;
+bool automaticRotating = true;
+
 /////////////////////////////////////////////////////////////////////// SCENE
+void moveCamera() {
+	// CAMERA ZOOM //
+
+	if (forwardKeyPressed) {
+		camera.moveCameraForward(0.05f);
+	}
+	if (backwardKeyPressed) {
+		camera.moveCameraBackward(0.05f);
+	}
+
+	// ROTATE CAMERA //
+	if (!stopRotating) {
+		if (!quaternionRotation) {
+			std::cout << "EULER ROTATION \n";
+			if (automaticRotating)
+				camera.rotateCameraAround(1);
+			else
+				if (mouseMoved) {
+					camera.rotateCameraAround(xOffset);
+					mouseMoved = false;
+				}
+		}
+		else {
+			std::cout << "QUATERNION ROTATION \n";
+			if (automaticRotating)
+				camera.rotateCameraAroundQuaternion(1);
+			else
+				if (mouseMoved) {
+					camera.rotateCameraAroundQuaternion(xOffset);
+					mouseMoved = false;
+				}
+		}
+	}
+
+
+	///////////////////////////////////////////////////////////////////////
+	// Get the updated view matrix
+	Matrix4 viewM = camera.getViewMatrix();
+	viewM.getRowMajor(view);
+	cameraReset = false;
+}
 
 void drawScene_Tetramino()
 {
-	const float radius = 20.0f;
-	float camX = sin(glfwGetTime()) * radius;
-	float camZ = cos(glfwGetTime()) * radius;
-	Vector4 axis(0.0f, 1.0f, 0.0f, 0.0f);
-	Quaternion qtr(-90.0f, axis);
-	camera.rotateCamera(qtr);
+	moveCamera();
 
-	if (forwardKeyPressed) {
-		camera.moveCameraForward(0.05);
+	if (projChanged) {
+		Matrix4 projM;
+		if (ortho) {
+			projM = camera.getOrthProj();
+		}
+		else {
+			projM = camera.getPerspProj();
+		}
+		projM.getRowMajor(proj);
+
+		projChanged = false;
 	}
-	if (backwardKeyPressed) {
-		camera.moveCameraBackward(0.05);
-	}
 
-	///////////////////////////////////////////////////////////////////////
+	shader.Bind();
+	va.Bind();
 
-	float view[16];
-	Matrix4 viewM = camera.getViewMatrix();
-	viewM.getRowMajor(view);
+	float colours[4];
+	shader.SetUniform1i("isUniformColour", 1);
 
-	float proj[16];
-	Matrix4 projM;
-	if (ortho) {
-		projM = camera.getOrthProj();
-	}
-	else {
-		projM = camera.getPerspProj();
-	}
-	projM.getRowMajor(proj);
-
-
-	Renderer renderer;
-
-	Shader shader("resources/shaders/Basic.shader");
-
-	VertexBufferLayout layout;
-	layout.Push<float>(4);
-	layout.Push<float>(4);
-
-	VertexArray va;
-	VertexBuffer vb(0, 4 * 8 * sizeof(float));
 	for (int i = 0; i < sceneManager.getSize(); i++) {
-		Vertex vertices[4];
-
-		sceneManager.getPieceAt(i).getVertices(vertices);
-
+		sceneManager.getPieceAt(i).getColours(colours);
+		shader.SetUniform4fvec("uniformColour", colours);
 		GLuint indices[4];
-
-
-		vb.SubBufferData(0, 4 * 8 * sizeof(float), vertices);
-
-		shader.Bind();
-		va.Bind();
-		va.AddBuffer(vb, layout);
 
 		//Draw each square that makes up the piece using the transform matrices
 		for (int j = 0; j < 4; j++) {
-			// Draw Front Face
-			sceneManager.getPieceAt(i).getIndices(indices);
-			IndexBuffer ib(indices, 6);
-			ib.Bind();
-
 			float model[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(model);
 			shader.SetUniform4fv("Model", model);
-
 			shader.SetUniform4fv("View", view);
-
 			shader.SetUniform4fv("Projection", proj);
 
-			shader.SetUniform1i("isBack", 0);
+			// Draw Front Face			
+			ib.Bind();
 
-			renderer.Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
+			shader.SetUniform1i("isBack", 0);
+			Renderer::Draw(va, ib, shader, sceneManager.getPieceAt(i).getMode());
 
 			ib.Unbind();
 
-
-			// Draw Back Face
-			sceneManager.getPieceAt(i).getReverseIndices(indices);
-			IndexBuffer ibBack(indices, 6);
+			// Draw Back Face			
 			ibBack.Bind();
 
-			shader.SetUniform4fv("Model", model);
-
-			shader.SetUniform4fv("View", view);
-
-			shader.SetUniform4fv("Projection", proj);
-
 			shader.SetUniform1i("isBack", 1);
-
-			renderer.Draw(va, ibBack, shader, sceneManager.getPieceAt(i).getMode());
+			Renderer::Draw(va, ibBack, shader, sceneManager.getPieceAt(i).getMode());
 
 			ibBack.Unbind();
 		}
 	}
 }
+
 ///////////////////////////////////////////////////////////////////// CALLBACKS
-
-
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
@@ -152,33 +157,10 @@ void glfw_error_callback(int error, const char* description)
 	std::cerr << "GLFW Error: " << description << std::endl;
 }
 
-///////////////////////////////////////////////////////////////////////// SETUP
-
-GLFWwindow* setupWindow(int winx, int winy, const char* title,
-	int is_fullscreen, int is_vsync)
-{
-	window_width = winx;
-	window_height = winy;
-
-	cursorX = window_width / 2;
-	cursorY = window_height / 2;
-
-	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
-	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
-
-	if (!win)
-	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-	glfwMakeContextCurrent(win);
-	glfwSwapInterval(is_vsync);
-
-	return win;
-}
-
 void window_close_callback(GLFWwindow* win)
 {
+	shader.~Shader();
+	va.~VertexArray();
 	std::cout << "Bye bye!" << std::endl;
 }
 
@@ -189,60 +171,50 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 	// Key Presses
 	if (action == GLFW_PRESS) {
 		switch (key) {
-			case GLFW_KEY_P:
-				ortho = !ortho;
-				break;
-			case GLFW_KEY_ESCAPE:
-				glfwSetWindowShouldClose(win, GLFW_TRUE);
-				window_close_callback(win);
-				break;
-			case GLFW_KEY_A:
-				leftKeyPressed = true;
-				break;
-			case GLFW_KEY_D:
-				rightKeyPressed = true;
-				break;
-			case GLFW_KEY_W:
-				forwardKeyPressed = true;
-				break;
-			case GLFW_KEY_S:
-				backwardKeyPressed = true;
-				break;
-			case GLFW_KEY_SPACE:
-				upKeyPressed = true;
-				break;
-			case GLFW_KEY_LEFT_CONTROL:
-				downKeyPressed = true;
-				break;
-			case GLFW_KEY_F:
-				lockMouse = !lockMouse;
-				if (lockMouse) {
-					firstMouse = true;
-				}
-				break;
+		case GLFW_KEY_P:
+			ortho = !ortho;
+			projChanged = true;
+			break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(win, GLFW_TRUE);
+			window_close_callback(win);
+			break;
+		case GLFW_KEY_W:
+			forwardKeyPressed = true;
+			break;
+		case GLFW_KEY_S:
+			backwardKeyPressed = true;
+			break;
+		case GLFW_KEY_R:
+			camera.resetCamera();
+			cameraReset = true;
+			break;
+		case GLFW_KEY_G:
+			quaternionRotation = !quaternionRotation;
+			break;
+		case GLFW_KEY_F:
+			lockMouse = !lockMouse;
+			if (lockMouse) {
+				firstMouse = true;
 			}
+			break;
+		case GLFW_KEY_SPACE:
+			stopRotating = !stopRotating;
+			break;
+		case GLFW_KEY_A:
+			automaticRotating = !automaticRotating;
+			break;
+		}
 	}
 	else if (action == GLFW_RELEASE) {
 		switch (key) {
-			case GLFW_KEY_A:
-				leftKeyPressed = false;
-				break;
-			case GLFW_KEY_D:
-				rightKeyPressed = false;
-				break;
-			case GLFW_KEY_W:
-				forwardKeyPressed = false;
-				break;
-			case GLFW_KEY_S:
-				backwardKeyPressed = false;
-				break;
-			case GLFW_KEY_SPACE:
-				upKeyPressed = false;
-				break;
-			case GLFW_KEY_LEFT_CONTROL:
-				downKeyPressed = false;
-				break;
-			}
+		case GLFW_KEY_W:
+			forwardKeyPressed = false;
+			break;
+		case GLFW_KEY_S:
+			backwardKeyPressed = false;
+			break;
+		}
 	}
 
 }
@@ -257,16 +229,16 @@ void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 
 	if (firstMouse) // initially set to true
 	{
-		cursorX = xPos;
-		cursorY = yPos;
+		cursorX = (float)xPos;
+		cursorY = (float)yPos;
 		firstMouse = false;
 	}
 
-	xOffset = xPos - cursorX;
-	yOffset = cursorY - yPos; // reversed since y-coordinates range from bottom to top
-	
-	cursorX = xPos;
-	cursorY = yPos;
+	xOffset = (float)xPos - cursorX;
+	yOffset = cursorY - (float)yPos; // reversed since y-coordinates range from bottom to top
+
+	cursorX = (float)xPos;
+	cursorY = (float)yPos;
 
 	mouseMoved = true;
 }
@@ -277,6 +249,31 @@ void setupCallbacks(GLFWwindow* win)
 	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 	glfwSetWindowCloseCallback(win, window_close_callback);
+}
+
+///////////////////////////////////////////////////////////////////////// SETUP
+
+GLFWwindow* setupWindow(int winx, int winy, const char* title,
+	int is_fullscreen, int is_vsync)
+{
+	window_width = winx;
+	window_height = winy;
+
+	cursorX = (float)window_width / 2;
+	cursorY = (float)window_height / 2;
+
+	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
+	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
+
+	if (!win)
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+	glfwMakeContextCurrent(win);
+	glfwSwapInterval(is_vsync);
+
+	return win;
 }
 
 GLFWwindow* setupGLFW(int gl_major, int gl_minor,
@@ -343,14 +340,56 @@ void setupOpenGL(int winx, int winy)
 	glViewport(0, 0, winx, winy);
 }
 
+void setupShaderProgram() {
+	shader.SetupShader();
+}
+
+void setupBufferObjects() {
+	va.CreateVertexArray();
+
+	Vector4 vertices[4];
+
+	vertices[0] = Vector4(0 - 0.05f, 0 - 0.05f, 0, 1.0f);
+	vertices[1] = Vector4(0 + 0.05f, 0 - 0.05f, 0, 1.0f);
+	vertices[2] = Vector4(0 + 0.05f, 0 + 0.05f, 0, 1.0f);
+	vertices[3] = Vector4(0 - 0.05f, 0 + 0.05f, 0, 1.0f);
+
+	VertexBufferLayout layout;
+	layout.Push<Vector4>(1); // One Vector 4 for each vertex's position
+
+	VertexBuffer vb(vertices, sizeof(vertices));
+	va.AddBuffer(vb, layout);
+
+	GLuint indices[6] = { 0,1,2,2,3,0 };
+	ib.BuildIndexBuffer(indices, 6);
+
+	GLuint backIndices[6] = { 0,3,2,2,1,0 };
+	ibBack.BuildIndexBuffer(backIndices, 6);
+}
+
 void setupCamera() {
 	// CAMERA SETUP //
 	camera.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
-	camera.setPrespProjectionMatrix(15, window_width / window_height, 1, 10);
+	camera.setPrespProjectionMatrix(15, (GLfloat)window_width / (GLfloat)window_height, 1, 10);
 
 	//Set initial cursor position to be the middle of the screen
-	cursorX = window_width / 2;
-	cursorY = window_height / 2;
+	cursorX = (float)window_width / 2;
+	cursorY = (float)window_height / 2;
+
+	Matrix4 viewM = camera.getViewMatrix();
+	viewM.getRowMajor(view);
+
+
+	Matrix4 projM;
+	if (ortho) {
+		projM = camera.getOrthProj();
+	}
+	else {
+		projM = camera.getPerspProj();
+	}
+	projM.getRowMajor(proj);
+
+	projChanged = false;
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -361,12 +400,12 @@ GLFWwindow* setup(int major, int minor,
 	setupGLEW();
 	setupOpenGL(winx, winy);
 
-	setupCamera();
-
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
-	//createShaderProgram();
+	setupBufferObjects();
+	setupShaderProgram();
+	setupCamera();
 	return win;
 }
 
@@ -391,6 +430,7 @@ void run(GLFWwindow* win)
 			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 
+
 		drawScene_Tetramino();
 
 		glfwSwapBuffers(win);
@@ -406,8 +446,7 @@ void run(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 
-int main(int argc, char* argv[])
-{
+void testQuaternionMethods() {
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
@@ -420,18 +459,18 @@ int main(int argc, char* argv[])
 	std::cout << "///////////TEST QUATERNIONS////////////////////" << std::endl;
 	std::cout << std::endl;
 	std::cout << "///////////TEST #1////////////////////" << std::endl;
-	Vector4 axis ( 0.0f, 1.0f, 0.0f, 1.0f );
-	Quaternion q  = Quaternion::fromAngleAxis(90.0f, axis);
+	Vector4 axis(0.0f, 1.0f, 0.0f, 1.0f);
+	Quaternion q = Quaternion::fromAngleAxis(90.0f, axis);
 	std::cout << "q" << q;
 
-	Quaternion qi (0.0f, 7.0f, 0.0f, 0.0f);
+	Quaternion qi(0.0f, 7.0f, 0.0f, 0.0f);
 	std::cout << "vi" << qi;
 
-	Quaternion qe (0.0f, 0.0f, 0.0f, -7.0f);
+	Quaternion qe(0.0f, 0.0f, 0.0f, -7.0f);
 	std::cout << "qe" << qe;
 
 	Quaternion qinv = q.Inverse();
-	qinv.clean(); 
+	qinv.clean();
 	std::cout << "qinv" << qinv;
 
 	Quaternion qf1 = (q * qi) * qinv;
@@ -575,10 +614,15 @@ int main(int argc, char* argv[])
 	assert(qslerp == qe6);
 	std::cout << std::endl;
 	std::cout << std::endl;
+}
+
+int main(int argc, char* argv[])
+{
+	//testQuaternionMethods();
 
 
 	// DRAW SCENE //
-	float squareDiagonal = sqrt(0.11 * 0.11 + 0.11 * 0.11);
+	float squareDiagonal = sqrt(0.11f * 0.11f + 0.11f * 0.11f);
 	//int debugPiece = sceneManager.createDebugPiece();
 	int sqPiece = sceneManager.createSQPiece();
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
@@ -600,21 +644,12 @@ int main(int argc, char* argv[])
 
 	/////////////////////////////////////////////////////////////////////
 
-	/*int tPiece = sceneManager.createTPiece();
-	sceneManager.transformPiece(tPiece, Matrix4::translation(0.55, 0.11, 0));
-	sceneManager.transformPiece(tPiece, Matrix4::rotationZ(45, false, true));
-
-	int sPiece = sceneManager.createSPiece();
-	sceneManager.transformPiece(sPiece, Matrix4::translation(0.44, 0.0, 0));
-	sceneManager.transformPiece(sPiece, Matrix4::rotationZ(45, false, true));
-
-	int rsPiece = sceneManager.createRSPiece();
-	sceneManager.transformPiece(rsPiece, Matrix4::translation(0.55, -0.11, 0));
-	sceneManager.transformPiece(rsPiece, Matrix4::rotationZ(45, false, true));
-	*/
-
+	int gl_major = 4, gl_minor = 3;
+	int is_fullscreen = 0;
+	int is_vsync = 1;
+	GLFWwindow* win = setup(gl_major, gl_minor,
+		920, 920, "Tetromino", is_fullscreen, is_vsync);
 	run(win);
-	
 	exit(EXIT_SUCCESS);
 }
 

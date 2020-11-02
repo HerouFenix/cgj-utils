@@ -160,8 +160,8 @@
     <ClInclude Include="headers\vectors\Vector2.h" />
     <ClInclude Include="headers\vectors\Vector3.h" />
     <ClInclude Include="headers\vectors\Vector4.h" />
-    <ClInclude Include="headers\vertex\Vertex.h" />
     <ClInclude Include="headers\camera\Quaternion.h" />
+    <ClInclude Include="headers\vertex\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader" />

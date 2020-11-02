@@ -8,14 +8,24 @@
 Shader::Shader(const std::string& path)
 	:m_path(path), m_RendererID(0)
 {
-	ShaderProgramSource source = ParseShader(path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
-	
 }
 
 Shader::~Shader()
 {
 	GLCall(glDeleteProgram(m_RendererID));
+}
+
+void Shader::SetupShader()
+{
+	ShaderProgramSource source = ParseShader(m_path);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+}
+
+void Shader::SetupShader(const std::string& path)
+{
+	m_path = path;
+	ShaderProgramSource source = ParseShader(m_path);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& path)
@@ -107,6 +117,11 @@ void Shader::UnBind() const
 void Shader::SetUniform4fv(const std::string& name, float matrix[])
 {
 	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, matrix));
+}
+
+void Shader::SetUniform4fvec(const std::string& name, float vec[])
+{
+	GLCall(glUniform4fv(GetUniformLocation(name), 1, vec));
 }
 
 void Shader::SetUniform1i(const std::string& name, int value)

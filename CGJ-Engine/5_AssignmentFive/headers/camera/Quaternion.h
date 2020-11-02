@@ -7,7 +7,7 @@ class Quaternion
 private:
 	float x, y, z, a;
 
-public:
+public: 
 	Quaternion();
 	Quaternion(float a, float x, float y, float z);
 	Quaternion(float theta, Vector4 axis);
