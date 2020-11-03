@@ -8,11 +8,13 @@
 #include "../headers/matrices/Matrix4.h"
 
 #include "../headers/camera/Camera.h"
+#include "../headers/camera/ArcBallCamera.h"
+
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
 
-#include "../headers/camera/Quaternion.h"
+#include "../headers/quaternions/Quaternion.h"
 
 int window_width;
 int window_height;
@@ -29,6 +31,8 @@ IndexBuffer ibBack;
 Shader shader("resources/shaders/Basic.shader");
 
 Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
+ArcBallCamera arcBall(5);
+
 float view[16];
 float proj[16];
 bool ortho = false;
@@ -49,6 +53,8 @@ bool automaticRotating = true;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
+	// FPS CAMERA //
+	/*
 	// CAMERA ZOOM //
 
 	if (forwardKeyPressed) {
@@ -59,9 +65,10 @@ void moveCamera() {
 	}
 
 	// ROTATE CAMERA //
+	
 	if (!stopRotating) {
 		if (!quaternionRotation) {
-			std::cout << "EULER ROTATION \n";
+			//std::cout << "EULER ROTATION \n";
 			if (automaticRotating)
 				camera.rotateCameraAround(1);
 			else
@@ -71,7 +78,7 @@ void moveCamera() {
 				}
 		}
 		else {
-			std::cout << "QUATERNION ROTATION \n";
+			//std::cout << "QUATERNION ROTATION \n";
 			if (automaticRotating)
 				camera.rotateCameraAroundQuaternion(1);
 			else
@@ -82,10 +89,49 @@ void moveCamera() {
 		}
 	}
 
-
 	///////////////////////////////////////////////////////////////////////
 	// Get the updated view matrix
 	Matrix4 viewM = camera.getViewMatrix();
+	viewM.getRowMajor(view);
+	cameraReset = false;
+	*/
+
+	// ARCBALL CAMERA //
+
+	if (forwardKeyPressed) {
+		arcBall.incrementRadius(-0.05f);
+	}
+	if (backwardKeyPressed) {
+		arcBall.incrementRadius(0.05f);
+	}
+
+	if (!stopRotating) {
+		if (!quaternionRotation) {
+			//std::cout << "EULER ROTATION \n";
+			if (automaticRotating)
+				arcBall.rotateCameraAround(1);
+			else
+				if (mouseMoved) {
+					arcBall.rotateCameraAround(xOffset);
+					mouseMoved = false;
+				}
+		}
+		
+		else {
+			//std::cout << "QUATERNION ROTATION \n";
+			if (automaticRotating)
+				arcBall.rotateCameraAroundQuaternion(1);
+			else
+				if (mouseMoved) {
+					arcBall.rotateCameraAroundQuaternion(xOffset);
+					mouseMoved = false;
+				}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////
+	// Get the updated view matrix
+	Matrix4 viewM = arcBall.getViewMatrix();
 	viewM.getRowMajor(view);
 	cameraReset = false;
 }
@@ -94,6 +140,7 @@ void drawScene_Tetramino()
 {
 	moveCamera();
 
+	/*
 	if (projChanged) {
 		Matrix4 projM;
 		if (ortho) {
@@ -101,6 +148,20 @@ void drawScene_Tetramino()
 		}
 		else {
 			projM = camera.getPerspProj();
+		}
+		projM.getRowMajor(proj);
+
+		projChanged = false;
+	}
+	*/
+
+	if (projChanged) {
+		Matrix4 projM;
+		if (ortho) {
+			projM = arcBall.getOrthProj();
+		}
+		else {
+			projM = arcBall.getPerspProj();
 		}
 		projM.getRowMajor(proj);
 
@@ -186,7 +247,8 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			backwardKeyPressed = true;
 			break;
 		case GLFW_KEY_R:
-			camera.resetCamera();
+			//camera.resetCamera();
+			arcBall.resetCamera();
 			cameraReset = true;
 			break;
 		case GLFW_KEY_G:
@@ -368,7 +430,8 @@ void setupBufferObjects() {
 }
 
 void setupCamera() {
-	// CAMERA SETUP //
+	// FPS CAMERA SETUP //
+	/*
 	camera.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
 	camera.setPrespProjectionMatrix(15, (GLfloat)window_width / (GLfloat)window_height, 1, 10);
 
@@ -386,6 +449,30 @@ void setupCamera() {
 	}
 	else {
 		projM = camera.getPerspProj();
+	}
+	projM.getRowMajor(proj);
+
+	projChanged = false;
+	*/
+
+	// ARC BALL CAMERA SETUP //
+	arcBall.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
+	arcBall.setPrespProjectionMatrix(15, (GLfloat)window_width / (GLfloat)window_height, 1, 10);
+
+	//Set initial cursor position to be the middle of the screen
+	cursorX = (float)window_width / 2;
+	cursorY = (float)window_height / 2;
+
+	Matrix4 viewM = arcBall.getViewMatrix();
+	viewM.getRowMajor(view);
+
+
+	Matrix4 projM;
+	if (ortho) {
+		projM = arcBall.getOrthProj();
+	}
+	else {
+		projM = arcBall.getPerspProj();
 	}
 	projM.getRowMajor(proj);
 
@@ -623,24 +710,29 @@ int main(int argc, char* argv[])
 
 	// DRAW SCENE //
 	float squareDiagonal = sqrt(0.11f * 0.11f + 0.11f * 0.11f);
+	Vector3 down(0, -0.10, 0);
 	//int debugPiece = sceneManager.createDebugPiece();
 	int sqPiece = sceneManager.createSQPiece();
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
+	sceneManager.transformPiece(sqPiece, Matrix4::translation(down));
 
 	int lPiece = sceneManager.createLPiece();
 	//sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22, -0.11, 0));
 	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
 	sceneManager.transformPiece(lPiece, Matrix4::translation(-(squareDiagonal + squareDiagonal / 2), squareDiagonal / 2, 0));
+	sceneManager.transformPiece(lPiece, Matrix4::translation(down));
 
 	int rlPiece = sceneManager.createRLPiece();
 	//sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11, -0.11, 0));
 	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
 	sceneManager.transformPiece(rlPiece, Matrix4::translation(0, -squareDiagonal, 0));
+	sceneManager.transformPiece(rlPiece, Matrix4::translation(down));
 
 	int iPiece = sceneManager.createIPiece();
 	//sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
 	sceneManager.transformPiece(iPiece, Matrix4::translation(squareDiagonal + squareDiagonal / 2, squareDiagonal / 2, 0));
+	sceneManager.transformPiece(iPiece, Matrix4::translation(down));
 
 	/////////////////////////////////////////////////////////////////////
 

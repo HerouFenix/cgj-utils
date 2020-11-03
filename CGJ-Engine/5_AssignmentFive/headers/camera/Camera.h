@@ -2,7 +2,7 @@
 #include "../matrices/Matrix4.h"
 #include "../vectors/Vector3.h"
 #include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
-#include "../camera/Quaternion.h"
+#include "../quaternions/Quaternion.h"
 
 // CAMERA CLASS HEADER
 

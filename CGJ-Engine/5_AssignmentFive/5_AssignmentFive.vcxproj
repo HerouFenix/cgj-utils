@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\camera\ArcBallCamera.h" />
     <ClInclude Include="headers\camera\Camera.h" />
     <ClInclude Include="headers\drawing\IndexBuffer.h" />
     <ClInclude Include="headers\drawing\Renderer.h" />
@@ -160,7 +161,7 @@
     <ClInclude Include="headers\vectors\Vector2.h" />
     <ClInclude Include="headers\vectors\Vector3.h" />
     <ClInclude Include="headers\vectors\Vector4.h" />
-    <ClInclude Include="headers\camera\Quaternion.h" />
+    <ClInclude Include="headers\quaternions\Quaternion.h" />
     <ClInclude Include="headers\vertex\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +170,8 @@
     <None Include="resources\shaders\Vertex.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\utils\camera\Quaternion.cpp" />
+    <ClCompile Include="src\utils\camera\ArcBallCamera.cpp" />
+    <ClCompile Include="src\utils\quaternions\Quaternion.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\camera\Camera.cpp" />
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
