@@ -62,16 +62,32 @@ const Matrix4 ArcBallCamera::getPerspProj() {
 	return perspProj;
 }
 
-void ArcBallCamera::rotateCameraAround(float rotationDegree)
+void ArcBallCamera::rotateCameraAroundHorizontal(float rotationDegree)
 {
 	float rotationRads = rotationDegree * PI / 180.0f;
 
 	rotation = Matrix4::rotationY(rotationRads) * rotation;
 }
 
-void ArcBallCamera::rotateCameraAroundQuaternion(float rotationDegree)
+void ArcBallCamera::rotateCameraAroundQuaternionHorizontal(float rotationDegree)
 {
 	Vector4 axis_i = { 0.0f, 1.0f, 0.0f, 1.0f };
+	Quaternion qtr(rotationDegree, axis_i);
+
+	rotation = qtr.GLRotationMatrix() * rotation;
+
+}
+
+void ArcBallCamera::rotateCameraAroundVertical(float rotationDegree)
+{
+	float rotationRads = rotationDegree * PI / 180.0f;
+
+	rotation = Matrix4::rotationX(rotationRads) * rotation;
+}
+
+void ArcBallCamera::rotateCameraAroundQuaternionVertical(float rotationDegree)
+{
+	Vector4 axis_i = { 1.0f, 0.0f, 0.0f, 1.0f };
 	Quaternion qtr(rotationDegree, axis_i);
 
 	rotation = qtr.GLRotationMatrix() * rotation;

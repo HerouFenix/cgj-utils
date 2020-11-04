@@ -49,7 +49,7 @@ bool mouseMoved = false;
 
 bool cameraReset = false;
 bool stopRotating = false;
-bool automaticRotating = true;
+bool automaticRotating = false;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -109,10 +109,11 @@ void moveCamera() {
 		if (!quaternionRotation) {
 			//std::cout << "EULER ROTATION \n";
 			if (automaticRotating)
-				arcBall.rotateCameraAround(1);
+				arcBall.rotateCameraAroundHorizontal(1);
 			else
 				if (mouseMoved) {
-					arcBall.rotateCameraAround(xOffset);
+					arcBall.rotateCameraAroundHorizontal(xOffset);
+					arcBall.rotateCameraAroundVertical(yOffset);
 					mouseMoved = false;
 				}
 		}
@@ -120,10 +121,11 @@ void moveCamera() {
 		else {
 			//std::cout << "QUATERNION ROTATION \n";
 			if (automaticRotating)
-				arcBall.rotateCameraAroundQuaternion(1);
+				arcBall.rotateCameraAroundQuaternionHorizontal(1);
 			else
 				if (mouseMoved) {
-					arcBall.rotateCameraAroundQuaternion(xOffset);
+					arcBall.rotateCameraAroundQuaternionHorizontal(xOffset);
+					arcBall.rotateCameraAroundQuaternionVertical(yOffset);
 					mouseMoved = false;
 				}
 		}
@@ -139,21 +141,6 @@ void moveCamera() {
 void drawScene_Tetramino()
 {
 	moveCamera();
-
-	/*
-	if (projChanged) {
-		Matrix4 projM;
-		if (ortho) {
-			projM = camera.getOrthProj();
-		}
-		else {
-			projM = camera.getPerspProj();
-		}
-		projM.getRowMajor(proj);
-
-		projChanged = false;
-	}
-	*/
 
 	if (projChanged) {
 		Matrix4 projM;
@@ -220,7 +207,7 @@ void glfw_error_callback(int error, const char* description)
 
 void window_close_callback(GLFWwindow* win)
 {
-	shader.~Shader();
+	shader.~Shader(); 
 	va.~VertexArray();
 	std::cout << "Bye bye!" << std::endl;
 }
@@ -238,7 +225,6 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, GLFW_TRUE);
-			window_close_callback(win);
 			break;
 		case GLFW_KEY_W:
 			forwardKeyPressed = true;

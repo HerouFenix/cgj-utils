@@ -12,6 +12,9 @@
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
 
+
+//
+
 int window_width;
 int window_height;
 float cursorX, cursorY;
@@ -103,6 +106,10 @@ void drawScene_Tetramino()
 
 		projChanged = false;
 	}
+
+	// Uniform Buffer Objects - "Draw" Camera -- See Example code
+
+
 
 	shader.Bind();
 	va.Bind();
