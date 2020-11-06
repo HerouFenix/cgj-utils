@@ -47,55 +47,18 @@ bool lockMouse = true;
 bool firstMouse = true;
 bool mouseMoved = false;
 
+bool keyRotationX = false;
+bool keyRotationY = false;
+bool keyRotationZ = false;
+bool mouseRotating = true;
+bool downMoved, upMoved = false;
+
 bool cameraReset = false;
 bool stopRotating = false;
 bool automaticRotating = false;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
-	// FPS CAMERA //
-	/*
-	// CAMERA ZOOM //
-
-	if (forwardKeyPressed) {
-		camera.moveCameraForward(0.05f);
-	}
-	if (backwardKeyPressed) {
-		camera.moveCameraBackward(0.05f);
-	}
-
-	// ROTATE CAMERA //
-	
-	if (!stopRotating) {
-		if (!quaternionRotation) {
-			//std::cout << "EULER ROTATION \n";
-			if (automaticRotating)
-				camera.rotateCameraAround(1);
-			else
-				if (mouseMoved) {
-					camera.rotateCameraAround(xOffset);
-					mouseMoved = false;
-				}
-		}
-		else {
-			//std::cout << "QUATERNION ROTATION \n";
-			if (automaticRotating)
-				camera.rotateCameraAroundQuaternion(1);
-			else
-				if (mouseMoved) {
-					camera.rotateCameraAroundQuaternion(xOffset);
-					mouseMoved = false;
-				}
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////
-	// Get the updated view matrix
-	Matrix4 viewM = camera.getViewMatrix();
-	viewM.getRowMajor(view);
-	cameraReset = false;
-	*/
-
 	// ARCBALL CAMERA //
 
 	if (forwardKeyPressed) {
@@ -108,21 +71,65 @@ void moveCamera() {
 	if (!stopRotating) {
 		if (!quaternionRotation) {
 			//std::cout << "EULER ROTATION \n";
-			if (automaticRotating)
-				arcBall.rotateCameraAroundHorizontal(1);
-			else
+			if (keyRotationX) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundVertical(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundVertical(1);
+				}
+			}
+			else if (keyRotationY) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundHorizontal(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundHorizontal(1);
+				}
+			}
+			else if (keyRotationZ) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundZ(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundZ(1);
+				}
+			}
+			else if (mouseRotating)
 				if (mouseMoved) {
 					arcBall.rotateCameraAroundHorizontal(xOffset);
 					arcBall.rotateCameraAroundVertical(yOffset);
 					mouseMoved = false;
 				}
 		}
-		
+
 		else {
 			//std::cout << "QUATERNION ROTATION \n";
-			if (automaticRotating)
-				arcBall.rotateCameraAroundQuaternionHorizontal(1);
-			else
+			if (keyRotationX) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundQuaternionVertical(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundQuaternionVertical(1);
+				}
+			}
+			else if (keyRotationY) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundQuaternionHorizontal(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundQuaternionHorizontal(1);
+				}
+			}
+			else if (keyRotationZ) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundQuaternionZ(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundQuaternionZ(1);
+				}
+			}
+			else if (mouseRotating)
 				if (mouseMoved) {
 					arcBall.rotateCameraAroundQuaternionHorizontal(xOffset);
 					arcBall.rotateCameraAroundQuaternionVertical(yOffset);
@@ -160,6 +167,8 @@ void drawScene_Tetramino()
 
 	float colours[4];
 	shader.SetUniform1i("isUniformColour", 1);
+	shader.SetUniform4fv("View", view);
+	shader.SetUniform4fv("Projection", proj);
 
 	for (int i = 0; i < sceneManager.getSize(); i++) {
 		sceneManager.getPieceAt(i).getColours(colours);
@@ -171,8 +180,6 @@ void drawScene_Tetramino()
 			float model[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(model);
 			shader.SetUniform4fv("Model", model);
-			shader.SetUniform4fv("View", view);
-			shader.SetUniform4fv("Projection", proj);
 
 			// Draw Front Face			
 			ib.Bind();
@@ -207,7 +214,7 @@ void glfw_error_callback(int error, const char* description)
 
 void window_close_callback(GLFWwindow* win)
 {
-	shader.~Shader(); 
+	shader.~Shader();
 	va.~VertexArray();
 	std::cout << "Bye bye!" << std::endl;
 }
@@ -222,6 +229,30 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_P:
 			ortho = !ortho;
 			projChanged = true;
+			break;
+		case GLFW_KEY_X:
+			keyRotationX = true;
+			keyRotationY = false;
+			keyRotationZ = false;
+			mouseRotating = false;
+			break;
+		case GLFW_KEY_Y:
+			keyRotationX = false;
+			keyRotationY = true;
+			keyRotationZ = false;
+			mouseRotating = false;
+			break;
+		case GLFW_KEY_Z:
+			keyRotationX = false;
+			keyRotationY = false;
+			keyRotationZ = true;
+			mouseRotating = false;
+			break;
+		case GLFW_KEY_M:
+			keyRotationX = false;
+			keyRotationY = false;
+			keyRotationZ = false;
+			mouseRotating = true;
 			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, GLFW_TRUE);
@@ -249,9 +280,13 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_SPACE:
 			stopRotating = !stopRotating;
 			break;
-		case GLFW_KEY_A:
-			automaticRotating = !automaticRotating;
+		case GLFW_KEY_UP:
+			upMoved = true;
 			break;
+		case GLFW_KEY_DOWN:
+			downMoved = true;
+			break;
+
 		}
 	}
 	else if (action == GLFW_RELEASE) {
@@ -261,6 +296,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_S:
 			backwardKeyPressed = false;
+			break;
+		case GLFW_KEY_UP:
+			upMoved = false;
+			break;
+		case GLFW_KEY_DOWN:
+			downMoved = false;
 			break;
 		}
 	}

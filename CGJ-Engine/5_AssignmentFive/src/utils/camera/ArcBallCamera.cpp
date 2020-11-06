@@ -94,6 +94,22 @@ void ArcBallCamera::rotateCameraAroundQuaternionVertical(float rotationDegree)
 
 }
 
+void ArcBallCamera::rotateCameraAroundZ(float rotationDegree)
+{
+	float rotationRads = rotationDegree * PI / 180.0f;
+
+	rotation = Matrix4::rotationZ(rotationRads) * rotation;
+}
+
+void ArcBallCamera::rotateCameraAroundQuaternionZ(float rotationDegree)
+{
+	Vector4 axis_i = { 0.0f, 0.0f, 1.0f, 1.0f };
+	Quaternion qtr(rotationDegree, axis_i);
+
+	rotation = qtr.GLRotationMatrix() * rotation;
+
+}
+
 void ArcBallCamera::resetCamera()
 {
 	Vector3 vec(0, 0, -initialRadius);

@@ -95,6 +95,17 @@ public:
 	void rotateCameraAroundQuaternionVertical(float rotationDegree);
 
 	/********************************************/ /**
+	 * Rotates the camera around a point
+	 ***********************************************/
+	void rotateCameraAroundZ(float rotationDegree);
+
+	/********************************************/ /**
+	 * Rotates the camera around a point using quaternions
+	 ***********************************************/
+	void rotateCameraAroundQuaternionZ(float rotationDegree);
+
+
+	/********************************************/ /**
 	 * Resets the camera to the values set when constructing the object
 	 ***********************************************/
 	void resetCamera();
