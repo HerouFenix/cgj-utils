@@ -1,24 +1,27 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-
+#include <cassert>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "../headers/matrices/Matrix4.h"
 
 #include "../headers/camera/Camera.h"
+#include "../headers/camera/ArcBallCamera.h"
+
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
 
-
-//
+#include "../headers/quaternions/Quaternion.h"
 
 int window_width;
 int window_height;
 float cursorX, cursorY;
 float xOffset, yOffset;
+
+const float Threshold = (float)1.0e-5;
 
 SceneManager sceneManager;
 VertexArray va;
@@ -28,93 +31,142 @@ IndexBuffer ibBack;
 Shader shader("resources/shaders/Basic.shader");
 
 Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
+ArcBallCamera arcBall(5);
+
 float view[16];
 float proj[16];
-bool ortho = true;
+bool ortho = false;
 bool projChanged;
-const GLuint UBO_BP = 0;
+
+bool quaternionRotation = false;
 
 // KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
-bool leftKeyPressed = false;
-bool rightKeyPressed = false;
 bool backwardKeyPressed = false;
-
-bool upKeyPressed = false;
-bool downKeyPressed = false;
-
 bool lockMouse = true;
 bool firstMouse = true;
 bool mouseMoved = false;
 
-bool cameraInverted = false;
+bool keyRotationX = false;
+bool keyRotationY = false;
+bool keyRotationZ = false;
+bool mouseRotating = true;
+bool downMoved, upMoved = false;
+
 bool cameraReset = false;
+bool stopRotating = false;
+bool automaticRotating = false;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
-	// CAMERA MOVEMENT //
-	if (mouseMoved) {
-		camera.rotateCamera(xOffset, yOffset);
-		mouseMoved = false;
-	}
+	// ARCBALL CAMERA //
 
 	if (forwardKeyPressed) {
-		camera.moveCameraForward(0.05f);
+		arcBall.incrementRadius(-0.05f);
 	}
 	if (backwardKeyPressed) {
-		camera.moveCameraBackward(0.05f);
-	}
-	if (leftKeyPressed) {
-		camera.moveCameraLeft(0.05f);
-	}
-	if (rightKeyPressed) {
-		camera.moveCameraRight(0.05f);
+		arcBall.incrementRadius(0.05f);
 	}
 
-	if (upKeyPressed) {
-		camera.moveCameraUp(0.05f);
-	}
+	if (!stopRotating) {
+		if (!quaternionRotation) {
+			//std::cout << "EULER ROTATION \n";
+			if (keyRotationX) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundVertical(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundVertical(1);
+				}
+			}
+			else if (keyRotationY) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundHorizontal(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundHorizontal(1);
+				}
+			}
+			else if (keyRotationZ) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundZ(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundZ(1);
+				}
+			}
+			else if (mouseRotating)
+				if (mouseMoved) {
+					arcBall.rotateCameraAroundHorizontal(xOffset);
+					arcBall.rotateCameraAroundVertical(yOffset);
+					mouseMoved = false;
+				}
+		}
 
-	if (downKeyPressed) {
-		camera.moveCameraDown(0.05f);
+		else {
+			//std::cout << "QUATERNION ROTATION \n";
+			if (keyRotationX) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundQuaternionVertical(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundQuaternionVertical(1);
+				}
+			}
+			else if (keyRotationY) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundQuaternionHorizontal(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundQuaternionHorizontal(1);
+				}
+			}
+			else if (keyRotationZ) {
+				if (downMoved) {
+					arcBall.rotateCameraAroundQuaternionZ(-1);
+				}
+				else if (upMoved) {
+					arcBall.rotateCameraAroundQuaternionZ(1);
+				}
+			}
+			else if (mouseRotating)
+				if (mouseMoved) {
+					arcBall.rotateCameraAroundQuaternionHorizontal(xOffset);
+					arcBall.rotateCameraAroundQuaternionVertical(yOffset);
+					mouseMoved = false;
+				}
+		}
 	}
-
 
 	///////////////////////////////////////////////////////////////////////
 	// Get the updated view matrix
-	Matrix4 viewM = camera.getViewMatrix();
+	Matrix4 viewM = arcBall.getViewMatrix();
 	viewM.getRowMajor(view);
 	cameraReset = false;
-	cameraInverted = false;
 }
 
 void drawScene_Tetramino()
 {
-	bool cameraMoved = (mouseMoved || cameraInverted || cameraReset || forwardKeyPressed || backwardKeyPressed || leftKeyPressed || rightKeyPressed || upKeyPressed || downKeyPressed);
-
-	if (cameraMoved)
-		moveCamera();
+	moveCamera();
 
 	if (projChanged) {
 		Matrix4 projM;
 		if (ortho) {
-			projM = camera.getOrthProj();
+			projM = arcBall.getOrthProj();
 		}
 		else {
-			projM = camera.getPerspProj();
+			projM = arcBall.getPerspProj();
 		}
 		projM.getRowMajor(proj);
-	
+
 		projChanged = false;
 	}
-	//camera.RenderCamera(ortho);
 
 	shader.Bind();
 	va.Bind();
 
 	float colours[4];
 	shader.SetUniform1i("isUniformColour", 1);
-
 	shader.SetUniform4fv("View", view);
 	shader.SetUniform4fv("Projection", proj);
 
@@ -178,15 +230,32 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			ortho = !ortho;
 			projChanged = true;
 			break;
+		case GLFW_KEY_X:
+			keyRotationX = true;
+			keyRotationY = false;
+			keyRotationZ = false;
+			mouseRotating = false;
+			break;
+		case GLFW_KEY_Y:
+			keyRotationX = false;
+			keyRotationY = true;
+			keyRotationZ = false;
+			mouseRotating = false;
+			break;
+		case GLFW_KEY_Z:
+			keyRotationX = false;
+			keyRotationY = false;
+			keyRotationZ = true;
+			mouseRotating = false;
+			break;
+		case GLFW_KEY_M:
+			keyRotationX = false;
+			keyRotationY = false;
+			keyRotationZ = false;
+			mouseRotating = true;
+			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, GLFW_TRUE);
-			window_close_callback(win);
-			break;
-		case GLFW_KEY_A:
-			leftKeyPressed = true;
-			break;
-		case GLFW_KEY_D:
-			rightKeyPressed = true;
 			break;
 		case GLFW_KEY_W:
 			forwardKeyPressed = true;
@@ -194,11 +263,13 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_S:
 			backwardKeyPressed = true;
 			break;
-		case GLFW_KEY_SPACE:
-			upKeyPressed = true;
+		case GLFW_KEY_R:
+			//camera.resetCamera();
+			arcBall.resetCamera();
+			cameraReset = true;
 			break;
-		case GLFW_KEY_LEFT_CONTROL:
-			downKeyPressed = true;
+		case GLFW_KEY_G:
+			quaternionRotation = !quaternionRotation;
 			break;
 		case GLFW_KEY_F:
 			lockMouse = !lockMouse;
@@ -206,35 +277,31 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 				firstMouse = true;
 			}
 			break;
-		case GLFW_KEY_I:
-			camera.invertCamera();
-			cameraInverted = true;
+		case GLFW_KEY_SPACE:
+			stopRotating = !stopRotating;
 			break;
-		case GLFW_KEY_R:
-			camera.resetCamera();
-			cameraReset = true;
+		case GLFW_KEY_UP:
+			upMoved = true;
 			break;
+		case GLFW_KEY_DOWN:
+			downMoved = true;
+			break;
+
 		}
 	}
 	else if (action == GLFW_RELEASE) {
 		switch (key) {
-		case GLFW_KEY_A:
-			leftKeyPressed = false;
-			break;
-		case GLFW_KEY_D:
-			rightKeyPressed = false;
-			break;
 		case GLFW_KEY_W:
 			forwardKeyPressed = false;
 			break;
 		case GLFW_KEY_S:
 			backwardKeyPressed = false;
 			break;
-		case GLFW_KEY_SPACE:
-			upKeyPressed = false;
+		case GLFW_KEY_UP:
+			upMoved = false;
 			break;
-		case GLFW_KEY_LEFT_CONTROL:
-			downKeyPressed = false;
+		case GLFW_KEY_DOWN:
+			downMoved = false;
 			break;
 		}
 	}
@@ -364,10 +431,6 @@ void setupOpenGL(int winx, int winy)
 
 void setupShaderProgram() {
 	shader.SetupShader();
-
-	shader.Bind();
-	shader.SetUniformBlockBinding("SharedMatrices", UBO_BP);
-	shader.UnBind();
 }
 
 void setupBufferObjects() {
@@ -380,7 +443,6 @@ void setupBufferObjects() {
 	vertices[2] = Vector4(0 + 0.05f, 0 + 0.05f, 0, 1.0f);
 	vertices[3] = Vector4(0 - 0.05f, 0 + 0.05f, 0, 1.0f);
 
-
 	VertexBufferLayout layout;
 	layout.Push<Vector4>(1); // One Vector 4 for each vertex's position
 
@@ -392,13 +454,11 @@ void setupBufferObjects() {
 
 	GLuint backIndices[6] = { 0,3,2,2,1,0 };
 	ibBack.BuildIndexBuffer(backIndices, 6);
-
-	va.UnBind();
-	camera.setVertexBuffer(UBO_BP);
 }
 
 void setupCamera() {
-	// CAMERA SETUP //
+	// FPS CAMERA SETUP //
+	/*
 	camera.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
 	camera.setPrespProjectionMatrix(15, (GLfloat)window_width / (GLfloat)window_height, 1, 10);
 
@@ -416,6 +476,30 @@ void setupCamera() {
 	}
 	else {
 		projM = camera.getPerspProj();
+	}
+	projM.getRowMajor(proj);
+
+	projChanged = false;
+	*/
+
+	// ARC BALL CAMERA SETUP //
+	arcBall.setOrthoProjectionMatrix(-1, 1, -1, 1, 1, 10);
+	arcBall.setPrespProjectionMatrix(15, (GLfloat)window_width / (GLfloat)window_height, 1, 10);
+
+	//Set initial cursor position to be the middle of the screen
+	cursorX = (float)window_width / 2;
+	cursorY = (float)window_height / 2;
+
+	Matrix4 viewM = arcBall.getViewMatrix();
+	viewM.getRowMajor(view);
+
+
+	Matrix4 projM;
+	if (ortho) {
+		projM = arcBall.getOrthProj();
+	}
+	else {
+		projM = arcBall.getPerspProj();
 	}
 	projM.getRowMajor(proj);
 
@@ -460,6 +544,7 @@ void run(GLFWwindow* win)
 			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 
+
 		drawScene_Tetramino();
 
 		glfwSwapBuffers(win);
@@ -477,26 +562,32 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+
 	// DRAW SCENE //
 	float squareDiagonal = sqrt(0.11f * 0.11f + 0.11f * 0.11f);
+	Vector3 down(0, -0.10, 0);
 	//int debugPiece = sceneManager.createDebugPiece();
 	int sqPiece = sceneManager.createSQPiece();
 	sceneManager.transformPiece(sqPiece, Matrix4::rotationZ(45, false, true));
+	sceneManager.transformPiece(sqPiece, Matrix4::translation(down));
 
 	int lPiece = sceneManager.createLPiece();
 	//sceneManager.transformPiece(lPiece, Matrix4::translation(-0.22, -0.11, 0));
 	sceneManager.transformPiece(lPiece, Matrix4::rotationZ(-45, false, true));
 	sceneManager.transformPiece(lPiece, Matrix4::translation(-(squareDiagonal + squareDiagonal / 2), squareDiagonal / 2, 0));
+	sceneManager.transformPiece(lPiece, Matrix4::translation(down));
 
 	int rlPiece = sceneManager.createRLPiece();
 	//sceneManager.transformPiece(rlPiece, Matrix4::translation(0.11, -0.11, 0));
 	sceneManager.transformPiece(rlPiece, Matrix4::rotationZ(-45, false, true));
 	sceneManager.transformPiece(rlPiece, Matrix4::translation(0, -squareDiagonal, 0));
+	sceneManager.transformPiece(rlPiece, Matrix4::translation(down));
 
 	int iPiece = sceneManager.createIPiece();
 	//sceneManager.transformPiece(iPiece, Matrix4::translation(0.22, -0.11, 0));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(45, false, true));
 	sceneManager.transformPiece(iPiece, Matrix4::translation(squareDiagonal + squareDiagonal / 2, squareDiagonal / 2, 0));
+	sceneManager.transformPiece(iPiece, Matrix4::translation(down));
 
 	/////////////////////////////////////////////////////////////////////
 

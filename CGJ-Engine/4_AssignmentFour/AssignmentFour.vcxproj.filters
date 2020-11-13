@@ -110,6 +110,7 @@
     <None Include="resources\shaders\Vertex.shader">
       <Filter>resources</Filter>
     </None>
+    <None Include="resources\shaders\Basic2.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

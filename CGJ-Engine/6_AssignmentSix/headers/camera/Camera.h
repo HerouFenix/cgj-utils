@@ -1,10 +1,8 @@
 #pragma once
 #include "../matrices/Matrix4.h"
 #include "../vectors/Vector3.h"
-#include "../drawing/Shader.h"
 #include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
-#include "../../headers/drawing/VertexBuffer.h"
-
+#include "../quaternions/Quaternion.h"
 
 // CAMERA CLASS HEADER
 
@@ -29,9 +27,6 @@ private:
 	Matrix4 orthoProj;
 	Matrix4 perspProj;
 
-	VertexBuffer vb;
-	GLuint vbid;
-
 public:
 	// FUNCTION DECLARATIONS
 
@@ -47,10 +42,6 @@ public:
 	 * Destroys the Camera object
 	 ***********************************************/
 	~Camera();
-
-	void RenderCamera(bool ortho = false);
-
-	void setVertexBuffer(GLuint UBO_BP = -1);
 
 	/********************************************/ /**
 	 * Used to set the view matrix of the Camera, effectively altering it.
@@ -169,6 +160,21 @@ public:
 	 * @param sensitivity - How much we want to rotate the camera
 	 ***********************************************/
 	void rotateCamera(float xOffset, float yOffset, float sensitivity = 0.1f);
+
+	/********************************************/ /**
+	 * Rotates the camera around a point
+	 ***********************************************/
+	void rotateCameraAround(Vector3 point = Vector3(0,0,0));
+
+	/********************************************/ /**
+	 * Rotates the camera around a point
+	 ***********************************************/
+	void rotateCameraAround(float rotationDegree, Vector3 point = Vector3(0, 0, 0));
+
+	/********************************************/ /**
+	 * Rotates the camera around a point using quaternions
+	 ***********************************************/
+	void rotateCameraAroundQuaternion(float rotationDegree, Vector3 point = Vector3(0, 0, 0));
 
 	/********************************************/ /**
 	 * Inverts the camera by inverting the signs of all of the eye's coordinates

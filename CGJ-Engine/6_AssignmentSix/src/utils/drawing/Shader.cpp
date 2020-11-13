@@ -114,12 +114,6 @@ void Shader::UnBind() const
 	GLCall(glUseProgram(0));
 }
 
-void Shader::SetUniformBlockBinding(const std::string& name, GLuint UBO_BP) {
-	int uboID = glGetUniformBlockIndex(m_RendererID, name.c_str());
-	//std::cout << name.c_str() << " - " << uboID << "\n";
-	glUniformBlockBinding(m_RendererID, uboID, UBO_BP);
-}
-
 void Shader::SetUniform4fv(const std::string& name, float matrix[])
 {
 	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, matrix));
