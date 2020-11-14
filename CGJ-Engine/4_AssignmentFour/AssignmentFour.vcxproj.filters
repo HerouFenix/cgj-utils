@@ -62,6 +62,7 @@
     <ClCompile Include="src\utils\drawing\VertexBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp" />
     <ClCompile Include="src\TeacherMain.cpp" />
+    <ClCompile Include="src\utils\drawing\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\matrices\Matrix2.h">
@@ -100,6 +101,7 @@
     <ClInclude Include="headers\drawing\VertexArray.h" />
     <ClInclude Include="headers\drawing\VertexBuffer.h" />
     <ClInclude Include="headers\drawing\VertexBufferLayout.h" />
+    <ClInclude Include="headers\drawing\UniformBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader">

@@ -1,10 +1,8 @@
 #pragma once
 #include "../matrices/Matrix4.h"
 #include "../vectors/Vector3.h"
-#include "../drawing/Shader.h"
+#include "../drawing/UniformBuffer.h"
 #include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
-#include "../../headers/drawing/VertexBuffer.h"
-
 
 // CAMERA CLASS HEADER
 
@@ -29,8 +27,7 @@ private:
 	Matrix4 orthoProj;
 	Matrix4 perspProj;
 
-	VertexBuffer vb;
-	GLuint vbid;
+	UniformBuffer ub;
 
 public:
 	// FUNCTION DECLARATIONS
@@ -48,9 +45,9 @@ public:
 	 ***********************************************/
 	~Camera();
 
-	void RenderCamera(bool ortho = false);
+	void SetupUniformBuffer(GLuint UBO_BP);
 
-	void setVertexBuffer(GLuint UBO_BP = -1);
+	void RenderCamera(bool ortho);
 
 	/********************************************/ /**
 	 * Used to set the view matrix of the Camera, effectively altering it.

@@ -6,9 +6,7 @@
 // (c) 2013-20 by Carlos Martinho
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 /*
-
 #include <iostream>
 
 #include <GL/glew.h>
@@ -142,7 +140,7 @@ void createShaderProgram()
 	glBindAttribLocation(ProgramId, COLORS, "in_Color");
 	glLinkProgram(ProgramId);
 	UniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
-	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
+	UboId = (ProgramId, "SharedMatrices");
 	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
 
 	glDetachShader(ProgramId, VertexShaderId);
@@ -459,6 +457,8 @@ void run(GLFWwindow* win)
 	glfwDestroyWindow(win);
 	glfwTerminate();
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 

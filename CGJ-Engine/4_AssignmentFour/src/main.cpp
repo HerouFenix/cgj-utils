@@ -11,9 +11,8 @@
 #include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/VertexArray.h"
 #include "../headers/drawing/VertexBufferLayout.h"
+#include "../headers/drawing/UniformBuffer.h"
 
-
-//
 
 int window_width;
 int window_height;
@@ -25,14 +24,14 @@ VertexArray va;
 IndexBuffer ib;
 IndexBuffer ibBack;
 
-Shader shader("resources/shaders/Basic.shader");
+Shader shader("resources/shaders/Basic2.shader");
+const GLuint UBO_BP = 0;
 
 Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
 float view[16];
 float proj[16];
 bool ortho = true;
 bool projChanged;
-const GLuint UBO_BP = 0;
 
 // KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
@@ -82,10 +81,13 @@ void moveCamera() {
 
 	///////////////////////////////////////////////////////////////////////
 	// Get the updated view matrix
+	/*
 	Matrix4 viewM = camera.getViewMatrix();
 	viewM.getRowMajor(view);
+	*/
 	cameraReset = false;
 	cameraInverted = false;
+
 }
 
 void drawScene_Tetramino()
@@ -95,6 +97,7 @@ void drawScene_Tetramino()
 	if (cameraMoved)
 		moveCamera();
 
+	/*
 	if (projChanged) {
 		Matrix4 projM;
 		if (ortho) {
@@ -104,10 +107,12 @@ void drawScene_Tetramino()
 			projM = camera.getPerspProj();
 		}
 		projM.getRowMajor(proj);
-	
+
 		projChanged = false;
 	}
-	//camera.RenderCamera(ortho);
+	*/
+
+	camera.RenderCamera(ortho);
 
 	shader.Bind();
 	va.Bind();
@@ -115,8 +120,8 @@ void drawScene_Tetramino()
 	float colours[4];
 	shader.SetUniform1i("isUniformColour", 1);
 
-	shader.SetUniform4fv("View", view);
-	shader.SetUniform4fv("Projection", proj);
+	//shader.SetUniform4fv("View", view);
+	//shader.SetUniform4fv("Projection", proj);
 
 	for (int i = 0; i < sceneManager.getSize(); i++) {
 		sceneManager.getPieceAt(i).getColours(colours);
@@ -364,10 +369,7 @@ void setupOpenGL(int winx, int winy)
 
 void setupShaderProgram() {
 	shader.SetupShader();
-
-	shader.Bind();
-	shader.SetUniformBlockBinding("SharedMatrices", UBO_BP);
-	shader.UnBind();
+	shader.SetUniformBlock("SharedMatrices", UBO_BP);
 }
 
 void setupBufferObjects() {
@@ -393,8 +395,12 @@ void setupBufferObjects() {
 	GLuint backIndices[6] = { 0,3,2,2,1,0 };
 	ibBack.BuildIndexBuffer(backIndices, 6);
 
-	va.UnBind();
-	camera.setVertexBuffer(UBO_BP);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+	camera.SetupUniformBuffer(UBO_BP);
 }
 
 void setupCamera() {
@@ -406,6 +412,7 @@ void setupCamera() {
 	cursorX = (float)window_width / 2;
 	cursorY = (float)window_height / 2;
 
+	/*
 	Matrix4 viewM = camera.getViewMatrix();
 	viewM.getRowMajor(view);
 
@@ -418,7 +425,9 @@ void setupCamera() {
 		projM = camera.getPerspProj();
 	}
 	projM.getRowMajor(proj);
+	*/
 
+	camera.RenderCamera(ortho);
 	projChanged = false;
 }
 

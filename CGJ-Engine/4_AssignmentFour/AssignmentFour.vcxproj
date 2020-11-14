@@ -25,6 +25,7 @@
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\Renderer.cpp" />
     <ClCompile Include="src\utils\drawing\Shader.cpp" />
+    <ClCompile Include="src\utils\drawing\UniformBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\VertexArray.cpp" />
     <ClCompile Include="src\utils\drawing\VertexBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="headers\drawing\IndexBuffer.h" />
     <ClInclude Include="headers\drawing\Renderer.h" />
     <ClInclude Include="headers\drawing\Shader.h" />
+    <ClInclude Include="headers\drawing\UniformBuffer.h" />
     <ClInclude Include="headers\drawing\VertexArray.h" />
     <ClInclude Include="headers\drawing\VertexBuffer.h" />
     <ClInclude Include="headers\drawing\VertexBufferLayout.h" />

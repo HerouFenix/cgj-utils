@@ -1,13 +1,14 @@
 #pragma once
 #include <GL\glew.h>
-class VertexBuffer
+class UniformBuffer
 {
 private:
 	GLuint m_VboID;
+	GLuint UBO_BP;
 public:
-	VertexBuffer();
-	VertexBuffer(const void* data, GLuint size);
-	~VertexBuffer();
+	UniformBuffer();
+	void SetupBuffer(const void* data, GLuint size, GLuint UBO_BP);
+	~UniformBuffer();
 
 	void Bind() const;
 	void Unbind() const;

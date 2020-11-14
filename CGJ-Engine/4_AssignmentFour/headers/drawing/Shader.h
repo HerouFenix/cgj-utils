@@ -28,15 +28,17 @@ public:
 
 	// Set uniforms
 	void SetUniform4fv(const std::string& name, float matrix[]);
-	void SetUniformBlockBinding(const std::string& name, GLuint UBO_BP);
 	void SetUniform4fvec(const std::string& name, float vec[]);
 	void SetUniform1i(const std::string& name, int value);
+	void SetUniformBlock(const std::string& name, GLuint UBO_BP);
+
 
 private:
 	ShaderProgramSource ParseShader(const std::string& path);
 	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 	GLuint CompileShader(GLuint type, const std::string& source);
 	int GetUniformLocation(const std::string& name);
+	GLuint GetUniformBlockIndex(const std::string& name);
 
 };
 

@@ -1,5 +1,6 @@
 #include "../../../headers/camera/Camera.h"
 # define PI (float)atan(1)*4
+#include <GLFW/glfw3.h>
 
 Camera::Camera(Vector3 eye, Vector3 center, Vector3 up)
 {
@@ -28,32 +29,31 @@ Camera::~Camera()
 {
 }
 
-void Camera::setVertexBuffer(GLuint UBO_BP) {
-	//std::cout << "Setting Camera VBO\n";
-	vb = VertexBuffer(0, sizeof(float[16]) * 2, UBO_BP, GL_UNIFORM_BUFFER, GL_STREAM_DRAW);
-	//std::cout << "Camera VBO set - " << vb.getID() << "\n\n";
+void Camera::SetupUniformBuffer(GLuint UBO_BP)
+{
+	ub.SetupBuffer(0, sizeof(float[16]) * 2, UBO_BP);
 }
 
 void Camera::RenderCamera(bool ortho)
 {
-	float viewA[16];
 	float proj[16];
+	float view[16];
 
 	Matrix4 projM;
 	if (ortho) {
-		orthoProj.getRowMajor(proj);
+		projM = getOrthProj();
 	}
 	else {
-		perspProj.getRowMajor(proj);
+		projM = getPerspProj();
 	}
-	view.getRowMajor(viewA);
 
-	//std::cout << "RENDERING CAMERA" << "\n";
+	projM.getColMajor(proj);
 
-	vb.Bind();
-	vb.SubBufferData(0, sizeof(float[16]), viewA);
-	vb.SubBufferData(sizeof(float[16]), sizeof(float[16]), proj);
-	vb.Unbind();
+	Matrix4 viewM = getViewMatrix();
+	viewM.getColMajor(view);
+
+	ub.SubBufferData(0, sizeof(view), view);
+	ub.SubBufferData(sizeof(view), sizeof(proj), proj);
 }
 
 
@@ -207,7 +207,6 @@ void Camera::moveCameraDown(float speed) {
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
 }
 
-
 void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 {
 	xOffset *= sensitivity;
@@ -215,7 +214,9 @@ void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 
 	setDirection(xOffset, yOffset);
 	setViewMatrix(cameraEye, cameraEye + cameraDirection, cameraUp);
+
 }
+
 
 void Camera::invertCamera()
 {
@@ -256,3 +257,4 @@ void Camera::resetCamera()
 
 	setViewMatrix(initialEye, initialEye + cameraDirection, initialUp);
 }
+
