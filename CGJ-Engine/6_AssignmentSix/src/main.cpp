@@ -10,14 +10,7 @@
 #include "../headers/matrices/Matrix4.h"
 #include "../headers/camera/Camera.h"
 #include "../headers/camera/ArcBallCamera.h"
-
-#define VERTICES 0
-#define TEXCOORDS 1
-#define NORMALS 2
-bool TexcoordsLoaded, NormalsLoaded;
-
-GLuint VaoId, ProgramId;
-GLint ModelMatrix_UId, ViewMatrix_UId, ProjectionMatrix_UId, Color_UId;
+#include "../headers/drawing/Obj_Loader.h"
 
 int window_width;
 int window_height;
@@ -49,278 +42,57 @@ bool downMoved, upMoved = false;
 
 bool cameraReset = false;
 bool stopRotating = false;
+bool automaticRotating = false;
 
-
-/////////////////////////////////////////////////////////////////////// SHADERs
-
-const std::string read(const std::string& filename)
-{
-	std::ifstream ifile(filename);
-	std::string shader_string, line;
-	while (std::getline(ifile, line))
-	{
-		shader_string += line + "\n";
-	}
-	return shader_string;
-}
-
-const GLuint checkCompilation(const GLuint shader_id, const std::string& filename)
-{
-	GLint compiled;
-	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compiled);
-	if (compiled == GL_FALSE)
-	{
-		GLint length;
-		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &length);
-		GLchar* const log = new char[length];
-		glGetShaderInfoLog(shader_id, length, &length, log);
-		std::cerr << "[" << filename << "] " << std::endl << log;
-		delete[] log;
-		exit(EXIT_FAILURE);
-	}
-	return compiled;
-}
-
-void checkLinkage(const GLuint program_id) {
-	GLint linked;
-	glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
-	if (linked == GL_FALSE)
-	{
-		GLint length;
-		glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &length);
-		GLchar* const log = new char[length];
-		glGetProgramInfoLog(program_id, length, &length, log);
-		std::cerr << "[LINK] " << std::endl << log << std::endl;
-		delete[] log;
-		exit(EXIT_FAILURE);
-	}
-}
-
-const GLuint addShader(const GLuint program_id, const GLenum shader_type, const std::string& filename)
-{
-	const GLuint shader_id = glCreateShader(shader_type);
-	const std::string scode = read(filename);
-	const GLchar* code = scode.c_str();
-	glShaderSource(shader_id, 1, &code, 0);
-	glCompileShader(shader_id);
-	checkCompilation(shader_id, filename);
-	glAttachShader(program_id, shader_id);
-	return shader_id;
-}
-
-void createShaderProgram(std::string& vs_file, std::string& fs_file)
-{
-	ProgramId = glCreateProgram();
-
-	GLuint VertexShaderId = addShader(ProgramId, GL_VERTEX_SHADER, vs_file);
-	GLuint FragmentShaderId = addShader(ProgramId, GL_FRAGMENT_SHADER, fs_file);
-
-	glBindAttribLocation(ProgramId, VERTICES, "inPosition");
-	if (TexcoordsLoaded)
-		glBindAttribLocation(ProgramId, TEXCOORDS, "inTexcoord");
-	if (NormalsLoaded)
-		glBindAttribLocation(ProgramId, NORMALS, "inNormal");
-
-	glLinkProgram(ProgramId);
-	checkLinkage(ProgramId);
-
-	glDetachShader(ProgramId, VertexShaderId);
-	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(VertexShaderId);
-	glDeleteShader(FragmentShaderId);
-
-	ModelMatrix_UId = glGetUniformLocation(ProgramId, "ModelMatrix");
-	ViewMatrix_UId = glGetUniformLocation(ProgramId, "ViewMatrix");
-	ProjectionMatrix_UId = glGetUniformLocation(ProgramId, "ProjectionMatrix");
-	Color_UId = glGetUniformLocation(ProgramId, "ourColor");
-}
-
-void destroyShaderProgram()
-{
-	glUseProgram(0);
-	glDeleteProgram(ProgramId);
-}
-
-////////////////////////////////////////////////////////////////////////// MESH
-
-typedef struct {
-	GLfloat x, y, z;
-} Vertex;
-
-typedef struct {
-	GLfloat u, v;
-} Texcoord;
-
-typedef struct {
-	GLfloat nx, ny, nz;
-} Normal;
-
-std::vector <Vertex> Vertices, vertexData;
-std::vector <Texcoord> Texcoords, texcoordData;
-std::vector <Normal> Normals, normalData;
-
-std::vector <unsigned int> vertexIdx, texcoordIdx, normalIdx;
-
-void parseVertex(std::stringstream& sin)
-{
-	Vertex v;
-	sin >> v.x >> v.y >> v.z;
-	vertexData.push_back(v);
-}
-
-void parseTexcoord(std::stringstream& sin)
-{
-	Texcoord t;
-	sin >> t.u >> t.v;
-	texcoordData.push_back(t);
-}
-
-void parseNormal(std::stringstream& sin)
-{
-	Normal n;
-	sin >> n.nx >> n.ny >> n.nz;
-	normalData.push_back(n);
-}
-
-void parseFace(std::stringstream& sin)
-{
-	std::string token;
-	if (normalData.empty() && texcoordData.empty())
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			sin >> token;
-			vertexIdx.push_back(std::stoi(token));
-		}
-	}
-	else
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			std::getline(sin, token, '/');
-			if (token.size() > 0) vertexIdx.push_back(std::stoi(token));
-			std::getline(sin, token, '/');
-			if (token.size() > 0) texcoordIdx.push_back(std::stoi(token));
-			std::getline(sin, token, ' ');
-			if (token.size() > 0) normalIdx.push_back(std::stoi(token));
-		}
-	}
-}
-
-void parseLine(std::stringstream& sin)
-{
-	std::string s;
-	sin >> s;
-	if (s.compare("v") == 0) parseVertex(sin);
-	else if (s.compare("vt") == 0) parseTexcoord(sin);
-	else if (s.compare("vn") == 0) parseNormal(sin);
-	else if (s.compare("f") == 0) parseFace(sin);
-}
-
-void loadMeshData(std::string& filename)
-{
-	std::ifstream ifile(filename);
-	std::string line;
-	while (std::getline(ifile, line)) {
-		std::stringstream sline(line);
-		parseLine(sline);
-	}
-	TexcoordsLoaded = (texcoordIdx.size() > 0);
-	NormalsLoaded = (normalIdx.size() > 0);
-}
-
-void processMeshData()
-{
-	for (unsigned int i = 0; i < vertexIdx.size(); i++) {
-		unsigned int vi = vertexIdx[i];
-		Vertex v = vertexData[vi - 1];
-		Vertices.push_back(v);
-		if (TexcoordsLoaded)
-		{
-			unsigned int ti = texcoordIdx[i];
-			Texcoord t = texcoordData[ti - 1];
-			Texcoords.push_back(t);
-		}
-		if (NormalsLoaded)
-		{
-			unsigned int ni = normalIdx[i];
-			Normal n = normalData[ni - 1];
-			Normals.push_back(n);
-		}
-	}
-}
-
-void freeMeshData()
-{
-	vertexData.clear();
-	texcoordData.clear();
-	normalData.clear();
-	vertexIdx.clear();
-	texcoordIdx.clear();
-	normalIdx.clear();
-}
-
-const void createMesh(std::string& filename)
-{
-	loadMeshData(filename);
-	processMeshData();
-	freeMeshData();
-}
-
-/////////////////////////////////////////////////////////////////////// VAOs & VBOs
-
-void createBufferObjects()
-{
-	GLuint VboVertices, VboTexcoords, VboNormals;
-
-	glGenVertexArrays(1, &VaoId);
-	glBindVertexArray(VaoId);
-	{
-		glGenBuffers(1, &VboVertices);
-		glBindBuffer(GL_ARRAY_BUFFER, VboVertices);
-		glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(Vertex), &Vertices[0], GL_STATIC_DRAW);
-		glEnableVertexAttribArray(VERTICES);
-		glVertexAttribPointer(VERTICES, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-		if (TexcoordsLoaded)
-		{
-			glGenBuffers(1, &VboTexcoords);
-			glBindBuffer(GL_ARRAY_BUFFER, VboTexcoords);
-			glBufferData(GL_ARRAY_BUFFER, Texcoords.size() * sizeof(Texcoord), &Texcoords[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(TEXCOORDS);
-			glVertexAttribPointer(TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Texcoord), 0);
-		}
-		if (NormalsLoaded)
-		{
-			glGenBuffers(1, &VboNormals);
-			glBindBuffer(GL_ARRAY_BUFFER, VboNormals);
-			glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(Normal), &Normals[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(NORMALS);
-			glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, sizeof(Normal), 0);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &VboVertices);
-	glDeleteBuffers(1, &VboTexcoords);
-	glDeleteBuffers(1, &VboNormals);
-}
-
-void destroyBufferObjects()
-{
-	glBindVertexArray(VaoId);
-	glDisableVertexAttribArray(VERTICES);
-	glDisableVertexAttribArray(TEXCOORDS);
-	glDisableVertexAttribArray(NORMALS);
-	glDeleteVertexArrays(1, &VaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
+Obj_Loader obj_loader;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void move_camera() {
+/*
+	// FPS CAMERA
 
+	if (forwardKeyPressed) {
+		camera.moveCameraForward(0.05f);
+	}
+	if (backwardKeyPressed) {
+		camera.moveCameraBackward(0.05f);
+	}
+
+	// ROTATE CAMERA //
+
+	if (!stopRotating) {
+		if (!quaternionRotation) {
+			if (automaticRotating) {
+				camera.rotateCameraAround(1, Vector3(0.0f, 1.0f, 0.0f));
+			}
+			else
+
+				if (mouseMoved) {
+					camera.rotateCameraAround(xOffset, Vector3(0.0f, 1.0f, 0.0f));
+					//camera.rotateCameraAround(yOffset, Vector3(1.0f, 0.0f, 0.0f));
+					mouseMoved = false;
+				}
+		}
+		else {
+			if (automaticRotating) {
+				camera.rotateCameraAroundQuaternion(1, Vector3(0.0f, 1.0f, 0.0f));
+			}
+			else
+				if (mouseMoved) {
+					camera.rotateCameraAroundQuaternion(xOffset, Vector3(0.0f, 1.0f, 0.0f));
+					//camera.rotateCameraAroundQuaternion(yOffset, Vector3(1.0f, 0.0f, 0.0f));
+					mouseMoved = false;
+				}
+		}
+	}
+	// Get the updated view matrix
+	Matrix4 viewM = camera.getViewMatrix();
+	viewM.getRowMajor(view);
+	cameraReset = false;
+	*/
+
+	
 	// ARCBALL CAMERA //
 
 	if (forwardKeyPressed) {
@@ -397,7 +169,7 @@ void move_camera() {
 					arcBall.rotateCameraAroundQuaternionVertical(yOffset);
 					mouseMoved = false;
 				}
-		}
+		
 	}
 
 	///////////////////////////////////////////////////////////////////////
@@ -405,18 +177,22 @@ void move_camera() {
 	Matrix4 viewM = arcBall.getViewMatrix();
 	viewM.getRowMajor(view);
 	cameraReset = false;
+	}
 }
 
 void set_view_proj() {
 	Matrix4 viewM = arcBall.getViewMatrix();
-	viewM.getRowMajor(view);
+	//Matrix4 viewM = camera.getViewMatrix();
+	viewM.getColMajor(view);
 
 	Matrix4 projM;
 	if (ortho) {
 		projM = arcBall.getOrthProj();
+		//projM = camera.getOrthProj();
 	}
 	else {
 		projM = arcBall.getPerspProj();
+		//projM = camera.getPerspProj();
 	}
 	projM.getRowMajor(proj);
 }
@@ -425,6 +201,8 @@ void setupCamera() {
 	// CAMERA SETUP //
 	arcBall.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
 	arcBall.setPrespProjectionMatrix(30, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 10.0f);
+	//camera.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+	//camera.setPrespProjectionMatrix(30, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 10.0f);
 
 	//Set initial cursor position to be the middle of the screen
 	cursorX = (float)window_width / 2;
@@ -547,37 +325,12 @@ void setupCallbacks(GLFWwindow* win)
 	glfwSetCursorPosCallback(win, mouse_callback);
 }
 
-void drawScene()
-{
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
-
-	Matrix4 view_M = arcBall.getViewMatrix();
-	view_M.getColMajor(view);
-	Matrix4 proj_M = arcBall.getPerspProj();
-	proj_M.getColMajor(proj);
-
-	Vector4 color (1.0f, 0.0f, 0.0f, 0.0f);
-
-	GLfloat model[16];
-	Matrix4::identity().getColMajor(model);
-	glUniformMatrix4fv(ModelMatrix_UId, 1, GL_FALSE, model);
-	glUniformMatrix4fv(ViewMatrix_UId, 1, GL_FALSE, view);
-	glUniformMatrix4fv(ProjectionMatrix_UId, 1, GL_FALSE, proj);
-
-	glUniform4f(Color_UId, color.getX(), color.getY(), color.getZ(), color.getW());
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());
-
-	glUseProgram(0);
-	glBindVertexArray(0);
-}
-
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
 void window_close_callback(GLFWwindow* win)
 {
-	destroyShaderProgram();
-	destroyBufferObjects();
+	obj_loader.destroyShaderProgram();
+	obj_loader.destroyBufferObjects();
 }
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
@@ -686,15 +439,8 @@ GLFWwindow* setup(int major, int minor,
 	setupCallbacks(win);
 	setupCamera();
 
-	std::string mesh_dir = "resources/models/";
-	std::string mesh_file = "cube.obj";
-	std::string mesh_fullname = mesh_dir + mesh_file;
-	createMesh(mesh_fullname);
-	createBufferObjects();
+	obj_loader.setup("resources/models/cube.obj", "resources/shaders/cube_vs.glsl", "resources/shaders/cube_fs.glsl");
 
-	std::string vs = "resources/shaders/cube_vs.glsl";
-	std::string fs = "resources/shaders/cube_fs.glsl";
-	createShaderProgram(vs, fs);
 	return win;
 }
 
@@ -702,7 +448,22 @@ GLFWwindow* setup(int major, int minor,
 
 void display(GLFWwindow* win, double elapsed_sec)
 {
-	drawScene();
+	GLfloat model[16];
+	Matrix4 model_M = Matrix4::identity();
+	model_M.getColMajor(model);
+	obj_loader.drawObj(model, view, proj, Vector4(1.0f, 0.0f, 0.0f, 0.0f));
+
+	model_M *= Matrix4::translation(2.2f, 0.0f, 0.0f);
+	model_M.getColMajor(model);
+	obj_loader.drawObj(model, view, proj, Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+
+	model_M *= Matrix4::translation(2.2f, 0.0f, 0.0f);
+	model_M.getColMajor(model);
+	obj_loader.drawObj(model, view, proj, Vector4(0.0f, 0.0f, 1.0f, 0.0f));
+
+	model_M *= Matrix4::translation(-4.4f, 2.2f, 0.0f);
+	model_M.getColMajor(model);
+	obj_loader.drawObj(model, view, proj, Vector4(1.0f, 1.0f, 1.0f, 0.0f));
 }
 
 void run(GLFWwindow* win)

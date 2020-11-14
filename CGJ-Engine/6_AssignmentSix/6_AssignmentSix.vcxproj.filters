@@ -27,6 +27,7 @@
     <ClCompile Include="src\utils\vectors\Vector3.cpp" />
     <ClCompile Include="src\utils\vectors\Vector4.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\utils\drawing\Obj_Loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\ArcBallCamera.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="headers\vectors\Vector3.h" />
     <ClInclude Include="headers\vectors\Vector4.h" />
     <ClInclude Include="headers\vertex\Vertex.h" />
+    <ClInclude Include="headers\drawing\Obj_Loader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader" />

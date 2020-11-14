@@ -5,6 +5,13 @@ Obj_Loader::Obj_Loader()
 {
 }
 
+void Obj_Loader::setup(std::string mesh_dir, std::string vs, std::string fs) {
+
+	createMesh(mesh_dir);
+	createBufferObjects();
+	createShaderProgram(vs, fs);
+}
+
 const std::string Obj_Loader::read(const std::string& filename)
 {
 	std::ifstream ifile(filename);
@@ -268,7 +275,7 @@ void Obj_Loader::destroyBufferObjects()
 	glBindVertexArray(0);
 }
 
-void Obj_Loader::drawObj(GLfloat* model, GLfloat* view, GLfloat* proj)
+void Obj_Loader::drawObj(GLfloat* model, GLfloat* view, GLfloat* proj, Vector4 color)
 {
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
@@ -276,15 +283,11 @@ void Obj_Loader::drawObj(GLfloat* model, GLfloat* view, GLfloat* proj)
 	glUniformMatrix4fv(ModelMatrix_UId, 1, GL_FALSE, model);
 	glUniformMatrix4fv(ViewMatrix_UId, 1, GL_FALSE, view);
 	glUniformMatrix4fv(ProjectionMatrix_UId, 1, GL_FALSE, proj);
+
+	Color_UId = glGetUniformLocation(ProgramId, "ourColor");
+	glUniform4f(Color_UId, color.getX(), color.getY(), color.getZ(), color.getW());
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());
 
 	glUseProgram(0);
 	glBindVertexArray(0);
-}
-
-void Obj_Loader::loadObj(std::string mesh_dir, std::string vertex_shader, std::string fragment_shader) {
-
-	createMesh(mesh_dir);
-	createBufferObjects();
-	createShaderProgram(vertex_shader, fragment_shader);
 }

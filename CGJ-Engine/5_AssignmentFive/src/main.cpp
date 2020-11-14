@@ -30,7 +30,7 @@ IndexBuffer ibBack;
 
 Shader shader("resources/shaders/Basic.shader");
 
-Camera camera(Vector3(3, 0, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
+Camera camera(Vector3(5, 5, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
 ArcBallCamera arcBall(5);
 
 float view[16];

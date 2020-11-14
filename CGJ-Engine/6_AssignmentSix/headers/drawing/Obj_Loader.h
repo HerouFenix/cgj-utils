@@ -20,15 +20,20 @@ class Obj_Loader
 	public:
 		Obj_Loader();
 
-		void drawObj(GLfloat* model, GLfloat* view, GLfloat* proj);
+		void setup(std::string mesh_dir, std::string vs, std::string fs);
 
-		void loadObj(std::string mesh_dir, std::string vertex_shader, std::string fragment_shader);
+		void drawObj(GLfloat* model, GLfloat* view, GLfloat* proj, Vector4 color);
+
+		void destroyBufferObjects();
+
+		void destroyShaderProgram();
+
 
 	private:
 
 		bool TexcoordsLoaded, NormalsLoaded;
 		GLuint VaoId, ProgramId;
-		GLint ModelMatrix_UId, ViewMatrix_UId, ProjectionMatrix_UId;
+		GLint ModelMatrix_UId, ViewMatrix_UId, ProjectionMatrix_UId, Color_UId;
 
 		const std::string read(const std::string& filename);
 
@@ -39,8 +44,6 @@ class Obj_Loader
 		const GLuint addShader(const GLuint program_id, const GLenum shader_type, const std::string& filename);
 
 		void createShaderProgram(std::string& vs_file, std::string& fs_file);
-
-		void destroyShaderProgram();
 
 		void parseVertex(std::stringstream& sin);
 
@@ -62,6 +65,6 @@ class Obj_Loader
 
 		void createBufferObjects();
 
-		void destroyBufferObjects();
+		
 };
 
