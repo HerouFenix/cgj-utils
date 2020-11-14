@@ -53,5 +53,7 @@
     <None Include="resources\shaders\Fragment.shader" />
     <None Include="resources\shaders\Vertex.shader" />
     <None Include="resources\shaders\Basic2.shader" />
+    <None Include="resources\shaders\cube_vs.glsl" />
+    <None Include="resources\shaders\cube_fs.glsl" />
   </ItemGroup>
 </Project>

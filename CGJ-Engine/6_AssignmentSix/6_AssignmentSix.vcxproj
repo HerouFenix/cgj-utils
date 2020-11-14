@@ -122,6 +122,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\lib\Release\x64;$(SolutionDir)Dependencies\glfw\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -193,6 +194,8 @@
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader" />
     <None Include="resources\shaders\Basic2.shader" />
+    <None Include="resources\shaders\cube_fs.glsl" />
+    <None Include="resources\shaders\cube_vs.glsl" />
     <None Include="resources\shaders\Fragment.shader" />
     <None Include="resources\shaders\Vertex.shader" />
   </ItemGroup>

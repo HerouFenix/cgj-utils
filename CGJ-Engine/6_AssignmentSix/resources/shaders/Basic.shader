@@ -6,8 +6,11 @@ in vec4 in_Color;
 out vec4 ex_Color;
 
 uniform mat4 Model;
-uniform mat4 View;
-uniform mat4 Projection;
+uniform SharedMatrices
+{
+	mat4 View;
+	mat4 Projection;
+};
 
 void main(void)
 {
