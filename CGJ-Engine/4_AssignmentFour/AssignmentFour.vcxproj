@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\TeacherMain.cpp" />
     <ClCompile Include="src\utils\camera\Camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
