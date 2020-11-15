@@ -15,12 +15,11 @@ struct ShaderProgramSource
 
 class Shader
 {
-private:
-	std::string m_path;
+public:
 	GLuint m_RendererID;
+	std::string m_path;
 	std::unordered_map<std::string, int> m_UniformLocationCache;
 
-public:
 	Shader(const std::string& path);
 	~Shader();
 

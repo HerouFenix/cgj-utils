@@ -31,6 +31,8 @@
     <ClCompile Include="src\mainV1.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\drawing\Mesh.cpp" />
+    <ClCompile Include="src\utils\scene\SceneNode.cpp" />
+    <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\ArcBallCamera.h" />
@@ -54,6 +56,9 @@
     <ClInclude Include="headers\drawing\UniformBuffer.h" />
     <ClInclude Include="headers\drawing\Mesh.h" />
     <ClInclude Include="headers\vertex\Vertex.h" />
+    <ClInclude Include="headers\scene\SceneNode.h" />
+    <ClInclude Include="headers\scene\Scene.h" />
+    <ClInclude Include="headers\scene\SceneGraph.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader" />

@@ -2,6 +2,10 @@
 # define PI (float)atan(1)*4
 #include <GLFW/glfw3.h>
 
+ArcBallCamera::ArcBallCamera()
+{
+}
+
 ArcBallCamera::ArcBallCamera(float sRadius)
 {
 	Vector3 vec(0, 0, -sRadius);

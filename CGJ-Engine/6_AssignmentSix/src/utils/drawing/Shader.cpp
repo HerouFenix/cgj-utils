@@ -112,7 +112,6 @@ GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& 
 
 void Shader::Bind() const
 {
-
 	GLCall(glUseProgram(m_RendererID));
 }
 

@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mainV1.cpp" />
     <ClCompile Include="src\utils\camera\ArcBallCamera.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\utils\matrices\Matrix4.cpp" />
     <ClCompile Include="src\utils\quaternions\Quaternion.cpp" />
     <ClCompile Include="src\utils\scene\SceneManager.cpp" />
+    <ClCompile Include="src\utils\scene\SceneNode.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_DEBUG.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_I.cpp" />
@@ -191,7 +193,10 @@
     <ClInclude Include="headers\matrices\Matrix3.h" />
     <ClInclude Include="headers\matrices\Matrix4.h" />
     <ClInclude Include="headers\quaternions\Quaternion.h" />
+    <ClInclude Include="headers\scene\Scene.h" />
+    <ClInclude Include="headers\scene\SceneGraph.h" />
     <ClInclude Include="headers\scene\SceneManager.h" />
+    <ClInclude Include="headers\scene\SceneNode.h" />
     <ClInclude Include="headers\shapes\Tetromino.h" />
     <ClInclude Include="headers\vectors\Vector2.h" />
     <ClInclude Include="headers\vectors\Vector3.h" />

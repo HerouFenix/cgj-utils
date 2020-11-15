@@ -28,6 +28,8 @@ public:
 
 	ArcBallCamera(float radius);
 
+	ArcBallCamera();
+
 	/********************************************/ /**
 	 * Destroys the Camera object
 	 ***********************************************/

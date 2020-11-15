@@ -19,6 +19,8 @@
 #include "../headers/shapes/Tetromino.h"
 #include "../headers/drawing/Renderer.h"
 
+#include "../headers/scene/SceneGraph.h"
+
 
 #define VERTICES 0
 #define TEXCOORDS 1
@@ -42,13 +44,14 @@ SceneManager sceneManager;
 
 Shader shader("resources/shaders/Basic3D.shader");
 
-ArcBallCamera arcBall(5);
 const GLuint UBO_BP = 0;
 
 bool ortho = false;
 bool projChanged;
 
 bool quaternionRotation = false;
+
+SceneGraph sceneGraph;
 
 // KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
@@ -72,10 +75,10 @@ void moveCamera() {
 	// ARCBALL CAMERA //
 
 	if (forwardKeyPressed) {
-		arcBall.incrementRadius(-0.05f);
+		sceneGraph.camera.incrementRadius(-0.05f);
 	}
 	if (backwardKeyPressed) {
-		arcBall.incrementRadius(0.05f);
+		sceneGraph.camera.incrementRadius(0.05f);
 	}
 
 	if (!stopRotating) {
@@ -83,32 +86,32 @@ void moveCamera() {
 			//std::cout << "EULER ROTATION \n";
 			if (keyRotationX) {
 				if (downMoved) {
-					arcBall.rotateCameraAroundVertical(-1);
+					sceneGraph.camera.rotateCameraAroundVertical(-1);
 				}
 				else if (upMoved) {
-					arcBall.rotateCameraAroundVertical(1);
+					sceneGraph.camera.rotateCameraAroundVertical(1);
 				}
 			}
 			else if (keyRotationY) {
 				if (downMoved) {
-					arcBall.rotateCameraAroundHorizontal(-1);
+					sceneGraph.camera.rotateCameraAroundHorizontal(-1);
 				}
 				else if (upMoved) {
-					arcBall.rotateCameraAroundHorizontal(1);
+					sceneGraph.camera.rotateCameraAroundHorizontal(1);
 				}
 			}
 			else if (keyRotationZ) {
 				if (downMoved) {
-					arcBall.rotateCameraAroundZ(-1);
+					sceneGraph.camera.rotateCameraAroundZ(-1);
 				}
 				else if (upMoved) {
-					arcBall.rotateCameraAroundZ(1);
+					sceneGraph.camera.rotateCameraAroundZ(1);
 				}
 			}
 			else if (mouseRotating)
 				if (mouseMoved) {
-					arcBall.rotateCameraAroundHorizontal(xOffset);
-					arcBall.rotateCameraAroundVertical(yOffset);
+					sceneGraph.camera.rotateCameraAroundHorizontal(xOffset);
+					sceneGraph.camera.rotateCameraAroundVertical(yOffset);
 					mouseMoved = false;
 				}
 		}
@@ -117,32 +120,32 @@ void moveCamera() {
 			//std::cout << "QUATERNION ROTATION \n";
 			if (keyRotationX) {
 				if (downMoved) {
-					arcBall.rotateCameraAroundQuaternionVertical(-1);
+					sceneGraph.camera.rotateCameraAroundQuaternionVertical(-1);
 				}
 				else if (upMoved) {
-					arcBall.rotateCameraAroundQuaternionVertical(1);
+					sceneGraph.camera.rotateCameraAroundQuaternionVertical(1);
 				}
 			}
 			else if (keyRotationY) {
 				if (downMoved) {
-					arcBall.rotateCameraAroundQuaternionHorizontal(-1);
+					sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(-1);
 				}
 				else if (upMoved) {
-					arcBall.rotateCameraAroundQuaternionHorizontal(1);
+					sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(1);
 				}
 			}
 			else if (keyRotationZ) {
 				if (downMoved) {
-					arcBall.rotateCameraAroundQuaternionZ(-1);
+					sceneGraph.camera.rotateCameraAroundQuaternionZ(-1);
 				}
 				else if (upMoved) {
-					arcBall.rotateCameraAroundQuaternionZ(1);
+					sceneGraph.camera.rotateCameraAroundQuaternionZ(1);
 				}
 			}
 			else if (mouseRotating)
 				if (mouseMoved) {
-					arcBall.rotateCameraAroundQuaternionHorizontal(xOffset);
-					arcBall.rotateCameraAroundQuaternionVertical(yOffset);
+					sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(xOffset);
+					sceneGraph.camera.rotateCameraAroundQuaternionVertical(yOffset);
 					mouseMoved = false;
 				}
 		}
@@ -153,8 +156,6 @@ void moveCamera() {
 	cameraReset = false;
 	if (projChanged)
 		!projChanged;
-
-	arcBall.RenderCamera(ortho);
 }
 
 void drawScene_Tetramino()
@@ -164,20 +165,18 @@ void drawScene_Tetramino()
 	if (cameraMoved)
 		moveCamera();
 
-	shader.Bind();
 	glBindVertexArray(VaoId);
+	shader.Bind();
 
-	float colours[4];
 	shader.SetUniform1i("isUniformColour", 1);
-	colours[0] = 0.0;
-	colours[1] = 0.5;
-	colours[2] = 0.8;
-	colours[3] = 1.0;
-	shader.SetUniform4fvec("uniformColour", colours);
+
+	sceneGraph.DrawSceneGraph(ortho);
 
 	/// ///////////////////////////////////////////////////
+	/*
 	for (int i = 0; i < sceneManager.getSize(); i++) {
 		shader.Bind();
+		float colours[4];
 		sceneManager.getPieceAt(i).getColours(colours);
 		shader.SetUniform4fvec("uniformColour", colours);
 		shader.UnBind();
@@ -186,9 +185,10 @@ void drawScene_Tetramino()
 		for (int j = 0; j < 4; j++) {
 			float model[16];
 			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(model);
-			Renderer::DrawObject(VaoId, (GLsizei)Vertices.size(), shader, model);
+			Renderer::DrawObject((GLsizei)Vertices.size(), shader, model);
 		}
 	}
+	*/
 	/// ///////////////////////////////////////////////////
 
 	shader.UnBind();
@@ -271,7 +271,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			backwardKeyPressed = true;
 			break;
 		case GLFW_KEY_R:
-			arcBall.resetCamera();
+			sceneGraph.camera.resetCamera();
 			cameraReset = true;
 			break;
 		case GLFW_KEY_G:
@@ -470,21 +470,28 @@ void setupBufferObjects() {
 	glDeleteBuffers(1, &VboNormals);
 
 	// CAMERA
-	arcBall.SetupCamera(UBO_BP);
+	sceneGraph.camera.SetupCamera(UBO_BP);
 }
 
 void setupCamera() {
 	// ARC BALL CAMERA SETUP //
-	arcBall.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
-	arcBall.setPrespProjectionMatrix(50, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 25.0f);
+	sceneGraph.camera.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+	sceneGraph.camera.setPrespProjectionMatrix(50, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 25.0f);
 
 	//Set initial cursor position to be the middle of the screen
 	cursorX = (float)window_width / 2;
 	cursorY = (float)window_height / 2;
 
-	arcBall.RenderCamera(ortho);
+	sceneGraph.camera.RenderCamera(ortho);
 
 	projChanged = false;
+}
+
+void setupScene() {
+
+	Tetromino_SQ sqPiece;
+	SceneNode* root = sceneGraph.AddNode(&mesh, &shader, sqPiece);
+	
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -507,6 +514,7 @@ GLFWwindow* setup(int major, int minor,
 	setupBufferObjects();
 	setupShaderProgram();
 	setupCamera();
+	setupScene();
 	return win;
 }
 
@@ -550,6 +558,7 @@ void run(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	// DRAW SCENE //
+	/*
 	float squareDiagonal = sqrt(0.11f * 0.11f + 0.11f * 0.11f);
 
 	int sqPiece = sceneManager.createSQPiece();
@@ -571,8 +580,10 @@ int main(int argc, char* argv[])
 	sceneManager.transformPiece(iPiece, Matrix4::scaling(0.1, 0.1, 0.1));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(-90, false, true));
 	sceneManager.transformPiece(iPiece, Matrix4::translation(-0.33, 0.33, 0));
+	*/
 
-
+	ArcBallCamera arcBall(5);
+	sceneGraph.SetCamera(arcBall);
 
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
