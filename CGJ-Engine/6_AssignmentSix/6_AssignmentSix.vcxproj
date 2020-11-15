@@ -145,12 +145,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mainV1.cpp" />
     <ClCompile Include="src\utils\camera\ArcBallCamera.cpp" />
     <ClCompile Include="src\utils\camera\Camera.cpp" />
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
+    <ClCompile Include="src\utils\drawing\Mesh.cpp" />
     <ClCompile Include="src\utils\drawing\Obj_Loader.cpp" />
     <ClCompile Include="src\utils\drawing\Renderer.cpp" />
     <ClCompile Include="src\utils\drawing\Shader.cpp" />
+    <ClCompile Include="src\utils\drawing\UniformBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\VertexArray.cpp" />
     <ClCompile Include="src\utils\drawing\VertexBuffer.cpp" />
     <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp" />
@@ -176,9 +179,11 @@
     <ClInclude Include="headers\camera\ArcBallCamera.h" />
     <ClInclude Include="headers\camera\Camera.h" />
     <ClInclude Include="headers\drawing\IndexBuffer.h" />
+    <ClInclude Include="headers\drawing\Mesh.h" />
     <ClInclude Include="headers\drawing\Obj_Loader.h" />
     <ClInclude Include="headers\drawing\Renderer.h" />
     <ClInclude Include="headers\drawing\Shader.h" />
+    <ClInclude Include="headers\drawing\UniformBuffer.h" />
     <ClInclude Include="headers\drawing\VertexArray.h" />
     <ClInclude Include="headers\drawing\VertexBuffer.h" />
     <ClInclude Include="headers\drawing\VertexBufferLayout.h" />
@@ -196,6 +201,7 @@
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader" />
     <None Include="resources\shaders\Basic2.shader" />
+    <None Include="resources\shaders\Basic3D.shader" />
     <None Include="resources\shaders\cube_fs.glsl" />
     <None Include="resources\shaders\cube_vs.glsl" />
     <None Include="resources\shaders\Fragment.shader" />

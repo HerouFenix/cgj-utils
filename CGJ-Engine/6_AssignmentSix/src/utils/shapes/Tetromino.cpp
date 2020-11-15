@@ -59,12 +59,8 @@ Tetromino::Tetromino(Vector4 center) {
 	rendered = false;
 }
 
-Vertex* Tetromino::getVertices()
-{
-	return vertices;
-}
 
-void Tetromino::getVertices(Vertex arr[4])
+void Tetromino::getVertices(VertexColour arr[4])
 {
 	arr[0] = vertices[0];
 	arr[1] = vertices[1];

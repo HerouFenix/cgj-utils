@@ -1,3 +1,4 @@
+/*
 #include "../../headers/drawing/Obj_Loader.h"
 
 
@@ -291,3 +292,4 @@ void Obj_Loader::drawObj(GLfloat* model, GLfloat* view, GLfloat* proj, Vector4 c
 	glUseProgram(0);
 	glBindVertexArray(0);
 }
+*/

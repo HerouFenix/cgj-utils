@@ -18,7 +18,7 @@
 
 class Tetromino {
 protected:
-	Vertex vertices[4];	// Vertices of the base square
+	VertexColour vertices[4];	// Vertices of the base square
 	Matrix4 transforms[4];	// Transform matrices used to draw entire shape
 	GLuint indices[4] = { 0,1,2,3 };
 	GLenum mode = GL_TRIANGLES;
@@ -39,15 +39,9 @@ public:
 	Tetromino(Vector4 center = Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
 	/********************************************/ /**
-	* Returns this shape's vertices information
-	* @return vertices - An array of Vertex structs. Each vertex contains a position (Vector4) and colour array (int array)
-	***********************************************/
-	Vertex* getVertices();
-
-	/********************************************/ /**
 	* Copies this shape's vertices information into the passed array
 	***********************************************/
-	void getVertices(Vertex arr[4]);
+	void getVertices(VertexColour arr[4]);
 
 	/********************************************/ /**
 	* Get Colours

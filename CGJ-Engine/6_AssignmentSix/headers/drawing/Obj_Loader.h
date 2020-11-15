@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include <iostream>
@@ -68,3 +69,4 @@ class Obj_Loader
 		
 };
 
+*/

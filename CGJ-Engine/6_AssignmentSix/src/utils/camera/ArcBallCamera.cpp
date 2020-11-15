@@ -17,6 +17,45 @@ ArcBallCamera::~ArcBallCamera()
 {
 }
 
+void ArcBallCamera::SetupCamera(GLuint UBO_BP_)
+{
+	UBO_BP = UBO_BP_;
+	glGenBuffers(1, &vbo_id);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
+	{
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(float[16]) * 2, 0, GL_STREAM_DRAW);
+		glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, vbo_id);
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void ArcBallCamera::RenderCamera(bool ortho)
+{
+	float proj[16];
+	float view[16];
+
+	Matrix4 projM;
+	if (ortho) {
+		projM = getOrthProj();
+	}
+	else {
+		projM = getPerspProj();
+	}
+
+	projM.getColMajor(proj);
+
+	Matrix4 viewM = getViewMatrix();
+	viewM.getColMajor(view);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
+	{
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(view), view);
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(view), sizeof(proj), proj);
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
 void ArcBallCamera::setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far)
 {
 	orthoProj = Matrix4(new float[4][4]{

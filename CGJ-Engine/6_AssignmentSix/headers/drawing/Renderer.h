@@ -20,6 +20,7 @@ bool GLLogCall(const char* function, const char* file, int line);
 class Renderer {
 public:
 	static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, const GLenum mode = GL_TRIANGLES);
+	static void DrawObject(const GLuint VaoId, GLsizei size, Shader& shader,float* model);
 	static void clear();
 };
 

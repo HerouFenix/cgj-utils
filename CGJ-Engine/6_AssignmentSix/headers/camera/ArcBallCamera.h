@@ -20,6 +20,9 @@ private:
 	Matrix4 orthoProj;
 	Matrix4 perspProj;
 
+	GLuint vbo_id;
+	GLuint UBO_BP;
+
 public:
 	// FUNCTION DECLARATIONS
 
@@ -30,6 +33,10 @@ public:
 	 ***********************************************/
 	~ArcBallCamera();
 
+
+	void SetupCamera(GLuint UBO_BP_);
+
+	void RenderCamera(bool ortho);
 
 	/********************************************/ /**
 	 * Defines an orthographic projection matrix associated with this camera

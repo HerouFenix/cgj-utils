@@ -25,6 +25,19 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 
 }
 
+void Renderer::DrawObject(const GLuint VaoId, GLsizei size, Shader& shader,float* model)
+{
+	glBindVertexArray(VaoId);
+	shader.Bind();
+
+	shader.SetUniform4fv("ModelMatrix", model);
+
+	glDrawArrays(GL_TRIANGLES, 0, size);
+
+	glUseProgram(0);
+	glBindVertexArray(0);
+}
+
 void Renderer::clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
