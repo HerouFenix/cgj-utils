@@ -7,11 +7,16 @@ SceneNode::SceneNode(Mesh* m, Shader* s, Tetromino t) {
 	parent = NULL;
 	shader = s;
 
-	worldTransforms[0] = Matrix4::identity();
-	worldTransforms[1] = Matrix4::identity();
-	worldTransforms[2] = Matrix4::identity();
-	worldTransforms[3] = Matrix4::identity();
+	localTransform = Matrix4::identity();
 
+	if (parent != NULL) { // If we have a parent
+		worldTransform = parent->worldTransform;
+
+	}
+	else { // If we are the root node
+		worldTransform = localTransform;
+
+	}
 }
 
 SceneNode::~SceneNode()
@@ -21,19 +26,21 @@ SceneNode::~SceneNode()
 	}
 }
 
-void SceneNode::ApplyLocalTransform(const Matrix4 transform)
+void SceneNode::ApplyLocalTransform(Matrix4 transform)
 {
-	tetromino.transform(transform);
+
+	localTransform = transform * localTransform;
+	Update();
 }
 
-const Matrix4* SceneNode::GetLocalTransforms()
+const Matrix4 SceneNode::GetLocalTransform()
 {
-	return tetromino.getTransforms();
+	return localTransform;
 }
 
-Matrix4* SceneNode::GetWorldTransforms()
+Matrix4 SceneNode::GetWorldTransform()
 {
-	return worldTransforms;
+	return worldTransform;
 }
 
 void SceneNode::GetColour(float* colours)
@@ -70,26 +77,23 @@ void SceneNode::AddChildNode(SceneNode* s)
 void SceneNode::Update()
 {
 	if (parent != NULL) { // If we have a parent
-		for (int j = 0; j < 4; j++) {
-			worldTransforms[j] = parent->worldTransforms[j] * tetromino.getTransforms()[j];
-		}
+		worldTransform = localTransform * parent->worldTransform;
+
 	}
 	else { // If we are the root node
-		for (int j = 0; j < 4; j++) {
-			worldTransforms[j] = tetromino.getTransforms()[j];
-		}
+		worldTransform = localTransform;
 	}
 
 	// Cascade Update children
 	for (SceneNode* child : children) {
-		(*child).Update();
+		child->Update();
 	}
 }
 
 void SceneNode::Draw()
 {
 	float colours[4];
-	
+
 	shader->Bind();
 	tetromino.getColours(colours);
 
@@ -99,7 +103,8 @@ void SceneNode::Draw()
 	//Draw each square that makes up the piece using the transform matrices
 	for (int j = 0; j < 4; j++) {
 		float model[16];
-		tetromino.getTransforms()[j].getRowMajor(model);
+		Matrix4 modelM = worldTransform * tetromino.getTransforms()[j];
+		modelM.getRowMajor(model);
 		Renderer::DrawObject((GLsizei)mesh->getVertices().size(), (*shader), model);
 	}
 

@@ -20,11 +20,11 @@ public:
 	SceneNode(Mesh* m = NULL, Shader* s = NULL, Tetromino t = NULL);
 	~SceneNode();
 
-	void ApplyLocalTransform(const Matrix4 transform);
+	void ApplyLocalTransform(Matrix4 transform);
 
-	const Matrix4* GetLocalTransforms();
+	const Matrix4 GetLocalTransform();
 
-	Matrix4* GetWorldTransforms();
+	Matrix4 GetWorldTransform();
 
 	void GetColour(float* colours);
 
@@ -43,7 +43,8 @@ public:
 protected:
 	SceneNode* parent;
 	Mesh* mesh;
-	Matrix4 worldTransforms[4];
+	Matrix4 worldTransform;
+	Matrix4 localTransform;
 	Tetromino tetromino;
 	std::vector<SceneNode*> children;
 	Shader* shader;

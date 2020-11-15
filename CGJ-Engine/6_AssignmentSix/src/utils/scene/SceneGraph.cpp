@@ -28,7 +28,6 @@ SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, Tetromino t)
 	else {
 		root->AddChildNode(newNode);
 	}
-	std::cout << root->GetShader() << "\n";
 
 	return newNode;
 }

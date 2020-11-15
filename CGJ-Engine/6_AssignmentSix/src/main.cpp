@@ -491,6 +491,16 @@ void setupScene() {
 
 	Tetromino_SQ sqPiece;
 	SceneNode* root = sceneGraph.AddNode(&mesh, &shader, sqPiece);
+
+	Tetromino_L lPiece;
+	SceneNode* childL = sceneGraph.AddNode(&mesh, &shader, lPiece);
+
+	root->ApplyLocalTransform(Matrix4::scaling(0.1, 0.1, 0.1));
+
+	root->ApplyLocalTransform(Matrix4::translation(-0.11, -0.11, 0));
+
+	childL->ApplyLocalTransform(Matrix4::translation(-0.22, -0.22, 0));
+
 	
 }
 
