@@ -113,6 +113,11 @@ void SceneNode::AddChildNode(SceneNode* s)
 	Update();
 }
 
+std::vector<SceneNode*> SceneNode::GetChidNodes()
+{
+	return children;
+}
+
 void SceneNode::Update()
 {
 	if (parent != NULL) { // If we have a parent

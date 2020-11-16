@@ -40,6 +40,8 @@ public:
 
 	void AddChildNode(SceneNode* s);
 
+	std::vector<SceneNode*> GetChidNodes();
+
 	void Update();
 
 	virtual void Draw();
