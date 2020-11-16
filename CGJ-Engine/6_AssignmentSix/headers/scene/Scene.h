@@ -21,7 +21,7 @@ public:
 
 	std::vector<SceneGraph*> GetSceneGraphs();
 
-	SceneGraph* SetupTetrominoSceneGraph(SceneGraph* sceneGraph, Mesh* m, Shader* s);
+	void SetupTetrominoSceneGraph(SceneGraph* sceneGraph, Mesh* m, Shader* s);
 
 	void ClearScene();
 	void DrawSceneGraphs(bool ortho);

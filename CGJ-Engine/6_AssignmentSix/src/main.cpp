@@ -14,12 +14,12 @@
 #include "../headers/drawing/Shader.h"
 #include "../headers/drawing/Mesh.h"
 
-#include "../headers/quaternions/Quaternion.h"
 
 #include "../headers/shapes/Tetromino.h"
 #include "../headers/drawing/Renderer.h"
 
 #include "../headers/scene/SceneGraph.h"
+#include "../headers/scene/Scene.h"
 
 
 #define VERTICES 0
@@ -41,6 +41,8 @@ float xOffset, yOffset;
 const float Threshold = (float)1.0e-5;
 
 SceneManager sceneManager;
+Scene scene;
+
 
 Shader shader("resources/shaders/Basic3D.shader");
 
@@ -50,8 +52,6 @@ bool ortho = false;
 bool projChanged;
 
 bool quaternionRotation = false;
-
-SceneGraph sceneGraph;
 
 // KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
@@ -77,18 +77,18 @@ void moveCamera() {
 	// ARCBALL CAMERA //
 
 	if (forwardKeyPressed) {
-		sceneGraph.camera.incrementRadius(-0.05f);
+		scene.GetSceneGraphs()[0]->camera.incrementRadius(-0.05f);
 	}
 	if (backwardKeyPressed) {
-		sceneGraph.camera.incrementRadius(0.05f);
+		scene.GetSceneGraphs()[0]->camera.incrementRadius(0.05f);
 	}
 
 	if (!stopRotating) {
 		if (!quaternionRotation) {
 			//std::cout << "EULER ROTATION \n";
 			if (mouseMoved) {
-				sceneGraph.camera.rotateCameraAroundHorizontal(xOffset);
-				sceneGraph.camera.rotateCameraAroundVertical(yOffset);
+				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundHorizontal(xOffset);
+				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundVertical(yOffset);
 				mouseMoved = false;
 			}
 		}
@@ -97,8 +97,8 @@ void moveCamera() {
 			//std::cout << "QUATERNION ROTATION \n";
 
 			if (mouseMoved) {
-				sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(xOffset);
-				sceneGraph.camera.rotateCameraAroundQuaternionVertical(yOffset);
+				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionHorizontal(xOffset);
+				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionVertical(yOffset);
 				mouseMoved = false;
 			}
 		}
@@ -113,16 +113,16 @@ void moveCamera() {
 
 void moveFloor() {
 	if (moveForward) {
-		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
 	}
 	if (moveBackward) {
-		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, 0.05));
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, 0.05));
 	}
 	if (moveLeft) {
-		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(-0.05, 0,0));
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(-0.05, 0,0));
 	}
 	if (moveRight) {
-		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(0.05, 0,0));
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0.05, 0,0));
 	}
 }
 void drawScene_Tetramino()
@@ -142,7 +142,7 @@ void drawScene_Tetramino()
 
 	shader.SetUniform1i("isUniformColour", 1);
 
-	sceneGraph.DrawSceneGraph(ortho);
+	scene.DrawSceneGraphs(ortho);
 
 	shader.UnBind();
 	glBindVertexArray(0);
@@ -212,7 +212,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			moveRight = true;
 			break;
 		case GLFW_KEY_R:
-			sceneGraph.camera.resetCamera();
+			scene.GetSceneGraphs()[0]->camera.resetCamera();
 			cameraReset = true;
 			break;
 		case GLFW_KEY_G:
@@ -408,99 +408,28 @@ void setupBufferObjects() {
 	glDeleteBuffers(1, &VboVertices);
 	glDeleteBuffers(1, &VboTexcoords);
 	glDeleteBuffers(1, &VboNormals);
-
-	// CAMERA
-	sceneGraph.camera.SetupCamera(UBO_BP);
 }
 
 void setupCamera() {
 	// ARC BALL CAMERA SETUP //
-	sceneGraph.camera.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
-	sceneGraph.camera.setPrespProjectionMatrix(50, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 25.0f);
+	ArcBallCamera c(5);
+
+	c.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+	c.setPrespProjectionMatrix(50, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 25.0f);
 
 	//Set initial cursor position to be the middle of the screen
 	cursorX = (float)window_width / 2;
 	cursorY = (float)window_height / 2;
-
-	sceneGraph.camera.RenderCamera(ortho);
+	
+	scene.GetSceneGraphs()[0]->SetCamera(c);
+	scene.GetSceneGraphs()[0]->camera.SetupCamera(UBO_BP);
+	scene.GetSceneGraphs()[0]->camera.RenderCamera(ortho);
 
 	projChanged = false;
 }
 
 void setupScene() {
-	//Floor
-	//SceneNode* root = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(1, 0.01, 1));
-	//root->ApplyLocalTransform(Matrix4::translation(0, -0.44, 0));
-	//
-	//Tetromino_SQ sq;
-	//SceneNode* square = sceneGraph.AddNode(&mesh, &shader, sq, Vector3(0.1, 0.1, 0.1));
-	//square->ApplyLocalTransform(Matrix4::translation(-0.11, 0.33, 0));
-	//
-	//Tetromino_L l;
-	//SceneNode* letterL = sceneGraph.AddNode(&mesh, &shader, l, Vector3(0.1, 0.1, 0.1));
-	//letterL->ApplyLocalTransform(Matrix4::translation(-0.33, 0.11, 0));
-	//
-	//Tetromino_RL rl;
-	//SceneNode* letterRL = sceneGraph.AddNode(&mesh, &shader, rl, Vector3(0.1, 0.1, 0.1));
-	//letterRL->ApplyLocalTransform(Matrix4::translation(0.33, 0.11, 0));
-	//
-	//Tetromino_I i;
-	//SceneNode* letterI = sceneGraph.AddNode(&mesh, &shader, i, Vector3(0.1, 0.1, 0.1));
-	//letterI->ApplyLocalTransform(Matrix4::rotationZ(90, false, true));
-	//letterI->ApplyLocalTransform(Matrix4::translation(0.33, 0.77, 0));
-
-	//Floor
-	SceneNode* root = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(1, 0.01, 1));
-	root->ApplyLocalTransform(Matrix4::translation(0, -0.44, 0));
-	
-	float colour[4];
-	
-	//Square
-	SceneNode* squareBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
-	squareBase->GetColour(colour);
-	squareBase->ApplyLocalTransform(Matrix4::translation(-0.11, 0.44, 0));
-	SceneNode* squareTwo = sceneGraph.AddNode(&mesh, &shader, squareBase, colour, Vector3(0.1, 0.1, 0.1));
-	squareTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
-	SceneNode* squareThree = sceneGraph.AddNode(&mesh, &shader, squareBase, colour, Vector3(0.1, 0.1, 0.1));
-	squareThree->ApplyLocalTransform(Matrix4::translation(0.22, 0.22, 0));
-	SceneNode* squareFour = sceneGraph.AddNode(&mesh, &shader, squareBase, colour, Vector3(0.1, 0.1, 0.1));
-	squareFour->ApplyLocalTransform(Matrix4::translation(0.22, 0, 0));
-	
-	// L
-	SceneNode* lBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
-	lBase->GetColour(colour);
-	lBase->ApplyLocalTransform(Matrix4::translation(-0.33, 0.22, 0));
-	SceneNode* lTwo = sceneGraph.AddNode(&mesh, &shader, lBase, colour, Vector3(0.1, 0.1, 0.1));
-	lTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
-	SceneNode* lThree = sceneGraph.AddNode(&mesh, &shader, lBase, colour, Vector3(0.1, 0.1, 0.1));
-	lThree->ApplyLocalTransform(Matrix4::translation(0, 0.44, 0));
-	SceneNode* lFour = sceneGraph.AddNode(&mesh, &shader, lBase, colour, Vector3(0.1, 0.1, 0.1));
-	lFour->ApplyLocalTransform(Matrix4::translation(0.22, 0, 0));
-	
-	// Reverse L
-	SceneNode* rlBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
-	rlBase->GetColour(colour);
-	rlBase->ApplyLocalTransform(Matrix4::translation(0.33, 0.22, 0));
-	SceneNode* rlTwo = sceneGraph.AddNode(&mesh, &shader, rlBase, colour, Vector3(0.1, 0.1, 0.1));
-	rlTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
-	SceneNode* rlThree = sceneGraph.AddNode(&mesh, &shader, rlBase, colour, Vector3(0.1, 0.1, 0.1));
-	rlThree->ApplyLocalTransform(Matrix4::translation(0, 0.44, 0));
-	SceneNode* rlFour = sceneGraph.AddNode(&mesh, &shader, rlBase, colour, Vector3(0.1, 0.1, 0.1));
-	rlFour->ApplyLocalTransform(Matrix4::translation(-0.22, 0, 0));
-	
-	// I
-	SceneNode* iBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
-	iBase->GetColour(colour);
-	iBase->ApplyLocalTransform(Matrix4::rotationZ(90, false, true));
-	iBase->ApplyLocalTransform(Matrix4::translation(0.33, 0.88, 0));
-	
-	SceneNode* iTwo = sceneGraph.AddNode(&mesh, &shader, iBase, colour, Vector3(0.1, 0.1, 0.1));
-	iTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
-	SceneNode* iThree = sceneGraph.AddNode(&mesh, &shader, iBase, colour, Vector3(0.1, 0.1, 0.1));
-	iThree->ApplyLocalTransform(Matrix4::translation(0, 0.44, 0));
-	SceneNode* iFour = sceneGraph.AddNode(&mesh, &shader, iBase, colour, Vector3(0.1, 0.1, 0.1));
-	iFour->ApplyLocalTransform(Matrix4::translation(0, 0.66, 0));
-
+	scene.SetupTetrominoSceneGraph(scene.GetSceneGraphs()[0], &mesh, &shader);
 
 }
 
@@ -568,32 +497,7 @@ void run(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	// DRAW SCENE //
-	/*
-	float squareDiagonal = sqrt(0.11f * 0.11f + 0.11f * 0.11f);
-
-	int sqPiece = sceneManager.createSQPiece();
-	sceneManager.transformPiece(sqPiece, Matrix4::scaling(0.1, 0.1, 0.1));
-	sceneManager.transformPiece(sqPiece, Matrix4::translation(-0.11,-0.11,0));
-
-
-	int lPiece = sceneManager.createLPiece();
-	sceneManager.transformPiece(lPiece, Matrix4::scaling(0.1, 0.1, 0.1));
-	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.33, -0.33, 0));
-
-
-	int rlPiece = sceneManager.createRLPiece();
-	sceneManager.transformPiece(rlPiece, Matrix4::scaling(0.1, 0.1, 0.1));
-	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.33, -0.33, 0));
-
-
-	int iPiece = sceneManager.createIPiece();
-	sceneManager.transformPiece(iPiece, Matrix4::scaling(0.1, 0.1, 0.1));
-	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(-90, false, true));
-	sceneManager.transformPiece(iPiece, Matrix4::translation(-0.33, 0.33, 0));
-	*/
-
-	ArcBallCamera arcBall(5);
-	sceneGraph.SetCamera(arcBall);
+	scene.CreateSceneGraph();
 
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
