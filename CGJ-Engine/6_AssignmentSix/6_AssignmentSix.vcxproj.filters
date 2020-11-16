@@ -33,6 +33,9 @@
     <ClCompile Include="src\utils\drawing\Mesh.cpp" />
     <ClCompile Include="src\utils\scene\SceneNode.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
+    <ClCompile Include="src\utils\scene\Scene.cpp" />
+    <ClCompile Include="src\utils\scene\SceneNodeTetromino.cpp" />
+    <ClCompile Include="headers\scene\SceneNodeTetromino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\ArcBallCamera.h" />

@@ -144,6 +144,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="headers\scene\SceneNodeTetromino.h" />
+    <ClCompile Include="src\utils\scene\SceneNodeTetromino.cpp" />
+    <ClCompile Include="src\utils\scene\Scene.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mainV1.cpp" />

@@ -60,9 +60,11 @@ bool lockMouse = true;
 bool firstMouse = true;
 bool mouseMoved = false;
 
-bool keyRotationX = false;
-bool keyRotationY = false;
-bool keyRotationZ = false;
+bool moveForward = false;
+bool moveBackward = false;
+bool moveLeft = false;
+bool moveRight = false;
+
 bool mouseRotating = true;
 bool downMoved, upMoved = false;
 
@@ -84,70 +86,21 @@ void moveCamera() {
 	if (!stopRotating) {
 		if (!quaternionRotation) {
 			//std::cout << "EULER ROTATION \n";
-			if (keyRotationX) {
-				if (downMoved) {
-					sceneGraph.camera.rotateCameraAroundVertical(-1);
-				}
-				else if (upMoved) {
-					sceneGraph.camera.rotateCameraAroundVertical(1);
-				}
+			if (mouseMoved) {
+				sceneGraph.camera.rotateCameraAroundHorizontal(xOffset);
+				sceneGraph.camera.rotateCameraAroundVertical(yOffset);
+				mouseMoved = false;
 			}
-			else if (keyRotationY) {
-				if (downMoved) {
-					sceneGraph.camera.rotateCameraAroundHorizontal(-1);
-				}
-				else if (upMoved) {
-					sceneGraph.camera.rotateCameraAroundHorizontal(1);
-				}
-			}
-			else if (keyRotationZ) {
-				if (downMoved) {
-					sceneGraph.camera.rotateCameraAroundZ(-1);
-				}
-				else if (upMoved) {
-					sceneGraph.camera.rotateCameraAroundZ(1);
-				}
-			}
-			else if (mouseRotating)
-				if (mouseMoved) {
-					sceneGraph.camera.rotateCameraAroundHorizontal(xOffset);
-					sceneGraph.camera.rotateCameraAroundVertical(yOffset);
-					mouseMoved = false;
-				}
 		}
 
 		else {
 			//std::cout << "QUATERNION ROTATION \n";
-			if (keyRotationX) {
-				if (downMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionVertical(-1);
-				}
-				else if (upMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionVertical(1);
-				}
+
+			if (mouseMoved) {
+				sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(xOffset);
+				sceneGraph.camera.rotateCameraAroundQuaternionVertical(yOffset);
+				mouseMoved = false;
 			}
-			else if (keyRotationY) {
-				if (downMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(-1);
-				}
-				else if (upMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(1);
-				}
-			}
-			else if (keyRotationZ) {
-				if (downMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionZ(-1);
-				}
-				else if (upMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionZ(1);
-				}
-			}
-			else if (mouseRotating)
-				if (mouseMoved) {
-					sceneGraph.camera.rotateCameraAroundQuaternionHorizontal(xOffset);
-					sceneGraph.camera.rotateCameraAroundQuaternionVertical(yOffset);
-					mouseMoved = false;
-				}
 		}
 	}
 
@@ -158,12 +111,31 @@ void moveCamera() {
 		!projChanged;
 }
 
+void moveFloor() {
+	if (moveForward) {
+		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
+	}
+	if (moveBackward) {
+		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, 0.05));
+	}
+	if (moveLeft) {
+		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(-0.05, 0,0));
+	}
+	if (moveRight) {
+		sceneGraph.GetRoot()->ApplyLocalTransform(Matrix4::translation(0.05, 0,0));
+	}
+}
 void drawScene_Tetramino()
 {
-	bool cameraMoved = (mouseMoved || projChanged || cameraReset || forwardKeyPressed || backwardKeyPressed || downMoved || upMoved);
+	bool cameraMoved = (mouseMoved || projChanged || cameraReset || forwardKeyPressed || backwardKeyPressed);
 
 	if (cameraMoved)
 		moveCamera();
+
+	bool floorMoved = (moveForward || moveBackward || moveLeft || moveRight);
+	if (floorMoved) {
+		moveFloor();
+	}
 
 	glBindVertexArray(VaoId);
 	shader.Bind();
@@ -171,25 +143,6 @@ void drawScene_Tetramino()
 	shader.SetUniform1i("isUniformColour", 1);
 
 	sceneGraph.DrawSceneGraph(ortho);
-
-	/// ///////////////////////////////////////////////////
-	/*
-	for (int i = 0; i < sceneManager.getSize(); i++) {
-		shader.Bind();
-		float colours[4];
-		sceneManager.getPieceAt(i).getColours(colours);
-		shader.SetUniform4fvec("uniformColour", colours);
-		shader.UnBind();
-
-		//Draw each square that makes up the piece using the transform matrices
-		for (int j = 0; j < 4; j++) {
-			float model[16];
-			sceneManager.getPieceAt(i).getTransforms()[j].getRowMajor(model);
-			Renderer::DrawObject((GLsizei)Vertices.size(), shader, model);
-		}
-	}
-	*/
-	/// ///////////////////////////////////////////////////
 
 	shader.UnBind();
 	glBindVertexArray(0);
@@ -236,39 +189,27 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			ortho = !ortho;
 			projChanged = true;
 			break;
-		case GLFW_KEY_X:
-			keyRotationX = true;
-			keyRotationY = false;
-			keyRotationZ = false;
-			mouseRotating = false;
-			break;
-		case GLFW_KEY_Y:
-			keyRotationX = false;
-			keyRotationY = true;
-			keyRotationZ = false;
-			mouseRotating = false;
-			break;
-		case GLFW_KEY_Z:
-			keyRotationX = false;
-			keyRotationY = false;
-			keyRotationZ = true;
-			mouseRotating = false;
-			break;
-		case GLFW_KEY_M:
-			keyRotationX = false;
-			keyRotationY = false;
-			keyRotationZ = false;
-			mouseRotating = true;
-			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, GLFW_TRUE);
 			window_close_callback(win);
 			break;
-		case GLFW_KEY_W:
+		case GLFW_KEY_UP:
 			forwardKeyPressed = true;
 			break;
-		case GLFW_KEY_S:
+		case GLFW_KEY_DOWN:
 			backwardKeyPressed = true;
+			break;
+		case GLFW_KEY_W:
+			moveForward = true;
+			break;
+		case GLFW_KEY_S:
+			moveBackward = true;
+			break;
+		case GLFW_KEY_A:
+			moveLeft = true;
+			break;
+		case GLFW_KEY_D:
+			moveRight = true;
 			break;
 		case GLFW_KEY_R:
 			sceneGraph.camera.resetCamera();
@@ -286,28 +227,27 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_SPACE:
 			stopRotating = !stopRotating;
 			break;
-		case GLFW_KEY_UP:
-			upMoved = true;
-			break;
-		case GLFW_KEY_DOWN:
-			downMoved = true;
-			break;
-
 		}
 	}
 	else if (action == GLFW_RELEASE) {
 		switch (key) {
-		case GLFW_KEY_W:
+		case GLFW_KEY_UP:
 			forwardKeyPressed = false;
 			break;
-		case GLFW_KEY_S:
+		case GLFW_KEY_DOWN:
 			backwardKeyPressed = false;
 			break;
-		case GLFW_KEY_UP:
-			upMoved = false;
+		case GLFW_KEY_W:
+			moveForward = false;
 			break;
-		case GLFW_KEY_DOWN:
-			downMoved = false;
+		case GLFW_KEY_S:
+			moveBackward = false;
+			break;
+		case GLFW_KEY_A:
+			moveLeft = false;
+			break;
+		case GLFW_KEY_D:
+			moveRight = false;
 			break;
 		}
 	}
@@ -488,20 +428,80 @@ void setupCamera() {
 }
 
 void setupScene() {
+	//Floor
+	//SceneNode* root = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(1, 0.01, 1));
+	//root->ApplyLocalTransform(Matrix4::translation(0, -0.44, 0));
+	//
+	//Tetromino_SQ sq;
+	//SceneNode* square = sceneGraph.AddNode(&mesh, &shader, sq, Vector3(0.1, 0.1, 0.1));
+	//square->ApplyLocalTransform(Matrix4::translation(-0.11, 0.33, 0));
+	//
+	//Tetromino_L l;
+	//SceneNode* letterL = sceneGraph.AddNode(&mesh, &shader, l, Vector3(0.1, 0.1, 0.1));
+	//letterL->ApplyLocalTransform(Matrix4::translation(-0.33, 0.11, 0));
+	//
+	//Tetromino_RL rl;
+	//SceneNode* letterRL = sceneGraph.AddNode(&mesh, &shader, rl, Vector3(0.1, 0.1, 0.1));
+	//letterRL->ApplyLocalTransform(Matrix4::translation(0.33, 0.11, 0));
+	//
+	//Tetromino_I i;
+	//SceneNode* letterI = sceneGraph.AddNode(&mesh, &shader, i, Vector3(0.1, 0.1, 0.1));
+	//letterI->ApplyLocalTransform(Matrix4::rotationZ(90, false, true));
+	//letterI->ApplyLocalTransform(Matrix4::translation(0.33, 0.77, 0));
 
-	Tetromino_SQ sqPiece;
-	SceneNode* root = sceneGraph.AddNode(&mesh, &shader, sqPiece);
-
-	Tetromino_L lPiece;
-	SceneNode* childL = sceneGraph.AddNode(&mesh, &shader, lPiece);
-
-	root->ApplyLocalTransform(Matrix4::scaling(0.1, 0.1, 0.1));
-
-	root->ApplyLocalTransform(Matrix4::translation(-0.11, -0.11, 0));
-
-	childL->ApplyLocalTransform(Matrix4::translation(-0.22, -0.22, 0));
-
+	//Floor
+	SceneNode* root = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(1, 0.01, 1));
+	root->ApplyLocalTransform(Matrix4::translation(0, -0.44, 0));
 	
+	float colour[4];
+	
+	//Square
+	SceneNode* squareBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
+	squareBase->GetColour(colour);
+	squareBase->ApplyLocalTransform(Matrix4::translation(-0.11, 0.44, 0));
+	SceneNode* squareTwo = sceneGraph.AddNode(&mesh, &shader, squareBase, colour, Vector3(0.1, 0.1, 0.1));
+	squareTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
+	SceneNode* squareThree = sceneGraph.AddNode(&mesh, &shader, squareBase, colour, Vector3(0.1, 0.1, 0.1));
+	squareThree->ApplyLocalTransform(Matrix4::translation(0.22, 0.22, 0));
+	SceneNode* squareFour = sceneGraph.AddNode(&mesh, &shader, squareBase, colour, Vector3(0.1, 0.1, 0.1));
+	squareFour->ApplyLocalTransform(Matrix4::translation(0.22, 0, 0));
+	
+	// L
+	SceneNode* lBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
+	lBase->GetColour(colour);
+	lBase->ApplyLocalTransform(Matrix4::translation(-0.33, 0.22, 0));
+	SceneNode* lTwo = sceneGraph.AddNode(&mesh, &shader, lBase, colour, Vector3(0.1, 0.1, 0.1));
+	lTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
+	SceneNode* lThree = sceneGraph.AddNode(&mesh, &shader, lBase, colour, Vector3(0.1, 0.1, 0.1));
+	lThree->ApplyLocalTransform(Matrix4::translation(0, 0.44, 0));
+	SceneNode* lFour = sceneGraph.AddNode(&mesh, &shader, lBase, colour, Vector3(0.1, 0.1, 0.1));
+	lFour->ApplyLocalTransform(Matrix4::translation(0.22, 0, 0));
+	
+	// Reverse L
+	SceneNode* rlBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
+	rlBase->GetColour(colour);
+	rlBase->ApplyLocalTransform(Matrix4::translation(0.33, 0.22, 0));
+	SceneNode* rlTwo = sceneGraph.AddNode(&mesh, &shader, rlBase, colour, Vector3(0.1, 0.1, 0.1));
+	rlTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
+	SceneNode* rlThree = sceneGraph.AddNode(&mesh, &shader, rlBase, colour, Vector3(0.1, 0.1, 0.1));
+	rlThree->ApplyLocalTransform(Matrix4::translation(0, 0.44, 0));
+	SceneNode* rlFour = sceneGraph.AddNode(&mesh, &shader, rlBase, colour, Vector3(0.1, 0.1, 0.1));
+	rlFour->ApplyLocalTransform(Matrix4::translation(-0.22, 0, 0));
+	
+	// I
+	SceneNode* iBase = sceneGraph.AddNode(&mesh, &shader, NULL, Vector3(0.1, 0.1, 0.1));
+	iBase->GetColour(colour);
+	iBase->ApplyLocalTransform(Matrix4::rotationZ(90, false, true));
+	iBase->ApplyLocalTransform(Matrix4::translation(0.33, 0.88, 0));
+	
+	SceneNode* iTwo = sceneGraph.AddNode(&mesh, &shader, iBase, colour, Vector3(0.1, 0.1, 0.1));
+	iTwo->ApplyLocalTransform(Matrix4::translation(0, 0.22, 0));
+	SceneNode* iThree = sceneGraph.AddNode(&mesh, &shader, iBase, colour, Vector3(0.1, 0.1, 0.1));
+	iThree->ApplyLocalTransform(Matrix4::translation(0, 0.44, 0));
+	SceneNode* iFour = sceneGraph.AddNode(&mesh, &shader, iBase, colour, Vector3(0.1, 0.1, 0.1));
+	iFour->ApplyLocalTransform(Matrix4::translation(0, 0.66, 0));
+
+
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -575,17 +575,17 @@ int main(int argc, char* argv[])
 	sceneManager.transformPiece(sqPiece, Matrix4::scaling(0.1, 0.1, 0.1));
 	sceneManager.transformPiece(sqPiece, Matrix4::translation(-0.11,-0.11,0));
 
-	
+
 	int lPiece = sceneManager.createLPiece();
 	sceneManager.transformPiece(lPiece, Matrix4::scaling(0.1, 0.1, 0.1));
 	sceneManager.transformPiece(lPiece, Matrix4::translation(-0.33, -0.33, 0));
 
-	
+
 	int rlPiece = sceneManager.createRLPiece();
 	sceneManager.transformPiece(rlPiece, Matrix4::scaling(0.1, 0.1, 0.1));
 	sceneManager.transformPiece(rlPiece, Matrix4::translation(0.33, -0.33, 0));
 
-	
+
 	int iPiece = sceneManager.createIPiece();
 	sceneManager.transformPiece(iPiece, Matrix4::scaling(0.1, 0.1, 0.1));
 	sceneManager.transformPiece(iPiece, Matrix4::rotationZ(-90, false, true));

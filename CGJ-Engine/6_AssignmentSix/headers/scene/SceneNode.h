@@ -11,13 +11,13 @@
 // SCENE NODE CLASS
 /// Class used to represent a Node on our Scene Graph
 /// 
-/// Each SceneNode has a Tetromino (holds local transform and colour) a world transform, a colour, and a pointer to a Mesh.
+/// Each SceneNode has a local transform, world transform, a colour, and a pointer to a Mesh and shader.
 
 // Based on https://research.ncl.ac.uk/game/mastersdegree/graphicsforgames/scenegraphs/Tutorial%206%20-%20Scene%20Graphs.pdf
 
 class SceneNode {
 public:
-	SceneNode(Mesh* m = NULL, Shader* s = NULL, Tetromino t = NULL);
+	SceneNode(Mesh* m = NULL, Shader* s = NULL, float* c = NULL, Vector3 sc = Vector3(1,1,1));
 	~SceneNode();
 
 	void ApplyLocalTransform(Matrix4 transform);
@@ -27,9 +27,13 @@ public:
 	Matrix4 GetWorldTransform();
 
 	void GetColour(float* colours);
+	void SetColour(float* colours);
 
 	Mesh* GetMesh();
 	void SetMesh(Mesh* m);
+
+	Vector3 GetScale();
+	void SetScale(Vector3 sc);
 
 	Shader* GetShader();
 	void SetShader(Shader* s);
@@ -38,14 +42,15 @@ public:
 
 	void Update();
 
-	void Draw();
+	virtual void Draw();
 
 protected:
 	SceneNode* parent;
 	Mesh* mesh;
 	Matrix4 worldTransform;
 	Matrix4 localTransform;
-	Tetromino tetromino;
+	Vector3 scale;
+	float colour[4];
 	std::vector<SceneNode*> children;
 	Shader* shader;
 };
