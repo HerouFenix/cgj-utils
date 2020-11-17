@@ -22,6 +22,8 @@ public:
 
 	void ApplyLocalTransform(Matrix4 transform);
 
+	void ResetToDefaultPosition();
+
 	const Matrix4 GetLocalTransform();
 
 	Matrix4 GetWorldTransform();
@@ -60,6 +62,7 @@ protected:
 
 class SceneNodeTetromino : public SceneNode {
 public:
+	Tetromino getTetromino();
 	SceneNodeTetromino(Mesh* m = NULL, Shader* s = NULL, Tetromino t = NULL, Vector3 sc = Vector3(1, 1, 1));
 	~SceneNodeTetromino();
 

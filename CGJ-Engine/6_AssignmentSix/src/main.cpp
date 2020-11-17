@@ -5,6 +5,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <typeinfo>
+
+
 #include "../headers/matrices/Matrix4.h"
 
 #include "../headers/camera/Camera.h"
@@ -72,6 +75,8 @@ bool cameraReset = false;
 bool stopRotating = false;
 bool automaticRotating = false;
 
+bool animate = false;
+
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
 	// ARCBALL CAMERA //
@@ -111,6 +116,39 @@ void moveCamera() {
 		!projChanged;
 }
 
+void animation() {
+
+	//L shape
+	if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->GetWorldTransform()[0][0] > 0) {
+		scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->ApplyLocalTransform(Matrix4::rotationZ(1.00f, false));
+	}
+	else {
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->GetWorldTransform()[1][3] < -0.4f) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->ApplyLocalTransform(Matrix4::translation(0.0f, 0.005f, 0.0f));
+		}
+	}
+	//Reversed-L shape
+	if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->GetWorldTransform()[0][0] > 0) {
+		scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->ApplyLocalTransform(Matrix4::rotationZ(-1.00f, false));
+	}
+	else {
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->GetWorldTransform()[1][3] < -0.4f) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->ApplyLocalTransform(Matrix4::translation(0.0f, 0.005f, 0.0f));
+		}
+	}
+
+	//I shape
+	if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->GetWorldTransform()[1][3] < 0.4) {
+		scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->ApplyLocalTransform(Matrix4::translation(0.0f, 0.05f, 0.0f));
+	}
+	else if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->GetWorldTransform()[0][0] < 1) {
+		scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->ApplyLocalTransform(Matrix4::rotationZ(-1.00f, false));
+	}
+	else if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->GetWorldTransform()[0][3] > 0) {
+		scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->ApplyLocalTransform(Matrix4::translation(-0.035f, 0.0f, 0.0f));
+	}
+}
+
 void moveFloor() {
 	if (moveForward) {
 		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
@@ -135,6 +173,51 @@ void drawScene_Tetramino()
 	bool floorMoved = (moveForward || moveBackward || moveLeft || moveRight);
 	if (floorMoved) {
 		moveFloor();
+	}
+
+
+	if (animate) {
+
+		//L shape
+		
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->GetWorldTransform()[0][0] > 0) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->ApplyLocalTransform(Matrix4::rotationZ(1.00f, false));
+		}
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->GetWorldTransform()[1][3] < -0.4f) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->ApplyLocalTransform(Matrix4::translation(0.0f, 0.005f, 0.0f));
+		}
+
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->GetWorldTransform()[0][0] > -0.05f) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[1]->ApplyLocalTransform(Matrix4::rotationY(1.00f, false));
+		}
+
+
+		//Reversed-L shape
+
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->GetWorldTransform()[0][0] > 0) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->ApplyLocalTransform(Matrix4::rotationZ(-1.00f, false));
+		}
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->GetWorldTransform()[1][3] < -0.4f) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->ApplyLocalTransform(Matrix4::translation(0.0f, 0.005f, 0.0f));
+		}
+		
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->GetWorldTransform()[0][0] > -0.05f) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[2]->ApplyLocalTransform(Matrix4::rotationY(1.00f, false));
+		}
+
+		
+		//I shape
+
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->GetWorldTransform()[1][3] < 0.4) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->ApplyLocalTransform(Matrix4::translation(0.0f, 0.05f, 0.0f));
+		}
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->GetWorldTransform()[0][0] < 1) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->ApplyLocalTransform(Matrix4::rotationZ(-1.00f, false));
+		}
+		if (scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->GetWorldTransform()[0][3] > 0) {
+			scene.GetSceneGraphs()[0]->GetRoot()->GetChidNodes()[3]->ApplyLocalTransform(Matrix4::translation(-0.035f, 0.0f, 0.0f));
+		}
+		
 	}
 
 	glBindVertexArray(VaoId);
@@ -227,6 +310,10 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_SPACE:
 			stopRotating = !stopRotating;
 			break;
+		case GLFW_KEY_C: {
+			animate = !animate;
+			break;
+		}
 		}
 	}
 	else if (action == GLFW_RELEASE) {

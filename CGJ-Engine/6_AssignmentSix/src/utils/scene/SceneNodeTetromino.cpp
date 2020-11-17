@@ -1,5 +1,8 @@
 #include "../../headers/scene/SceneNode.h"
 
+Tetromino SceneNodeTetromino::getTetromino() {
+	return tetromino;
+}
 
 SceneNodeTetromino::SceneNodeTetromino(Mesh* m, Shader* s, Tetromino t, Vector3 sc) :SceneNode(m, s, NULL, sc) {
 	t.getColours(colour);
