@@ -144,8 +144,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="headers\scene\SceneNodeTetromino.h" />
-    <ClCompile Include="src\utils\scene\SceneNodeTetromino.cpp" />
     <ClCompile Include="src\utils\scene\Scene.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -167,6 +165,7 @@
     <ClCompile Include="src\utils\quaternions\Quaternion.cpp" />
     <ClCompile Include="src\utils\scene\SceneManager.cpp" />
     <ClCompile Include="src\utils\scene\SceneNode.cpp" />
+    <ClCompile Include="src\utils\scene\SceneNodeTetromino.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_DEBUG.cpp" />
     <ClCompile Include="src\utils\shapes\Tetromino_I.cpp" />

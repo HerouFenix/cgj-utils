@@ -1,4 +1,4 @@
-#include "../../headers/scene/SceneNodeTetromino.h"
+#include "../../headers/scene/SceneNode.h"
 
 
 SceneNodeTetromino::SceneNodeTetromino(Mesh* m, Shader* s, Tetromino t, Vector3 sc) :SceneNode(m, s, NULL, sc) {

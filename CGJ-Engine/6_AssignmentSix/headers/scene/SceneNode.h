@@ -56,3 +56,15 @@ protected:
 	std::vector<SceneNode*> children;
 	Shader* shader;
 };
+
+
+class SceneNodeTetromino : public SceneNode {
+public:
+	SceneNodeTetromino(Mesh* m = NULL, Shader* s = NULL, Tetromino t = NULL, Vector3 sc = Vector3(1, 1, 1));
+	~SceneNodeTetromino();
+
+	void Draw() override;
+
+protected:
+	Tetromino tetromino;
+};

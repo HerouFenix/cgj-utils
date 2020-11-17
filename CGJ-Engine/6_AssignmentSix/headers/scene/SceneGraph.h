@@ -2,7 +2,6 @@
 #include "../camera/ArcBallCamera.h"
 #include "../vectors/Vector3.h"
 #include "SceneNode.h"
-#include "SceneNodeTetromino.h"
 
 class SceneGraph {
 private:
