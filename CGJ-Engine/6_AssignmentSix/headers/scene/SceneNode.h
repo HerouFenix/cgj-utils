@@ -22,6 +22,9 @@ public:
 
 	void ApplyLocalTransform(Matrix4 transform);
 
+	void SetLocalTransform(Matrix4 transform);
+
+
 	void ResetToDefaultPosition();
 
 	const Matrix4 GetLocalTransform();

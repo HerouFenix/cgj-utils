@@ -385,7 +385,7 @@ Matrix4& Matrix4::operator=(float val) {
 bool Matrix4::operator==(const Matrix4& mat) {
 	for (int row = 0; row < 4; row++) {
 		for (int col = 0; col < 4; col++) {
-			if (matrix[row][col] != mat.matrix[row][col]) {
+			if (abs(matrix[row][col] - mat.matrix[row][col]) > 1e-5) {
 				return false;
 			}
 		}

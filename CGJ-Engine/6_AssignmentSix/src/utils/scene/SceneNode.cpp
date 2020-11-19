@@ -50,6 +50,12 @@ void SceneNode::ApplyLocalTransform(Matrix4 transform)
 	Update();
 }
 
+void SceneNode::SetLocalTransform(Matrix4 transform)
+{
+	localTransform = transform;
+	Update();
+}
+
 void SceneNode::ResetToDefaultPosition() {
 	localTransform = Matrix4::identity();
 }
