@@ -25,15 +25,7 @@ SceneNode::SceneNode(Mesh* m, Shader* s, float* c, Vector3 sc) {
 	scale = sc;
 
 	localTransform = Matrix4::identity();
-
-	if (parent != NULL) { // If we have a parent
-		worldTransform = parent->worldTransform;
-
-	}
-	else { // If we are the root node
-		worldTransform = localTransform;
-
-	}
+	worldTransform = localTransform;
 }
 
 SceneNode::~SceneNode()
@@ -88,6 +80,15 @@ void SceneNode::SetColour(float* colours)
 
 Mesh* SceneNode::GetMesh()
 {
+	if (mesh == NULL) {
+		if (parent == NULL) {
+			return NULL;
+		}
+		else {
+			return parent->GetMesh();
+		}
+	}
+
 	return mesh;
 }
 
@@ -108,6 +109,15 @@ void SceneNode::SetScale(Vector3 sc)
 
 Shader* SceneNode::GetShader()
 {
+	if (shader == NULL) {
+		if (parent == NULL) {
+			return NULL;
+		}
+		else {
+			return parent->GetShader();
+		}
+	}
+
 	return shader;
 }
 
@@ -120,10 +130,11 @@ void SceneNode::AddChildNode(SceneNode* s)
 {
 	children.push_back(s);
 	s->parent = this;
+	s->SetScale(s->GetScale() * scale);
 	Update();
 }
 
-std::vector<SceneNode*> SceneNode::GetChidNodes()
+std::vector<SceneNode*> SceneNode::GetChildNodes()
 {
 	return children;
 }
@@ -131,8 +142,7 @@ std::vector<SceneNode*> SceneNode::GetChidNodes()
 void SceneNode::Update()
 {
 	if (parent != NULL) { // If we have a parent
-		worldTransform = parent->worldTransform*localTransform;
-
+		worldTransform = parent->worldTransform * localTransform;
 	}
 	else { // If we are the root node
 		worldTransform = localTransform;
@@ -146,18 +156,23 @@ void SceneNode::Update()
 
 void SceneNode::Draw()
 {
-	shader->Bind();
+	Shader* sh = GetShader();
+	Mesh* me = GetMesh();
 
-	shader->SetUniform4fvec("uniformColour", colour);
-	shader->UnBind();
+	if (sh != NULL && me != NULL) {
+		sh->Bind();
+
+		sh->SetUniform4fvec("uniformColour", colour);
+		sh->UnBind();
 
 
-	Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
+		Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
 
-	float model[16];
-	Matrix4 modelM = worldTransform * scaleM;
-	modelM.getRowMajor(model);
-	Renderer::DrawObject((GLsizei)mesh->getVertices().size(), (*shader), model);
+		float model[16];
+		Matrix4 modelM = worldTransform * scaleM;
+		modelM.getRowMajor(model);
+		Renderer::DrawObject((GLsizei)me->getVertices().size(), (*sh), model);
+	}
 
 
 	// Cascade Draw children

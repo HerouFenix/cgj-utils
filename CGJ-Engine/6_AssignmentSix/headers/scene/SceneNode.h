@@ -37,6 +37,8 @@ public:
 	Mesh* GetMesh();
 	void SetMesh(Mesh* m);
 
+
+
 	Vector3 GetScale();
 	void SetScale(Vector3 sc);
 
@@ -45,7 +47,7 @@ public:
 
 	void AddChildNode(SceneNode* s);
 
-	std::vector<SceneNode*> GetChidNodes();
+	std::vector<SceneNode*> GetChildNodes();
 
 	void Update();
 

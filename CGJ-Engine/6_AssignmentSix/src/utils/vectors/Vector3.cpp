@@ -113,6 +113,12 @@ Vector3 Vector3::operator*(float operand)
 	return Vector3(x * operand, y * operand, z * operand);
 }
 
+Vector3 Vector3::operator*(Vector3 vec)
+{
+
+	return Vector3(x * vec.getX(), y * vec.getY(), z * vec.getZ());
+}
+
 Vector3 operator*(float val, Vector3& vec) {
 	return vec * val;
 }

@@ -189,6 +189,14 @@ class Vector3 {
 		Vector3 operator*(float scalar);
 
 		/********************************************/ /**
+		 * Overloading of the * operator. Gets the multiplication of our vector by a vector
+		 *
+		 * @param scal The scalar we want to use to multiply
+		 * @return vecMul The resulting multiplication
+		 ***********************************************/
+		Vector3 operator*(Vector3 vec);
+
+		/********************************************/ /**
 		 * Overloading of the * operator. Gets the multiplication of a scalar by our vector
 		 *
 		 * @param val The scalar we want to use to multiply
