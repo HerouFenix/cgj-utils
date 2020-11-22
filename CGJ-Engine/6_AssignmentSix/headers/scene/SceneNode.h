@@ -7,6 +7,7 @@
 #include "../drawing/Shader.h"
 #include "../shapes/Tetromino.h"
 #include "../drawing/Renderer.h"
+#include "../quaternions/Quaternion.h"
 
 // SCENE NODE CLASS
 /// Class used to represent a Node on our Scene Graph
@@ -17,6 +18,8 @@
 
 class SceneNode {
 public:
+	Vector3 pos;
+	Quaternion quat;
 	SceneNode(Mesh* m = NULL, Shader* s = NULL, float* c = NULL, Vector3 sc = Vector3(1,1,1));
 	~SceneNode();
 
@@ -27,7 +30,7 @@ public:
 
 	void ResetToDefaultPosition();
 
-	const Matrix4 GetLocalTransform();
+	Matrix4 GetLocalTransform();
 
 	Matrix4 GetWorldTransform();
 

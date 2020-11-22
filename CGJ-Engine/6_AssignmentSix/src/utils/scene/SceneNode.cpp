@@ -37,8 +37,12 @@ SceneNode::~SceneNode()
 
 void SceneNode::ApplyLocalTransform(Matrix4 transform)
 {
-
 	localTransform = transform * localTransform;
+	quat = Quaternion(transform.getRotation());
+	Vector4 pos4_i(pos.getX(), pos.getY(), pos.getZ(), 1.0f);
+	Vector4 pos4_f = pos4_i.transform(transform);
+	pos = Vector3(pos4_f.getX(), pos4_f.getY(), pos4_f.getZ());
+
 	Update();
 }
 
@@ -52,7 +56,7 @@ void SceneNode::ResetToDefaultPosition() {
 	localTransform = Matrix4::identity();
 }
 
-const Matrix4 SceneNode::GetLocalTransform()
+Matrix4 SceneNode::GetLocalTransform()
 {
 	return localTransform;
 }

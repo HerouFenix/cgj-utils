@@ -296,3 +296,13 @@ float Vector3::angle(Vector3& vec) {
 	float cosAngle = dotProd(vec) / (magnitude() * vec.magnitude());
 	return acos(cosAngle);
 }
+
+//Lerp
+Vector3 Vector3::Lerp(Vector3 finalPos, float by)
+{
+	float retX = x + by * (finalPos.getX() - x);
+	float retY = y + by * (finalPos.getY() - y);
+	float retZ = z + by * (finalPos.getZ() - z);
+	return Vector3(retX, retY, retZ);
+}
+

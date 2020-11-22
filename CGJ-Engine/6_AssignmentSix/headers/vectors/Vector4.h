@@ -6,6 +6,7 @@
 /// Class used to represent and perform operations with 4-Dimensional vectors
 
 #include<iostream>
+#include "../matrices/Matrix4.h"
 
 class Vector2;
 class Vector3;
@@ -342,6 +343,9 @@ class Vector4 {
 		 * @return ang The shortest angle between this vector and the given one in radians
 		 ***********************************************/
 		float angle(Vector4& vec);
+
+		Vector4 transform(Matrix4 m);
+
 };
 
 

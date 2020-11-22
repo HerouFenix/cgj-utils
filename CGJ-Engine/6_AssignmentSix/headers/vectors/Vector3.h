@@ -341,6 +341,9 @@ class Vector3 {
 		 * @return ang The shortest angle between this vector and the given one in radians
 		 ***********************************************/
 		float angle(Vector3& vec);
+
+		Vector3 Lerp(Vector3 finalPos, float by);
+
 };
 
 

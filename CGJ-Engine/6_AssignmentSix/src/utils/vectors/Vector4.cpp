@@ -313,3 +313,16 @@ float Vector4::angle(Vector4& vec) {
 	float cosAngle = dotProd(vec) / (magnitude() * vec.magnitude());
 	return acos(cosAngle);
 }
+
+Vector4 Vector4::transform(Matrix4 m)
+{
+	Vector4 result;
+
+	result.setX((m[0][0] * x) + (m[0][1] * y) + (m[0][2] * z) + (m[0][3] * w));
+	result.setY((m[1][0] * x) + (m[1][1] * y) + (m[1][2] * z) + (m[1][3] * w));
+	result.setZ((m[2][0] * x) + (m[2][1] * y) + (m[2][2] * z) + (m[2][3] * w));
+	result.setW((m[3][0] * x) + (m[3][1] * y) + (m[3][2] * z) + (m[3][3] * w));
+
+	return result;
+}
+

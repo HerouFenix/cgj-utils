@@ -24,6 +24,10 @@
 #include "../headers/scene/SceneGraph.h"
 #include "../headers/scene/Scene.h"
 
+#include <ctime>
+#include <ratio>
+#include <chrono>
+
 
 #define VERTICES 0
 #define TEXCOORDS 1
@@ -77,11 +81,10 @@ bool automaticRotating = false;
 
 bool animate = false;
 bool goToInitial = false;
-bool animate_checklist[9];
 
-Matrix4 animate_final_transforms[4][3];
-bool checkpointReached[4][3];
-Matrix4 animate_initial_transforms[4][3];
+std::chrono::high_resolution_clock::time_point timeStartedLerping;
+float animation_total = 3000.0f; //Animation speed in milliseconds
+
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -138,208 +141,205 @@ void moveFloor() {
 }
 
 void animateInitialToFinal() {
-	if (checkpointReached[0][1] && checkpointReached[1][2] && checkpointReached[2][2] && checkpointReached[3][1]) {
+
+	auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::high_resolution_clock::now() - timeStartedLerping
+		);
+	float timeSinceStarted = dur.count();
+	float percentageComplete;
+	if (trunc(timeSinceStarted / animation_total) < 1.0f) {
+		percentageComplete = timeSinceStarted / animation_total;
+	}
+	else {
+		percentageComplete = 1.0f;
 		animate = false;
-
-		// Due to comparison of floats it could happen that small errors accumulate over time and end up breaking the animation
-		// To fix this, force set the transforms to their initial/final compositions after the animation is set to end
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->SetLocalTransform(animate_final_transforms[0][1]);
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->SetLocalTransform(animate_final_transforms[1][2]);
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->SetLocalTransform(animate_final_transforms[2][2]);
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->SetLocalTransform(animate_final_transforms[3][1]);
-
 		goToInitial = !goToInitial;
 	}
 
-	// Square
-	if (!checkpointReached[0][0]) { // First checkpoint NOT reached
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(Matrix4::rotationZ(0.5, false, true));
+	//SQUARE SHAPE //////////////////////////////////////////
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[0][0]) {
-			checkpointReached[0][0] = true;
-		}
-	}
-	else if (!checkpointReached[0][1]) { // Second checkpoint NOT reached yet
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(Matrix4::translation(0, 0.005, 0));
+		//translation
+	Vector3 initialPos = Vector3(-0.11f, -0.11f, 0.0f);
+	Vector3 finalPos(0.0f, 0.6f, 0.0f);
+	Vector3 l = initialPos.Lerp(finalPos, percentageComplete);
+	Matrix4 tr = (scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform()).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[0][1]) {
-			checkpointReached[0][1] = true;
-		}
-	}
+	//rotations
+	Matrix4 rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform().getRotation();
+	Quaternion initialQuat(rot);
+	Quaternion finalQuat(90.0f, { 0.0f, 0.0f, 1.0f, 1.0f });
+	Quaternion q = initialQuat.Lerp(finalQuat, percentageComplete);
+	Matrix4 tr_rot = rot.inverse() * q.GLRotationMatrix();
+
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(tr);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(tr_rot);
 
 
-	// L
-	if (!checkpointReached[1][0]) { // First checkpoint NOT reached
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(Matrix4::rotationZ(0.5, false, true));
+	// I SHAPE ////////////////////////////////////////////
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[1][0]) {
-			checkpointReached[1][0] = true;
-		}
-	}
-	else if (!checkpointReached[1][1]) { // Second checkpoint NOT reached yet
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(Matrix4::rotationY(1, false, true));
+	//rotation
+	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform().getRotation();
+	initialQuat = Quaternion(rot);
+	finalQuat = Quaternion(0.0f, { 0.0f, 0.0f, 1.0f, 1.0f });
+	q = initialQuat.Lerp(finalQuat, percentageComplete);
+	tr_rot = rot.inverse() * q.GLRotationMatrix();
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[1][1]) {
-			checkpointReached[1][1] = true;
-		}
-	}
-	else if (!checkpointReached[1][2]) { // Third checkpoint NOT reached yet
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(Matrix4::translation(-0.01375, -0.005, 0.01));
+	//translation
+	initialPos = Vector3(0.33f, 0.33f, 0.0f);
+	finalPos = Vector3(0.0f, -0.3f, 0.0f);
+	l = initialPos.Lerp(finalPos, percentageComplete);
+	Vector3 p = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform().getTranslation();
+	tr = (Matrix4::translation(p)).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[1][2]) {
-			checkpointReached[1][2] = true;
-		}
-	}
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(tr);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(tr_rot);
 
-	// Reverse L
-	if (!checkpointReached[2][0]) { // First checkpoint NOT reached
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(Matrix4::rotationZ(-0.5, false, true));
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[2][0]) {
-			checkpointReached[2][0] = true;
-		}
-	}
-	else if (!checkpointReached[2][1]) { // Second checkpoint NOT reached yet
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(Matrix4::rotationY(-1, false, true));
+	// L SHAPE ////////////////////////////////////////////
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[2][1]) {
-			checkpointReached[2][1] = true;
-		}
-	}
-	else if (!checkpointReached[2][2]) { // Third checkpoint NOT reached yet
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(Matrix4::translation(0.01375, -0.005, 0.01));
+	//rotation
+	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform().getRotation();
+	initialQuat = Quaternion();
+	finalQuat = Quaternion(70.0f, { 0.0f, 1.0f, 0.0f, 1.0f });
+	q = initialQuat.Slerp(finalQuat, percentageComplete);
+	tr_rot = rot.inverse() * q.GLRotationMatrix();
+	//std::cout << scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->pos << std::endl;
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[2][2]) {
-			checkpointReached[2][2] = true;
-		}
-	}
+	//translation
+	initialPos = Vector3(-0.33, -0.33f, 0.0f);
+	finalPos = Vector3(-0.2f, -0.5f, 0.22);
+	l = initialPos.Lerp(finalPos, percentageComplete);
+	p = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform().getTranslation();
+	tr = (Matrix4::translation(p)).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
 
-	// I
-	if (!checkpointReached[3][0]) { // First checkpoint NOT reached
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(Matrix4::rotationZ(-.5, false, true));
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(tr_rot);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(tr);
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[3][0]) {
-			checkpointReached[3][0] = true;
-		}
-	}
-	else if (!checkpointReached[3][1]) { // Second checkpoint NOT reached yet
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(Matrix4::translation(-0.01,0.0,0));
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
-		if (curTransform == animate_final_transforms[3][1]) {
-			checkpointReached[3][1] = true;
-		}
-	}
+	// REVERSE L SHAPE ////////////////////////////////////////////
 
+	//rotation
+	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform().getRotation();
+	initialQuat = Quaternion();
+	finalQuat = Quaternion(-70.0f, { 0.0f, 1.0f, 0.0f, 1.0f });
+	q = initialQuat.Slerp(finalQuat, percentageComplete);
+	tr_rot = rot.inverse() * q.GLRotationMatrix();
+
+	//translation
+	initialPos = Vector3(0.33, -0.33f, 0.0f);
+	finalPos = Vector3(0.2f, -0.5f, 0.22);
+	l = initialPos.Lerp(finalPos, percentageComplete);
+	p = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform().getTranslation();
+	tr = (Matrix4::translation(p)).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
+
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(tr_rot);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(tr);
 }
 
 void animateFinalToInitial() {
-	if (!checkpointReached[0][0] && !checkpointReached[1][0] && !checkpointReached[2][0] && !checkpointReached[3][0]) {
+	auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::high_resolution_clock::now() - timeStartedLerping
+		);
+	float timeSinceStarted = dur.count();
+	float percentageComplete;
+	if (trunc(timeSinceStarted / animation_total) < 1.0f) {
+		percentageComplete = timeSinceStarted / animation_total;
+	}
+	else {
+		percentageComplete = 1.0f;
 		animate = false;
-
-		// Due to comparison of floats it could happen that small errors accumulate over time and end up breaking the animation
-		// To fix this, force set the transforms to their initial/final compositions after the animation is set to end
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->SetLocalTransform(animate_initial_transforms[0][1]);
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->SetLocalTransform(animate_initial_transforms[1][2]);
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->SetLocalTransform(animate_initial_transforms[2][2]);
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->SetLocalTransform(animate_initial_transforms[3][1]);
-		
 		goToInitial = !goToInitial;
 	}
 
-	// Square
-	if (checkpointReached[0][1]) { // Second checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(Matrix4::translation(0, -0.005, 0));
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[0][0]) {
-			checkpointReached[0][1] = false;
-		}
-	}
-	else if (checkpointReached[0][0]) { // First checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(Matrix4::rotationZ(-0.5, false, true));
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[0][1]) {
-			checkpointReached[0][0] = false;
-		}
-	}
+	//SQUARE SHAPE //////////////////////////////////////////
 
-	// L
-	if (checkpointReached[1][2]) { // Third checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(Matrix4::translation(0.01375, 0.005, -0.01));
+	//translation
+	Vector3 initialPos = Vector3(0.0f, 0.6f, 0.0f);
+	Vector3 finalPos(-0.11f, -0.11f, 0.0f);
+	Vector3 l = initialPos.Lerp(finalPos, percentageComplete);
+	Matrix4 tr = (scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform()).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[1][0]) {
-			checkpointReached[1][2] = false;
-		}
-	}
-	else if (checkpointReached[1][1]) { // Second checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(Matrix4::rotationY(-1, false, true));
+	//rotations
+	Matrix4 rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform().getRotation();
+	Quaternion initialQuat = Quaternion (90.0f, { 0.0f, 0.0f, 1.0f, 1.0f });;
+	Quaternion finalQuat = Quaternion();
+	Quaternion q = initialQuat.Lerp(finalQuat, percentageComplete);
+	Matrix4 tr_rot = rot.inverse() * q.GLRotationMatrix();
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[1][1]) {
-			checkpointReached[1][1] = false;
-		}
-	}
-	else if (checkpointReached[1][0]) { // First checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(Matrix4::rotationZ(-0.5, false, true));
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(tr_rot);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(tr);
+	
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[1][2]) {
-			checkpointReached[1][0] = false;
-		}
-	}
 
-	// Reverse L
-	if (checkpointReached[2][2]) { // Third checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(Matrix4::translation(-0.01375, 0.005, -0.01));
+	// I SHAPE ////////////////////////////////////////////
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[2][0]) {
-			checkpointReached[2][2] = false;
-		}
-	}
-	else if (checkpointReached[2][1]) { // Second checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(Matrix4::rotationY(1, false, true));
+	//rotation
+	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform().getRotation();
+	initialQuat = Quaternion();
+	finalQuat = Quaternion(90.0f, { 0.0f, 0.0f, 1.0f, 1.0f });
+	q = initialQuat.Lerp(finalQuat, percentageComplete);
+	tr_rot = rot.inverse() * q.GLRotationMatrix();
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[2][1]) {
-			checkpointReached[2][1] = false;
-		}
-	}
-	else if (checkpointReached[2][0]) { // First checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(Matrix4::rotationZ(0.5, false, true));
+	//translation
+	initialPos = Vector3(0.0f, -0.3f, 0.0f);
+	finalPos = Vector3(0.33f, 0.33f, 0.0f);
+	l = initialPos.Lerp(finalPos, percentageComplete);
+	Vector3 p = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform().getTranslation();
+	tr = (Matrix4::translation(p)).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
 
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[2][2]) {
-			checkpointReached[2][0] = false;
-		}
-	}
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(tr_rot);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(tr);
 
-	// I
-	if (checkpointReached[3][1]) { // Second checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(Matrix4::translation(0.01, 0.0, 0));
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[3][0]) {
-			checkpointReached[3][1] = false;
-		}
-	}
-	else if (checkpointReached[3][0]) { // First checkpoint NOT fully reversed
-		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->ApplyLocalTransform(Matrix4::rotationZ(0.5, false, true));
-		Matrix4 curTransform = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
-		if (curTransform == animate_initial_transforms[3][1]) {
-			checkpointReached[3][0] = false;
-		}
-	}
 
+	// L SHAPE ////////////////////////////////////////////
+
+	//rotation
+	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform().getRotation();
+	initialQuat = Quaternion(70.0f, { 0.0f, 1.0f, 0.0f, 1.0f });
+	finalQuat = Quaternion();
+	q = initialQuat.Slerp(finalQuat, percentageComplete);
+	tr_rot = rot.inverse() * q.GLRotationMatrix();
+	//std::cout << scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->pos << std::endl;
+
+	//translation
+	initialPos = Vector3(-0.2f, -0.5f, 0.22);
+	finalPos = Vector3(-0.33, -0.33f, 0.0f);
+	l = initialPos.Lerp(finalPos, percentageComplete);
+	p = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform().getTranslation();
+	tr = (Matrix4::translation(p)).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
+
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(tr_rot);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(tr);
+	
+	//std::cout << scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform() << std::endl;
+
+
+	// REVERSE L SHAPE ////////////////////////////////////////////
+
+	//rotation
+	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform().getRotation();
+	initialQuat = Quaternion(-70.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); 
+	finalQuat = Quaternion();
+	q = initialQuat.Slerp(finalQuat, percentageComplete);
+	tr_rot = rot.inverse() * q.GLRotationMatrix();
+
+	//translation
+	initialPos = Vector3(0.2f, -0.5f, 0.22);
+	finalPos = Vector3(0.33, -0.33f, 0.0f);
+	l = initialPos.Lerp(finalPos, percentageComplete);
+	p = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform().getTranslation();
+	tr = (Matrix4::translation(p)).inverse()
+		* Matrix4::translation(l.getX(), l.getY(), l.getZ());
+
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(tr_rot);
+	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->ApplyLocalTransform(tr);
 }
 
 
@@ -534,10 +534,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_SPACE:
 			stopRotating = !stopRotating;
 			break;
-		case GLFW_KEY_C:
+		case GLFW_KEY_C: {
 			animate = !animate;
-			
+			timeStartedLerping = std::chrono::high_resolution_clock::now();
 			break;
+		}
+			
 		}
 	}
 	else if (action == GLFW_RELEASE) {
@@ -741,38 +743,6 @@ void setupCamera() {
 
 void setupScene() {
 	scene.SetupTetrominoSceneGraph(scene.GetSceneGraphs()[0], &mesh, &shader);
-
-	// Square
-	animate_final_transforms[0][0] = Matrix4::rotationZ(45, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-	animate_final_transforms[0][1] = Matrix4::translation(0.0, 0.80, 0) * Matrix4::rotationZ(45, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-
-	animate_initial_transforms[0][0] = animate_final_transforms[0][0];
-	animate_initial_transforms[0][1] = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform();
-
-	// L
-	animate_final_transforms[1][0] = Matrix4::rotationZ(90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-	animate_final_transforms[1][1] = Matrix4::rotationY(60, false, true) * Matrix4::rotationZ(90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-	animate_final_transforms[1][2] = Matrix4::translation(-0.44, -0.16, 0.32) * Matrix4::rotationY(60, false, true) * Matrix4::rotationZ(90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-
-	animate_initial_transforms[1][0] = animate_final_transforms[1][1];
-	animate_initial_transforms[1][1] = animate_final_transforms[1][0];
-	animate_initial_transforms[1][2] = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform();
-
-	// Reverse L
-	animate_final_transforms[2][0] = Matrix4::rotationZ(-90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-	animate_final_transforms[2][1] = Matrix4::rotationY(-60, false, true) * Matrix4::rotationZ(-90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-	animate_final_transforms[2][2] = Matrix4::translation(0.44, -0.16, 0.32) * Matrix4::rotationY(-60, false, true) * Matrix4::rotationZ(-90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-
-	animate_initial_transforms[2][0] = animate_final_transforms[2][1];
-	animate_initial_transforms[2][1] = animate_final_transforms[2][0];
-	animate_initial_transforms[2][2] = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform();
-
-	// I
-	animate_final_transforms[3][0] = Matrix4::rotationZ(-90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
-	animate_final_transforms[3][1] = Matrix4::translation(-0.33, 0, 0) * Matrix4::rotationZ(-90, false, true) * scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
-
-	animate_initial_transforms[3][0] = animate_final_transforms[3][0];
-	animate_initial_transforms[3][1] = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[3]->GetLocalTransform();
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -847,6 +817,7 @@ int main(int argc, char* argv[])
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		920, 920, "Tetromino 3D", is_fullscreen, is_vsync);
 	run(win);
+
 	exit(EXIT_SUCCESS);
 }
 

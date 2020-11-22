@@ -62,7 +62,6 @@ void Scene::SetupTetrominoSceneGraph(SceneGraph* sceneGraph, Mesh* m, Shader* s)
 	SceneNode* piecesRoot = sceneGraph->AddNode(NULL, NULL, root, NULL,Vector3(0.1, 0.1, 0.1));
 
 	////Square
-	std::cout << "Square\n";
 	SceneNode* squareBase = sceneGraph->AddNode(m, s, piecesRoot, NULL);
 	squareBase->GetColour(colour);
 	squareBase->ApplyLocalTransform(Matrix4::translation(-.11, -0.11, 0));

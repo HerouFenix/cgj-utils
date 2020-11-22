@@ -6,6 +6,10 @@ const float qThreshold = (float)1.0e-5;
 
 Quaternion::Quaternion()
 {
+	a = 1;
+	x = 0;
+	y = 0;
+	z = 0;
 }
 
 Quaternion::Quaternion(float angle, float xx, float yy, float zz)
@@ -27,6 +31,40 @@ Quaternion::Quaternion(float theta, Vector4 axis)
 	z = axisn.getZ() * s;
 	clean();
 	Normalize();
+}
+
+Quaternion::Quaternion(Matrix4 rotationM) {
+	float trace = rotationM[0][0] + rotationM[1][1] + rotationM[2][2];
+	if (trace > 0) {
+		float s = 0.5f / sqrtf(trace + 1.0f);
+		a = 0.25f / s;
+		x = (rotationM[2][1] - rotationM[1][2]) * s;
+		y = (rotationM[0][2] - rotationM[2][0]) * s;
+		z = (rotationM[1][0] - rotationM[0][1]) * s;
+	}
+	else {
+		if (rotationM[0][0] > rotationM[1][1] && rotationM[0][0] > rotationM[2][2]) {
+			float s = 2.0f * sqrtf(1.0f + rotationM[0][0] - rotationM[1][1] - rotationM[2][2]);
+			a = (rotationM[2][1] - rotationM[1][2]) / s;
+			x = 0.25f * s;
+			y = (rotationM[0][1] + rotationM[1][0]) / s;
+			z = (rotationM[0][2] + rotationM[2][0]) / s;
+		}
+		else if (rotationM[1][1] > rotationM[2][2]) {
+			float s = 2.0f * sqrtf(1.0f + rotationM[1][1] - rotationM[0][0] - rotationM[2][2]);
+			a = (rotationM[0][2] - rotationM[2][0]) / s;
+			x = (rotationM[0][1] + rotationM[1][0]) / s;
+			y = 0.25f * s;
+			z = (rotationM[1][2] + rotationM[2][1]) / s;
+		}
+		else {
+			float s = 2.0f * sqrtf(1.0f + rotationM[2][2] - rotationM[0][0] - rotationM[1][1]);
+			a = (rotationM[1][0] - rotationM[0][1]) / s;
+			x = (rotationM[0][2] + rotationM[2][0]) / s;
+			y = (rotationM[1][2] + rotationM[2][1]) / s;
+			z = 0.25f * s;
+		}
+	}
 }
 
 float Quaternion::getA()

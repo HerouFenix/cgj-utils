@@ -11,6 +11,7 @@ public:
 	Quaternion();
 	Quaternion(float a, float x, float y, float z);
 	Quaternion(float theta, Vector4 axis);
+	Quaternion(Matrix4 rotationM);
 
 	float getA();
 	float getX();

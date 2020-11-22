@@ -419,6 +419,14 @@ public:
 	static Matrix4 translation(Vector3& vec);
 
 	void clean();
+
+	Matrix4 inverse();
+
+	Vector3 getTranslation();
+
+	Vector3 getScale();
+
+	Matrix4 getRotation();
 };
 
 
