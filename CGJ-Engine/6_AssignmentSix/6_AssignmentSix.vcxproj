@@ -147,7 +147,6 @@
     <ClCompile Include="src\utils\scene\Scene.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\mainV1.cpp" />
     <ClCompile Include="src\utils\camera\ArcBallCamera.cpp" />
     <ClCompile Include="src\utils\camera\Camera.cpp" />
     <ClCompile Include="src\utils\drawing\IndexBuffer.cpp" />
@@ -213,6 +212,12 @@
     <None Include="resources\shaders\cube_vs.glsl" />
     <None Include="resources\shaders\Fragment.shader" />
     <None Include="resources\shaders\Vertex.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="resources\models\cube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

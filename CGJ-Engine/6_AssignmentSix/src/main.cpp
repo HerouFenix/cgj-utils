@@ -154,6 +154,8 @@ void animateInitialToFinal() {
 		percentageComplete = 1.0f;
 		animate = false;
 		goToInitial = !goToInitial;
+
+		return;
 	}
 
 	//SQUARE SHAPE //////////////////////////////////////////
@@ -252,7 +254,11 @@ void animateFinalToInitial() {
 	else {
 		percentageComplete = 1.0f;
 		animate = false;
+		scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->SetLocalTransform(Matrix4::translation(-.11, -0.11, 0));
+
 		goToInitial = !goToInitial;
+
+		return;
 	}
 
 	//SQUARE SHAPE //////////////////////////////////////////
@@ -266,14 +272,14 @@ void animateFinalToInitial() {
 
 	//rotations
 	Matrix4 rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->GetLocalTransform().getRotation();
-	Quaternion initialQuat = Quaternion (90.0f, { 0.0f, 0.0f, 1.0f, 1.0f });;
+	Quaternion initialQuat = Quaternion(90.0f, { 0.0f, 0.0f, 1.0f, 1.0f });;
 	Quaternion finalQuat = Quaternion();
 	Quaternion q = initialQuat.Lerp(finalQuat, percentageComplete);
 	Matrix4 tr_rot = rot.inverse() * q.GLRotationMatrix();
 
 	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(tr_rot);
 	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[0]->ApplyLocalTransform(tr);
-	
+
 
 
 	// I SHAPE ////////////////////////////////////////////
@@ -317,7 +323,7 @@ void animateFinalToInitial() {
 
 	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(tr_rot);
 	scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->ApplyLocalTransform(tr);
-	
+
 	//std::cout << scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[1]->GetLocalTransform() << std::endl;
 
 
@@ -325,7 +331,7 @@ void animateFinalToInitial() {
 
 	//rotation
 	rot = scene.GetSceneGraphs()[0]->GetRoot()->GetChildNodes()[1]->GetChildNodes()[2]->GetLocalTransform().getRotation();
-	initialQuat = Quaternion(-70.0f, { 0.0f, 1.0f, 0.0f, 1.0f }); 
+	initialQuat = Quaternion(-70.0f, { 0.0f, 1.0f, 0.0f, 1.0f });
 	finalQuat = Quaternion();
 	q = initialQuat.Slerp(finalQuat, percentageComplete);
 	tr_rot = rot.inverse() * q.GLRotationMatrix();
@@ -539,7 +545,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			timeStartedLerping = std::chrono::high_resolution_clock::now();
 			break;
 		}
-			
+
 		}
 	}
 	else if (action == GLFW_RELEASE) {
